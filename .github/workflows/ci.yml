@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Re-enable once UH Groupings API is added to this repo
+  # junit:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Set up JDK 17
+  #       uses: actions/setup-java@v1
+  #       with:
+  #         java-version: 17
+
+  #     - name: Build with Maven
+  #       run: |
+  #         cd api 
+  #         mvn clean test
+
+  jest:
+    strategy:
+      matrix:
+        node-version: [ 18.x, 20.x ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: |
+          cd ui
+          npm install
+
+      - name: Run ESLint
+        run: |
+          cd ui
+          npm run lint
+
+      - name: Run Jest Tests
+        run: |
+          cd ui
+          npm run test
