@@ -7,3 +7,6 @@ A grouping is a collection of members (e.g., all full-time Hilo faculty). UH Gro
 Groupings can be synchronized with one or more of the following: email LISTSERV lists, attributes for access control via CAS and LDAP, etc. Additionally, UH Groupings allows you to leverage group data from official sources, which can substantially reduce the manual overhead of membership management.
 
 UH Groupings utilizes the Internet2 Grouper project. Grouper is an enterprise access management system designed for the highly distributed management environment and heterogeneous information technology environment common to universities.
+
+[![CI](https://github.com/uhawaii-system-its-ti-iam/uh-groupings/actions/workflows/ci.yml/badge.svg)](https://github.com/uhawaii-system-its-ti-iam/uh-groupings/actions/workflows/ci.yml)
+![Jest coverage](https://github.com/uhawaii-system-its-ti-iam/uh-groupings/blob/badges/badges/coverage-jest%20coverage.svg)
