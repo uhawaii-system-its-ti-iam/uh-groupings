@@ -3,6 +3,7 @@
   "version": "3.0",
   "private": true,
   "scripts": {
+    "predev": "node api-handshake.js",
     "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start",
