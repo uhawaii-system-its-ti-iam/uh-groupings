@@ -1,13 +1,9 @@
+import { MemberResult } from '@/services/GroupingsApiResults';
 import Role from './Role';
 
 type User = {
-    name: string,
-    firstName: string,
-    lastName: string,
-    uid: string,
-    uhUuid: string,
     roles: Role[]
-}
+} & MemberResult
 
 export const AnonymousUser: User = {
     name: '',
