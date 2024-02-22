@@ -2,6 +2,7 @@ import './globals.css';
 import { Source_Sans_3 } from 'next/font/google';
 import Navbar from './_components/navbar/navbar';
 import Footer from './_components/footer/footer';
+import { Toaster } from '@/components/ui/toaster';
 import type { Metadata } from 'next';
 
 const sourceSans3 = Source_Sans_3({
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({
-    children,
+    children
 }: Readonly<{
     children?: React.ReactNode;
 }>) => (
@@ -24,6 +25,7 @@ const RootLayout = ({
         <body className={sourceSans3.variable}>
             <Navbar />
             {children}
+            <Toaster />
             <Footer />
         </body>
     </html>

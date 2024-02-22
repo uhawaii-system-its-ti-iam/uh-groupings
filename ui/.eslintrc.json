@@ -1,45 +1,54 @@
 {
-  "env": {
-      "browser": true,
-      "es2021": true
-  },
-  "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended",
-      "next/core-web-vitals",
-      "prettier"
-  ],
-  "overrides": [
-    {
-      "files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
-      "extends": ["plugin:testing-library/react"]
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "next/core-web-vitals",
+        "prettier"
+    ],
+    "overrides": [
+        {
+            "files": [
+                "**/__tests__/**/*.[jt]s?(x)",
+                "**/?(*.)+(spec|test).[jt]s?(x)"
+            ],
+            "extends": ["plugin:testing-library/react"]
+        }
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint",
+        "@stylistic",
+        "eslint-plugin-tsdoc"
+    ],
+    "rules": {
+        "@stylistic/max-len": ["warn", { "code": 120 }],
+        "@stylistic/eol-last": ["error", "always"],
+        "@stylistic/quotes": [
+            "error",
+            "single",
+            { "allowTemplateLiterals": true }
+        ],
+        "@stylistic/arrow-parens": "off",
+        "@stylistic/linebreak-style": "off",
+        "react/function-component-definition": [
+            2,
+            { "namedComponents": "arrow-function" }
+        ],
+        "tsdoc/syntax": "warn",
+        "func-names": "off",
+        "no-plusplus": "off",
+        "no-restricted-syntax": "off",
+        "no-return-assign": "off",
+        "prefer-arrow-callback": "off"
     }
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-      "ecmaVersion": "latest",
-      "sourceType": "module"
-  },
-  "plugins": [
-      "react",
-      "@typescript-eslint",
-      "@stylistic",
-      "eslint-plugin-tsdoc"
-  ],
-  "rules": {
-    "@stylistic/max-len": ["warn", { "code": 120 }],
-    "@stylistic/indent": ["error", 4],
-    "@stylistic/eol-last": ["error", "always"],
-    "@stylistic/quotes": ["error", "single", { "allowTemplateLiterals": true }],
-    "@stylistic/arrow-parens": "off",
-    "@stylistic/linebreak-style": "off",
-    "react/function-component-definition": [2, { "namedComponents": "arrow-function" }],
-    "tsdoc/syntax": "warn",
-    "func-names": "off",
-    "no-plusplus": "off",
-    "no-restricted-syntax": "off",
-    "no-return-assign": "off",
-    "prefer-arrow-callback": "off"
-  }
 }

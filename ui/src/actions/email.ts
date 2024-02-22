@@ -12,7 +12,7 @@ export type Feedback = {
     type: string,
     message: string,
     exceptionMessage?: string
-};
+}
 
 export type EmailResult = {
     resultCode: string,
@@ -29,7 +29,7 @@ export type EmailResult = {
  * 
  * @returns The EmailResult
  */
-export const sendFeedback = async (feedback: Feedback): Promise<EmailResult & ApiError> => {
+export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/email/send/feedback`;
     return postRequest<EmailResult>(endpoint, currentUser.uid, feedback);
