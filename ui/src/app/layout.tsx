@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({
-    children,
+    children
 }: Readonly<{
     children?: React.ReactNode;
 }>) => (
