@@ -7,12 +7,12 @@ import { postRequest } from './FetchService';
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 export type Feedback = {
-    name?: string,
-    email: string,
-    type: string,
-    message: string,
-    exceptionMessage?: string
-};
+  name?: string,
+  email: string,
+  type: string,
+  message: string,
+  exceptionMessage?: string
+}
 
 export type EmailResult = {
     resultCode: string,
