@@ -6,7 +6,7 @@ const Footer = () => (
             <div className="grid sm:grid-cols-12 md:grid-cols-12">
                 <div className="mx-auto mb-6 col-span-6 md:col-span-5 lg:col-span-4">
                     <Image 
-                        src="uhgroupings/uh-logo-system.svg" 
+                        src="/uhgroupings/uh-logo-system.svg" 
                         alt="UH System logo" 
                         width={235} 
                         height={235} />

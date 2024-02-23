@@ -18,7 +18,7 @@ describe('Navbar', () => {
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
-                .toHaveAttribute('src', 'uhgroupings/uh-groupings-logo.svg');
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Memberships' })).not.toBeInTheDocument();
@@ -43,7 +43,7 @@ describe('Navbar', () => {
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
-                .toHaveAttribute('src', 'uhgroupings/uh-groupings-logo.svg');
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
@@ -60,7 +60,7 @@ describe('Navbar', () => {
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
-                .toHaveAttribute('src', 'uhgroupings/uh-groupings-logo.svg');
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
@@ -77,7 +77,7 @@ describe('Navbar', () => {
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
-                .toHaveAttribute('src', 'uhgroupings/uh-groupings-logo.svg');
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
