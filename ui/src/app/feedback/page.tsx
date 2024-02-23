@@ -49,7 +49,7 @@ const FeedbackForm = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField control={form.control} name="type"
                 render={({ field }) => (
-                  <FormItem className="pb-3">
+                  <FormItem>
                     <FormLabel htmlFor="type" className="text-base">Feedback Type:*</FormLabel>
                     <FormControl>
                       <select id="type" className="w-full px-3 py-1 border border-gray-300 rounded-md focus:accent-blue-500 focus:border-blue-500" {...field}>
@@ -64,10 +64,10 @@ const FeedbackForm = () => {
               />
               <FormField control={form.control} name="name"
                 render={({ field }) => (
-                  <FormItem className="pt-5 pb-3">
+                  <FormItem>
                     <FormLabel htmlFor="name" className="text-base">Your Name (Optional):</FormLabel>
                     <FormControl>
-                      <Input id="name"  placeholder="John Doe" {...field} />
+                      <Input id="name" className="text-base" placeholder="John Doe" {...field} />
                     </FormControl>
                   <FormMessage />
                   </FormItem>
@@ -75,10 +75,10 @@ const FeedbackForm = () => {
               />
               <FormField control={form.control} name="email"
                 render={({ field }) => (
-                  <FormItem className="pt-5 pb-3">
+                  <FormItem>
                     <FormLabel htmlFor="email" className="text-base">Email Address*</FormLabel>
                     <FormControl>
-                      <Input id="email"  placeholder="Enter your email here" {...field} />
+                      <Input id="email" className="text-base" placeholder="Enter your email here" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -86,10 +86,10 @@ const FeedbackForm = () => {
               />
               <FormField control={form.control} name="feedback"
                 render={({ field }) => (
-                  <FormItem className="pt-5 pb-3">
+                  <FormItem>
                     <FormLabel htmlFor="feedback" className="text-base">Your Feedback*</FormLabel>
                     <FormControl>
-                      <textarea id="feedback" className="w-full px-3 py-1 border border-gray-300 rounded-md focus:accent-blue-500 focus:border-blue-500" {...field} />
+                      <textarea id="feedback" className="w-full px-3 py-1 border border-gray-300 rounded-md" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
