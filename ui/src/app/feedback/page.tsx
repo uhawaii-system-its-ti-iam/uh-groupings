@@ -8,6 +8,7 @@ import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import {sendFeedback} from "@/services/EmailService";
 import {EmailResult, Feedback} from "@/services/EmailService";
+import {AlertDestructive} from "@/components/layout/modals/DynamicModal";
 
 const Feedback = () => {
   const formSchema = z.object({
@@ -30,10 +31,15 @@ const Feedback = () => {
       type: values.type,
       name: values.name,
       email: values.email,
-      message: values.message
+      message: values.message,
+      exceptionMessage: "test exception message"
     };
     const results = await sendFeedback(input);
     console.log(results);
+    // const conclusion : EmailResult = {
+    //
+    // };
+    return <div><AlertDestructive></AlertDestructive></div>
   }
 
   return (
