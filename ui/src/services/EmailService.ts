@@ -1,0 +1,31 @@
+'use server';
+
+import { getCurrentUser } from '@/access/AuthenticationService';
+import { ApiError } from '@/services/GroupingsApiResults';
+import axios from 'axios';
+
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+
+export type Feedback = {
+  name: string,
+  email: string,
+  type: string,
+  message: string,
+  exceptionMessage?: string
+}
+
+export type EmailResult = {
+  resultCode: string,
+  recipient: string,
+  from: string,
+  subject: string,
+  text: string
+}
+
+export const sendFeedback = async (feedback: Feedback): Promise<EmailResult | ApiError> => {
+  const currentUser = await getCurrentUser();
+  const endpoint = `${baseUrl}/email/send-feedback`
+  return axios.post(endpoint, feedback, { headers: { 'current_user': currentUser.uid } })
+    .then(response => response.data)
+    .catch(error => error.response.data);
+}

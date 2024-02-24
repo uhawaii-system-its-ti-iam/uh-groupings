@@ -15,7 +15,7 @@ const Navbar = async () => {
                 <div className="flex justify-between">
                     <Link href="/" className="lg:inline hidden">
                         <Image 
-                            src="uhgroupings/uh-groupings-logo.svg" 
+                            src="/uhgroupings/uh-groupings-logo.svg"
                             alt="UH Groupings Logo" 
                             width={256} 
                             height={256} />
@@ -24,7 +24,7 @@ const Navbar = async () => {
                         <MobileNavbar currentUser={currentUser} />
                         <Link href="/">
                             <Image 
-                                src="uhgroupings/uh-groupings-logo-large.svg" 
+                                src="/uhgroupings/uh-groupings-logo-large.svg"
                                 alt="UH Groupings Logo" 
                                 width={56} 
                                 height={56} />
