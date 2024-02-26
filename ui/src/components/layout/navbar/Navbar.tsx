@@ -14,8 +14,8 @@ const Navbar = async () => {
             <div className="container py-2">
                 <div className="flex justify-between">
                     <Link href="/" className="lg:inline hidden">
-                        <Image 
-                            src="/uhgroupings/uh-groupings-logo.svg" 
+                        <Image
+                            src="/uhgroupings/uh-groupings-logo.svg"
                             alt="UH Groupings Logo" 
                             width={256} 
                             height={256} />
