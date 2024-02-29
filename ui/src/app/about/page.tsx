@@ -1,58 +1,8 @@
-import Image from 'next/image';
+import UHGroupingsInfo from "@/components/UHGroupingsInfo";
 
 const About = () => (
     <main>
-        <div className="bg-seafoam pt-10 pb-10">
-            <div className="container">
-                <div className="grid gap-2">
-                    <h1 className="text-center text-4xl font-medium">What is a UH Grouping?</h1>
-                    <p className="text-center text-lg">A <em>grouping</em> is a collection of members
-                        (e.g., all full-time
-                        Hilo faculty).</p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-7 pt-3">
-                    <div className="col-span-1">
-                        <div className="flex justify-center">
-                            <Image
-                                src="/uhgroupings/cogs.svg"
-                                alt="Cogs icon"
-                                width={115}
-                                height={115}/>
-                        </div>
-                        <p className="text-center">Create groupings, manage grouping memberships,
-                            control members&apos; self-service
-                            options, designate sync destinations, and more.</p>
-                    </div>
-
-                    <div className="col-span-1">
-                        <div className="flex justify-center">
-                            <Image
-                                src="/uhgroupings/id-email.svg"
-                                alt="Email icon"
-                                width={115}
-                                height={115}/>
-                        </div>
-                        <p className="text-center">Synchronize groupings email LISTSERV lists, attributes for access
-                            control via
-                            CAS and LDAP, etc.</p>
-                    </div>
-
-                    <div className="col-span-1">
-                        <div className="flex justify-center">
-                            <Image
-                                src="/uhgroupings/watch.svg"
-                                alt="Watch icon"
-                                width={115}
-                                height={115}/>
-                        </div>
-                        <p className="text-center">Leverage group data from official sources, which can
-                            substantially reduce the
-                            manual overhead of membership management.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <UHGroupingsInfo h1Color={"text-uh-black"} h1Weight={"font-medium"}/>
         <div className="container pt-10 pb-10">
             <h2 className="text-center text-xl font-bold text-text-color pb-7">GENERAL INFO</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
@@ -60,16 +10,16 @@ const About = () => (
                     <h3 className="text-text-color text-lg pb-1">How do I request a new grouping?</h3>
                     <p className="pb-7">
                         <a className="text-link-color hover:underline hover:text-link-hover-color"
-                            href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/
+                           href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/
                                 UH+Groupings+Request+Form"
-                            aria-label="A request form is available">A request form is available</a>.
+                           aria-label="A request form is available">A request form is available</a>.
                     </p>
 
                     <h3 className="text-text-color text-lg pb-1">Exactly what is a grouping?</h3>
                     <p className="pb-5">
                         <a className="text-link-color hover:underline hover:text-link-hover-color"
-                            href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13403213/UH+Groupings"
-                            aria-label="General information about groupings is available">General information about
+                           href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13403213/UH+Groupings"
+                           aria-label="General information about groupings is available">General information about
                             groupings is available</a>.
                         A grouping&apos;s components include the Basis, Include, and Exclude lists.</p>
 
@@ -134,63 +84,63 @@ const About = () => (
                         <div className="col-span-1">
                             <p className="pb-4">React.js&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://react.dev/learn"
-                                    aria-label="Link to React.js Quickstart"
+                                   href="https://react.dev/learn"
+                                   aria-label="Link to React.js Quickstart"
                                 >(Quickstart)</a></p>
                             <p className="pb-4">Next.js&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://nextjs.org/docs"
-                                    aria-label="Link to Next.js Introduction"
+                                   href="https://nextjs.org/docs"
+                                   aria-label="Link to Next.js Introduction"
                                 >(Introduction)</a></p>
                             <p className="pb-4">Typescript&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://www.typescriptlang.org/docs/"
-                                    aria-label="Link to Typescript Guide"
+                                   href="https://www.typescriptlang.org/docs/"
+                                   aria-label="Link to Typescript Guide"
                                 >(Guide)</a>
                             </p>
                             <p className="pb-4">Tailwind CSS&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://v2.tailwindcss.com/docs"
-                                    aria-label="Link to Tailwind CSS Guide"
+                                   href="https://v2.tailwindcss.com/docs"
+                                   aria-label="Link to Tailwind CSS Guide"
                                 >(Guide)</a>
                             </p>
                         </div>
                         <div className="col-span-1">
                             <p className="pb-4">shadcn/ui&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://ui.shadcn.com/docs"
-                                    aria-label="Link to shadcn/ui Guide"
+                                   href="https://ui.shadcn.com/docs"
+                                   aria-label="Link to shadcn/ui Guide"
                                 >(Guide)</a></p>
                             <p className="pb-4">Tanstack Table&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://tanstack.com/table/v8/docs/introduction"
-                                    aria-label="Link to Tanstack Table Introduction"
+                                   href="https://tanstack.com/table/v8/docs/introduction"
+                                   aria-label="Link to Tanstack Table Introduction"
                                 >(Introduction)</a>
                             </p>
                             <p className="pb-4">Tanstack Query&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://tanstack.com/query/latest/docs/framework/react/overview"
-                                    aria-label="Link to Tanstack Query Guide"
+                                   href="https://tanstack.com/query/latest/docs/framework/react/overview"
+                                   aria-label="Link to Tanstack Query Guide"
                                 >(Guide)</a>
                             </p>
                             <p className="pb-4">Iron Session&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://github.com/vvo/iron-session"
-                                    aria-label="Link to Iron Session GitHub"
+                                   href="https://github.com/vvo/iron-session"
+                                   aria-label="Link to Iron Session GitHub"
                                 >(GitHub)</a>
                             </p>
                         </div>
                         <div className="col-span-1">
                             <p className="pb-4">Jest&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://jestjs.io/docs/getting-started"
-                                    aria-label="Link to Jest Introduction"
+                                   href="https://jestjs.io/docs/getting-started"
+                                   aria-label="Link to Jest Introduction"
                                 >(Introduction)</a>
                             </p>
                             <p className="pb-4">React Testing Library&nbsp;
                                 <a className="text-link-color hover:underline hover:text-link-hover-color"
-                                    href="https://testing-library.com/"
-                                    aria-label="Link to React Testing Library Documentation"
+                                   href="https://testing-library.com/"
+                                   aria-label="Link to React Testing Library Documentation"
                                 >(Documentation)</a>
                             </p>
                         </div>

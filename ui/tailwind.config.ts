@@ -21,14 +21,24 @@ const config = {
             }
         },
         extend: {
+            fontSize: {
+                '2.5': '2.5rem',
+                '1.25': '1.25rem',
+                '1.2': '1.2rem',
+                '1.125': '1.125rem',
+                '1.75':'1.75rem'
+
+            },
             colors: {
                 'green-blue': '#004e59',
                 'uh-black': '#212121',
                 'uh-teal': '#0d7078',
                 'seafoam': '#e3f2ef',
                 'text-color': '#1c6070',
+                'text-primary': '#004252',
                 'link-color' : '#006ffa',
-                'link-hover-color' : '#0056b3'
+                'link-hover-color' : '#0056b3',
+                'blue-background': '#00a6b2'
             },
             fontFamily: {
                 'source-sans-3': ['var(--font-source-sans-3)', 'Helvetica', 'Arial', 'sans-serif'],
