@@ -1,7 +1,6 @@
 'use server';
 
 import { getCurrentUser } from '@/access/AuthenticationService';
-import { ApiError } from '@/services/GroupingsApiResults';
 import axios from 'axios';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL as string;
