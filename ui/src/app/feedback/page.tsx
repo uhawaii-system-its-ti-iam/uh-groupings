@@ -55,7 +55,8 @@ const Feedback = () => {
               <FormField control={form.control} name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="type" className="text-base">Feedback Type:*</FormLabel>
+                    <FormLabel htmlFor="type" className="text-base">Feedback Type:
+                      <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <select id="type" className="w-full px-3 py-1 border border-gray-300 rounded-md focus:accent-blue-500 focus:border-blue-500" {...field}>
                         <option value="General" defaultValue="true">General</option>
@@ -81,7 +82,8 @@ const Feedback = () => {
               <FormField control={form.control} name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="email" className="text-base">Email Address*</FormLabel>
+                    <FormLabel htmlFor="email" className="text-base">Email Address:
+                      <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input id="email" className="text-base" placeholder="Enter your email here" {...field} />
                     </FormControl>
@@ -92,15 +94,16 @@ const Feedback = () => {
               <FormField control={form.control} name="message"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="message" className="text-base">Your Feedback*</FormLabel>
+                    <FormLabel htmlFor="message" className="text-base">Your Feedback:
+                      <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
-                      <textarea id="message" className="w-full px-3 py-1 border border-gray-300 rounded-md" {...field} />
+                      <textarea id="message" className="w-full px-3 py-1 border border-gray-300 rounded-md" rows={6} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit">Submit</Button>
+              <Button className="text-white bg-uh-button hover:bg-green-blue focus:ring-4 focus:ring-blue-300 rounded-md text-base dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 shadow-2xl" type="submit">Submit</Button>
             </form>
           </div>
         </div>

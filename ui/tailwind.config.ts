@@ -24,7 +24,8 @@ const config = {
             colors: {
                 'green-blue': '#004e59',
                 'uh-black': '#212121',
-                'uh-teal': '#0d7078'
+                'uh-teal': '#0d7078',
+                'uh-button': '#6fa9be'
             },
             fontFamily: {
                 'source-sans-3': ['var(--font-source-sans-3)', 'Helvetica', 'Arial', 'sans-serif'],
