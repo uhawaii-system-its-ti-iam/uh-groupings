@@ -35,11 +35,19 @@ const Feedback = () => {
       exceptionMessage: "test exception message"
     };
     const results = await sendFeedback(input);
-    console.log(results);
-    // const conclusion : EmailResult = {
-    //
-    // };
-    return <div><AlertDestructive></AlertDestructive></div>
+    const emailResult : EmailResult = {
+      resultCode: results.resultCode,
+      recipient: results.recipient,
+      from: results.from,
+      subject: results.subject,
+      text: results.text
+    };
+
+    return (
+      <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+        <span className="font-medium">Success alert!</span> Change a few things up and try submitting again.
+      </div>
+    );
   }
 
   return (
@@ -51,6 +59,19 @@ const Feedback = () => {
             <p className="text-md-left text-xl mt-3">Helps us to understand where improvements are needed. Please let us know.</p>
           </div>
           <div className="col-span-7 pl-5 pt-5">
+            <div>
+              {(
+                <div className="flex items-center p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                  <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                  </svg>
+                  <span className="sr-only">Info</span>
+                  <div>
+                    <span className="font-bold">Thank you. </span>Your feedback has successfully been submitted.
+                  </div>
+                </div>
+              )}
+            </div>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField control={form.control} name="type"
                 render={({ field }) => (

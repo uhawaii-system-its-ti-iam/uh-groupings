@@ -22,10 +22,9 @@ export type EmailResult = {
   text: string
 }
 
-export const sendFeedback = async (feedback: Feedback): Promise<EmailResult | ApiError> => {
+export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => {
   const currentUser = await getCurrentUser();
-  const endpoint = `${baseUrl}/email/send-feedback`
+  const endpoint = `${baseUrl}/email/send/feedback`
   return axios.post(endpoint, feedback, { headers: { 'current_user': currentUser.uid } })
-    .then(response => response.data)
-    .catch(error => error.response.data);
+    .then(response => response.data as EmailResult);
 }
