@@ -6,7 +6,7 @@ import axios from 'axios';
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 
 export type Feedback = {
-  name: string,
+  name?: string,
   email: string,
   type: string,
   message: string,
