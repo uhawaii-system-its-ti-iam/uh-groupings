@@ -1,58 +1,8 @@
-import Image from 'next/image';
+import UHGroupingsInfo from '@/components/UHGroupingsInfo';
 
 const About = () => (
     <main>
-        <div className="bg-seafoam py-10">
-            <div className="container">
-                <div className="grid gap-2">
-                    <h1 className="text-center text-4xl font-medium">What is a UH Grouping?</h1>
-                    <p className="text-center text-lg">A <em>grouping</em> is a collection of members
-                        (e.g., all full-time
-                        Hilo faculty).</p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-7 pt-3">
-                    <div className="col-span-1">
-                        <div className="flex justify-center">
-                            <Image
-                                src="/uhgroupings/cogs.svg"
-                                alt="Cogs icon"
-                                width={115}
-                                height={115}/>
-                        </div>
-                        <p className="text-center">Create groupings, manage grouping memberships,
-                            control members&apos; self-service
-                            options, designate sync destinations, and more.</p>
-                    </div>
-
-                    <div className="col-span-1">
-                        <div className="flex justify-center">
-                            <Image
-                                src="/uhgroupings/id-email.svg"
-                                alt="Email icon"
-                                width={115}
-                                height={115}/>
-                        </div>
-                        <p className="text-center">Synchronize groupings email LISTSERV lists, attributes for access
-                            control via
-                            CAS and LDAP, etc.</p>
-                    </div>
-
-                    <div className="col-span-1">
-                        <div className="flex justify-center">
-                            <Image
-                                src="/uhgroupings/watch.svg"
-                                alt="Watch icon"
-                                width={115}
-                                height={115}/>
-                        </div>
-                        <p className="text-center">Leverage group data from official sources, which can
-                            substantially reduce the
-                            manual overhead of membership management.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <UHGroupingsInfo/>
         <div className="container pt-10 pb-10">
             <h2 className="text-center text-xl font-bold text-text-color pb-7">GENERAL INFO</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
@@ -60,8 +10,10 @@ const About = () => (
                     <h3 className="text-text-color text-lg pb-1">How do I request a new grouping?</h3>
                     <p className="pb-7">
                         <a className="text-link-color hover:underline hover:text-link-hover-color"
-                            href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/UH+Groupings+Request+Form"
-                            aria-label="A request form is available">A request form is available</a>.
+                            href={'https://uhawaii.atlassian.net/wiki/spaces/UHIAM/' +
+                            'pages/13402308/UH+Groupings+Request+Form'}
+                            aria-label="A request form is available">A request form is available
+                        </a>.
                     </p>
 
                     <h3 className="text-text-color text-lg pb-1">Exactly what is a grouping?</h3>
