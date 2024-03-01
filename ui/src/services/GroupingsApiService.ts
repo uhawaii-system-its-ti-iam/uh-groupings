@@ -2,7 +2,7 @@
 
 import { getCurrentUser } from '@/access/AuthenticationService';
 import { 
-    Announcements, 
+    Announcements,
     ApiError, 
     GroupingAddResult, 
     GroupingAddResults, 
@@ -19,50 +19,32 @@ import {
     GroupingUpdateDescriptionResult,
     MemberAttributeResults,
     MembershipResults
-} from './GroupingsApiResults';
-import axios from 'axios';
-import axiosRetry from 'axios-retry';
+} from '../groupings/GroupingsApiResults';
+import { 
+    deleteRequest,
+    deleteRequestAsync,
+    getRequest, 
+    postRequest, 
+    postRequestAsync, 
+    postRequestRetry, 
+    putRequest, 
+    putRequestAsync 
+} from './FetchService';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
-const maxRetries = 3;
 
 // TODO: 
 // The setOptIn, setOptOut, setSyncDest service functions will be up to the person who works on 
 // implementing Opt Attributes and Sync Desinations into our React UI.
 
 /**
- * Polls to getAsyncJobResult API endpoint until the async job has completed with a result.
- * 
- * @param jobId - the jobId returned from the response of an async endpoint
- * 
- * @returns The result T
- */
-const poll = async <T> (jobId: number): Promise<T | ApiError> => {
-    const delay = async (ms = 5000) => new Promise((res) => setTimeout(res, ms));
-
-    const currentUser = await getCurrentUser();
-    return axios.get(`${baseUrl}/jobs/${jobId}`, { headers: { 'current_user': currentUser.uid } })
-        .then(async (response) => {
-            if (response.data.status === 'COMPLETED') {
-                return response.data.result;
-            } else {
-                await delay();
-                return poll(jobId);
-            }
-        })
-        .catch(error => error.response.data);
-}
-
-/**
  * Get a list of announcements to display on the home page.
  * 
- * @returns The announcements
+ * @returns The promise of announcements or ApiError type
  */
-export const getAnnouncements = (): Promise<Announcements | ApiError> => {
+export const getAnnouncements = (): Promise<Announcements & ApiError> => {
     const endpoint = `${baseUrl}/announcements`;
-    return axios.get(endpoint)
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<Announcements>(endpoint);
 }
 
 /**
@@ -74,7 +56,7 @@ export const getAnnouncements = (): Promise<Announcements | ApiError> => {
  * @param sortString - String to sort by column name
  * @param isAscending - On true the data returns in ascending order
  * 
- * @returns The members of an owned grouping
+ * @returns The promise of members of an owned grouping or ApiError type
  */
 export const ownedGrouping = async (
     groupPaths: string[],
@@ -82,7 +64,7 @@ export const ownedGrouping = async (
     size: number,
     sortString: string,
     isAscending: boolean
-): Promise<GroupingGroupsMembers | ApiError> => {
+): Promise<GroupingGroupsMembers & ApiError> => {
     const currentUser = await getCurrentUser();
     const params = new URLSearchParams({ 
         page: page.toString(), 
@@ -91,11 +73,7 @@ export const ownedGrouping = async (
         isAscending: isAscending.toString() 
     });
     const endpoint = `${baseUrl}/groupings/group?${params.toString()}`;
-
-    axiosRetry(axios, { retries: maxRetries, retryDelay: axiosRetry.exponentialDelay });
-    return axios.post(endpoint, groupPaths, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return postRequestRetry<GroupingGroupsMembers>(endpoint, currentUser.uid, groupPaths);
 }
 
 /**
@@ -103,16 +81,14 @@ export const ownedGrouping = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping description
+ * @returns The promise of the grouping description or ApiError type
  */
 export const groupingDescription = async (
     groupingPath: string
-): Promise<GroupingDescription | ApiError> => {
+): Promise<GroupingDescription & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/description`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingDescription>(endpoint, currentUser.uid);
 }
 
 /**
@@ -120,16 +96,14 @@ export const groupingDescription = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping sync destinations
+ * @returns The promise of the grouping sync destinations or ApiError type
  */
 export const groupingSyncDest = async (
     groupingPath: string
-): Promise<GroupingSyncDestinations | ApiError> => {
+): Promise<GroupingSyncDestinations & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/groupings-sync-destinations`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingSyncDestinations>(endpoint, currentUser.uid);
 }
 
 /**
@@ -137,16 +111,14 @@ export const groupingSyncDest = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping opt attributes
+ * @returns The promise of the grouping opt attributes or ApiError type
  */
 export const groupingOptAttributes = async (
     groupingPath: string
-): Promise<GroupingOptAttributes | ApiError> => {
+): Promise<GroupingOptAttributes & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attributes`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingOptAttributes>(endpoint, currentUser.uid)
 }
 
 /**
@@ -155,43 +127,37 @@ export const groupingOptAttributes = async (
  * @param description - The new description
  * @param groupingPath - The path of the grouping
  * 
- * @returns The result of updating the description
+ * @returns The promise of the result of updating the description or ApiError type
  */
 export const updateDescription = async (
     description: string,
     groupingPath: string
-): Promise<GroupingUpdateDescriptionResult | ApiError> => {
+): Promise<GroupingUpdateDescriptionResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/description`;
-    return axios.post(endpoint, description, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return postRequest<GroupingUpdateDescriptionResult>(endpoint, currentUser.uid, description);
 }
 
 /**
  * Get a list of admins.
  * 
- * @returns The grouping admins
+ * @returns The promise of the grouping admins or ApiError type
  */
-export const groupingAdmins = async (): Promise<GroupingGroupMembers | ApiError> => {
+export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/grouping-admins`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
 }
 
 /**
  * Get a list of all grouping paths.
  * 
- * @returns All the grouping paths
+ * @returns The promise of all the grouping paths or ApiError type
  */
-export const getAllGroupings = async (): Promise<GroupingPaths | ApiError> => {
+export const getAllGroupings = async (): Promise<GroupingPaths & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/all-groupings`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingPaths>(endpoint, currentUser.uid);
 }
 
 /**
@@ -200,17 +166,15 @@ export const getAllGroupings = async (): Promise<GroupingPaths | ApiError> => {
  * @param uhIdentifiers - The list of uhIdentifiers to add
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping move member result
+ * @returns The promise of the grouping move member result or ApiError type
  */
 export const addIncludeMembers = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingMoveMembersResult | ApiError> => {
+): Promise<GroupingMoveMembersResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members`;
-    return axios.put(endpoint, uhIdentifiers, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return putRequest<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -219,17 +183,15 @@ export const addIncludeMembers = async (
  * @param uhIdentifiers - The list of uhIdentifiers to add to include
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping move member result
+ * @returns The promise of the grouping move member result or ApiError type
  */
 export const addIncludeMembersAsync = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingMoveMembersResult | ApiError> => {
+): Promise<GroupingMoveMembersResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members/async`;
-    return axios.put(endpoint, uhIdentifiers, { headers: { 'current_user': currentUser.uid } })
-        .then(response => poll<GroupingMoveMembersResult>(response.data))
-        .catch(error => error.response.data);
+    return putRequestAsync<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -238,17 +200,15 @@ export const addIncludeMembersAsync = async (
  * @param uhIdentifiers - The list of uhIdentifiers to add to exclude
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping move member result
+ * @returns The promise of the grouping move member result or ApiError type
  */
 export const addExcludeMembers = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingMoveMembersResult | ApiError> => {
+): Promise<GroupingMoveMembersResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members`;
-    return axios.put(endpoint, uhIdentifiers, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return putRequest<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -257,17 +217,15 @@ export const addExcludeMembers = async (
  * @param uhIdentifiers - The list of uhIdentifiers to add to exclude
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping move member result
+ * @returns The promise of the grouping move member result or ApiError type
  */
 export const addExcludeMembersAsync = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingMoveMembersResult | ApiError> => {
+): Promise<GroupingMoveMembersResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members/async`;
-    return axios.put(endpoint, uhIdentifiers, { headers: { 'current_user': currentUser.uid } })
-        .then(response => poll<GroupingMoveMembersResult>(response.data))
-        .catch(error => error.response.data);
+    return putRequestAsync<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -276,17 +234,15 @@ export const addExcludeMembersAsync = async (
  * @param uhIdentifiers - The uhIdentifiers to add to owners
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping add results
+ * @returns The promise of the grouping add results or ApiError type
  */
 export const addOwners = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingAddResults | ApiError> => {
+): Promise<GroupingAddResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`;
-    return axios.post(endpoint, undefined, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return postRequest<GroupingAddResults>(endpoint, currentUser.uid);
 }
 
 /**
@@ -294,16 +250,14 @@ export const addOwners = async (
  * 
  * @param uhIdentifier - The uhIdentifier to add to admins
  * 
- * @returns The grouping add results
+ * @returns The promise of the grouping add results or ApiError type
  */
 export const addAdmin = async (
     uhIdentifier: string
-): Promise<GroupingAddResult | ApiError> => {
+): Promise<GroupingAddResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/admins/${uhIdentifier}`;
-    return axios.post(endpoint, undefined, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return postRequest<GroupingAddResult>(endpoint, currentUser.uid);
 }
 
 /**
@@ -312,17 +266,15 @@ export const addAdmin = async (
  * @param uhIdentifier - The uhIdentifier to remove from groups
  * @param groupPaths - The paths to the groups to remove from
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const removeFromGroups = async (
     uhIdentifier: string,
     groupPaths: string[],
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/admins/${groupPaths}/${uhIdentifier}`;
-    return axios.delete(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid);
 }
 
 /**
@@ -331,17 +283,15 @@ export const removeFromGroups = async (
  * @param uhIdentifiers - The uhIdentifiers to remove from the include
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const removeIncludeMembers = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members`;
-    return axios.delete(endpoint, { data: uhIdentifiers, headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -350,17 +300,15 @@ export const removeIncludeMembers = async (
  * @param uhIdentifiers - The uhIdentifiers to remove from the exclude
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const removeExcludeMembers = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members`;
-    return axios.delete(endpoint, { data: uhIdentifiers, headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -369,17 +317,15 @@ export const removeExcludeMembers = async (
  * @param uhIdentifiers - The uhIdentifiers to remove from owners
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const removeOwners = async (
     uhIdentifiers: string[],
     groupingPath: string
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`;
-    return axios.delete(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid);
 }
 
 /**
@@ -387,16 +333,14 @@ export const removeOwners = async (
  * 
  * @param uhIdentifier - The uhIdentifier to remove from admins
  * 
- * @returns The grouping remove result
+ * @returns The promise of the grouping remove result or ApiError type
  */
 export const removeAdmin = async (
     uhIdentifier: string
-): Promise<GroupingRemoveResult | ApiError> => {
+): Promise<GroupingRemoveResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/admins/${uhIdentifier}`;
-    return axios.delete(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return deleteRequest<GroupingRemoveResult>(endpoint, currentUser.uid);
 }
 
 /**
@@ -404,16 +348,14 @@ export const removeAdmin = async (
  * 
  * @param uhIdentifiers - The uhIdentifiers to get the attributes of
  * 
- * @returns The member attribute results
+ * @returns The promise of the member attribute results or ApiError type
  */
 export const memberAttributeResults = async (
     uhIdentifiers: string[]
-): Promise<MemberAttributeResults | ApiError> => {
+): Promise<MemberAttributeResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/members`;
-    return axios.post(endpoint, uhIdentifiers, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return postRequest<MemberAttributeResults>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -422,16 +364,14 @@ export const memberAttributeResults = async (
  * 
  * @param uhIdentifiers - The uhIdentifiers to get the attributes of
  * 
- * @returns The member attribute results
- */
+ * @returns The promise of the member attribute results or ApiError type
+ */ 
 export const memberAttributeResultsAsync = async (
     uhIdentifiers: string[]
-): Promise<MemberAttributeResults | ApiError> => {
+): Promise<MemberAttributeResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/members/async`;
-    return axios.post(endpoint, uhIdentifiers, { headers: { 'current_user': currentUser.uid } })
-        .then(response => poll<MemberAttributeResults>(response.data))
-        .catch(error => error.response.data);
+    return postRequestAsync<MemberAttributeResults>(endpoint, currentUser.uid, uhIdentifiers);
 }
 
 /**
@@ -439,16 +379,14 @@ export const memberAttributeResultsAsync = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping move member result
+ * @returns The promise of the grouping move member result or ApiError type
  */
 export const optIn = async (
     groupingPath: string
-): Promise<GroupingMoveMemberResult | ApiError> => {
+): Promise<GroupingMoveMemberResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members/${currentUser.uid}/self`;
-    return axios.put(endpoint, undefined, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return putRequest<GroupingMoveMemberResult>(endpoint, currentUser.uid);
 }
 
 /**
@@ -456,29 +394,25 @@ export const optIn = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping move member result
+ * @returns The promise of the grouping move member result or ApiError type
  */
 export const optOut = async (
     groupingPath: string
-): Promise<GroupingMoveMemberResult | ApiError> => {
+): Promise<GroupingMoveMemberResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members/${currentUser.uid}/self`;
-    return axios.put(endpoint, undefined, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return putRequest<GroupingMoveMemberResult>(endpoint, currentUser.uid);
 }
 
 /**
  * Get a list of memberships that the current user is associated with.
  * 
- * @returns The membership results
+ * @returns The promise of the membership results or ApiError type
  */
-export const membershipResults = async (): Promise<MembershipResults | ApiError> => {
+export const membershipResults = async (): Promise<MembershipResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/members/${currentUser.uid}/memberships`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<MembershipResults>(endpoint, currentUser.uid);
 }
 
 /**
@@ -486,42 +420,36 @@ export const membershipResults = async (): Promise<MembershipResults | ApiError>
  * 
  * @param uhIdentifier - The uhIdentifier to search in Manage Person
  * 
- * @returns The membership results
+ * @returns The promise of the membership results or ApiError type
  */
 export const managePersonResults = async (
     uhIdentifier: string
-): Promise<MembershipResults | ApiError> => {
+): Promise<MembershipResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/members/${uhIdentifier}/groupings`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<MembershipResults>(endpoint, currentUser.uid);
 }
 
 /**
  * Get the number of memberships the current user has
  * 
- * @returns The number of memberships
+ * @returns The promise of the number of memberships or ApiError type
  */
-export const getNumberOfMemberships = async (): Promise<number | ApiError> => {
+export const getNumberOfMemberships = async (): Promise<number & ApiError> => {
     const currentUser = await getCurrentUser();
-    const endpoint = `${baseUrl}/members/memberships/count`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    const endpoint = `${baseUrl}/members/${currentUser.uid}/memberships/count`;
+    return getRequest<number>(endpoint, currentUser.uid);
 }
 
 /**
  * Get a list of grouping paths that the current user can opt into.
  * 
- * @returns The grouping paths
- */
-export const optInGroupingPaths = async (): Promise<GroupingPaths | ApiError> => {
+ * @returns The promise of the grouping paths or ApiError type
+ */ 
+export const optInGroupingPaths = async (): Promise<GroupingPaths & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingPaths>(endpoint, currentUser.uid);
 }
 
 /**
@@ -529,16 +457,14 @@ export const optInGroupingPaths = async (): Promise<GroupingPaths | ApiError> =>
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const resetIncludeGroup = async (
     groupingPath: string
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include`
-    return axios.delete(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return deleteRequest(endpoint, currentUser.uid);
 }
 
 /**
@@ -546,16 +472,14 @@ export const resetIncludeGroup = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const resetIncludeGroupAsync = async (
     groupingPath: string
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include/async`
-    return axios.delete(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => poll<GroupingRemoveResults>(response.data))
-        .catch(error => error.response.data);
+    return deleteRequestAsync<GroupingRemoveResults>(endpoint, currentUser.uid);
 }
 
 /**
@@ -563,16 +487,14 @@ export const resetIncludeGroupAsync = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const resetExcludeGroup = async (
     groupingPath: string
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude`
-    return axios.delete(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid);
 }
 
 /**
@@ -580,16 +502,14 @@ export const resetExcludeGroup = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping remove results
+ * @returns The promise of the grouping remove results or ApiError type
  */
 export const resetExcludeGroupAsync = async (
     groupingPath: string
-): Promise<GroupingRemoveResults | ApiError> => {
+): Promise<GroupingRemoveResults & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude/async`
-    return axios.delete(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => poll<GroupingRemoveResults>(response.data))
-        .catch(error => error.response.data);
+    return deleteRequestAsync<GroupingRemoveResults>(endpoint, currentUser.uid);
 }
 
 /**
@@ -597,42 +517,36 @@ export const resetExcludeGroupAsync = async (
  * 
  * @param groupingPath - The path of the grouping
  * 
- * @returns The grouping group members
+ * @returns The promise of the grouping group members or ApiError type
  */
 export const groupingOwners = async (
     groupingPath: string
-): Promise<GroupingGroupMembers | ApiError> => {
+): Promise<GroupingGroupMembers & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/grouping/${groupingPath}/owners`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
 }
 
 /**
  * Get the groupings the current user owns.
  * 
- * @returns The grouping paths
+ * @returns The promise of the grouping paths or ApiError type
  */
-export const ownerGroupings = async (): Promise<GroupingPaths | ApiError> => {
+export const ownerGroupings = async (): Promise<GroupingPaths & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/owners/${currentUser.uid}/groupings`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<GroupingPaths>(endpoint, currentUser.uid);
 }
 
 /**
  * Get the number of groupings the current user owns.
  * 
- * @returns The number of groupings
+ * @returns The promise of the number of groupings or ApiError type
  */
-export const getNumberOfGroupings = async (): Promise<number | ApiError> => {
+export const getNumberOfGroupings = async (): Promise<number & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/owners/${currentUser.uid}/groupings/count`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<number>(endpoint, currentUser.uid);
 }
 
 /**
@@ -641,15 +555,13 @@ export const getNumberOfGroupings = async (): Promise<number | ApiError> => {
  * @param uhIdentifier - The uhIdentifier to check
  * @param groupingPath - The path of the grouping
  * 
- * @returns True if uhIdentifier is the sole owner of a grouping
+ * @returns The promise of true if uhIdentifier is the sole owner of a grouping or ApiError type
  */
 export const isSoleOwner = async (
     uhIdentifier: string,
     groupingPath: string
-): Promise<boolean | ApiError> => {
+): Promise<boolean & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`;
-    return axios.get(endpoint, { headers: { 'current_user': currentUser.uid } })
-        .then(response => response.data)
-        .catch(error => error.response.data);
+    return getRequest<boolean>(endpoint, currentUser.uid);
 }

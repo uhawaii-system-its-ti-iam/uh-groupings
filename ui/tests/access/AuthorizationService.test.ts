@@ -1,8 +1,6 @@
 import { setRoles } from '@/access/AuthorizationService';
 import Role from '@/access/Role';
 import User, { AnonymousUser } from '@/access/User';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
@@ -11,20 +9,15 @@ describe('AuthorizationService', () => {
     
     describe('setRoles', () => {
 
-        let axiosMock: MockAdapter;
-
-        beforeEach(() => {
-            axiosMock = new MockAdapter(axios);
-        });
-
         afterEach(() => {
             AnonymousUser.roles = [];
             testUser.roles = [];
         });
 
         it('should set the ANONYMOUS role', async () => {
-            axiosMock.onGet(`${apiBaseUrl}/owners`).reply(200, false);
-            axiosMock.onGet(`${apiBaseUrl}/admins`).reply(200, false);
+            fetchMock
+                .mockResponseOnce(JSON.stringify(false))  // isOwner
+                .mockResponseOnce(JSON.stringify(false)); // isAdmin
 
             await setRoles(AnonymousUser);
             expect(AnonymousUser.roles.includes(Role.ADMIN)).toBeFalsy();
@@ -34,8 +27,9 @@ describe('AuthorizationService', () => {
         });
 
         it('should set the UH role', async () => {
-            axiosMock.onGet(`${apiBaseUrl}/owners`).reply(200, false);
-            axiosMock.onGet(`${apiBaseUrl}/admins`).reply(200, false);
+            fetchMock
+                .mockResponseOnce(JSON.stringify(false))  // isOwner
+                .mockResponseOnce(JSON.stringify(false)); // isAdmin
 
             await setRoles(testUser);
             expect(testUser.roles.includes(Role.ADMIN)).toBeFalsy();
@@ -45,8 +39,9 @@ describe('AuthorizationService', () => {
         });
 
         it('should set the UH and ADMIN roles', async () => {
-            axiosMock.onGet(`${apiBaseUrl}/owners`).reply(200, false);
-            axiosMock.onGet(`${apiBaseUrl}/admins`).reply(200, true);
+            fetchMock
+                .mockResponseOnce(JSON.stringify(false))  // isOwner
+                .mockResponseOnce(JSON.stringify(true)); // isAdmin
 
             await setRoles(testUser);
             expect(testUser.roles.includes(Role.ADMIN)).toBeTruthy();
@@ -56,8 +51,9 @@ describe('AuthorizationService', () => {
         });
 
         it('should set the UH and OWNER roles', async () => {
-            axiosMock.onGet(`${apiBaseUrl}/owners`).reply(200, true);
-            axiosMock.onGet(`${apiBaseUrl}/admins`).reply(200, false);
+            fetchMock
+                .mockResponseOnce(JSON.stringify(true))  // isOwner
+                .mockResponseOnce(JSON.stringify(false)); // isAdmin
 
             await setRoles(testUser);
             expect(testUser.roles.includes(Role.ADMIN)).toBeFalsy();
@@ -67,8 +63,9 @@ describe('AuthorizationService', () => {
         });
 
         it('should set the UH, ADMIN, and OWNER roles', async () => {
-            axiosMock.onGet(`${apiBaseUrl}/owners`).reply(200, true);
-            axiosMock.onGet(`${apiBaseUrl}/admins`).reply(200, true);
+            fetchMock
+                .mockResponseOnce(JSON.stringify(true))  // isOwner
+                .mockResponseOnce(JSON.stringify(true)); // isAdmin
 
             await setRoles(testUser);
             expect(testUser.roles.includes(Role.ADMIN)).toBeTruthy();
@@ -78,8 +75,7 @@ describe('AuthorizationService', () => {
         });
 
         it('should catch Groupings API errors', async () => {
-            axiosMock.onGet(`${apiBaseUrl}/owners`).reply(500);
-            axiosMock.onGet(`${apiBaseUrl}/admins`).reply(500);
+            fetchMock.mockAbort();
 
             await setRoles(testUser);
             expect(testUser.roles.includes(Role.ADMIN)).toBeFalsy();

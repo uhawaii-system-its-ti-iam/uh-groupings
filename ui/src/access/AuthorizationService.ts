@@ -2,7 +2,6 @@
 
 import User from './User';
 import Role from './Role';
-import axios from 'axios';
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -33,17 +32,10 @@ export const setRoles = async (user: User): Promise<void> => {
  * 
  * @returns True if the uhIdentifier is an owner of a grouping
  */
-const isOwner = async (uhIdentifier: string): Promise<boolean> => {
-    try {
-        const { data } = await axios.get(`${apiBaseUrl}/owners`, {
-            headers: { 'current_user': uhIdentifier }
-        });
-        return data;
-    } catch (error) {
-        console.error(error);
-    }
-    return false;
-}
+const isOwner = async (uhIdentifier: string): Promise<boolean> => 
+    await fetch(`${apiBaseUrl}/owners`, { headers: { 'current_user': uhIdentifier }})
+        .then(res => res.json())
+        .catch(() => false);
 
 /**
  * Calls UH Groupings API to check if the uhIdentifier is an admin.
@@ -52,17 +44,10 @@ const isOwner = async (uhIdentifier: string): Promise<boolean> => {
  * 
  * @returns True if the uhIdentifier is an admin
  */
-const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
-    try {
-        const { data } = await axios.get(`${apiBaseUrl}/admins`, {
-            headers: { 'current_user': uhIdentifier }
-        });
-        return data;
-    } catch (error) {
-        console.error(error);
-    }
-    return false;
-}
+const isAdmin = async (uhIdentifier: string): Promise<boolean> => 
+    await fetch(`${apiBaseUrl}/admins`, { headers: { 'current_user': uhIdentifier }})
+        .then(res => res.json())
+        .catch(() => false);
 
 /**
  * Checks if uhUuid is valid using Regex.

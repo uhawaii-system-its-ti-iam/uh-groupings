@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const axios = require('axios');
 const env = require('@next/env');
 
 env.loadEnvConfig(process.cwd());
@@ -23,7 +22,7 @@ or check the connection configuration and
 fix any possible problems.\n`;
 
 if (apiHandshakeEnabled) {
-    axios.get(`${apiBaseUrl}/`)
+    fetch(`${apiBaseUrl}/`)
         .catch(() => {
             console.log(errorMessage);
             process.exit(1);

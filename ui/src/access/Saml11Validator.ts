@@ -2,7 +2,6 @@ import User, { AnonymousUser } from './User';
 import uniqid from 'uniqid';
 import { format } from 'util';
 import { transform } from 'camaro';
-import axios from 'axios';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 const casUrl = process.env.NEXT_PUBLIC_CAS_URL as string;
@@ -30,10 +29,13 @@ export const validateTicket = async (ticket: string): Promise<User> => {
     const samlRequestBody = format(samlRequestTemplate, `${uniqid()}.${currentDate}`, currentDate, ticket);
     
     try {
-        const response = await axios.post(samlValidateUrl, samlRequestBody, {
-            headers: { 'Content-Type': 'text/xml' }
+        const response = await fetch(samlValidateUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/xml' },
+            body: samlRequestBody
         });
-        const casUser = await transform(response.data, samlResponseTemplate);
+        const data = await response.text();
+        const casUser = await transform(data, samlResponseTemplate);
 
         return {
             ...casUser,

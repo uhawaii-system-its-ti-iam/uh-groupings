@@ -1,4 +1,4 @@
-import { MemberResult } from '@/services/GroupingsApiResults';
+import { MemberResult } from '@/groupings/GroupingsApiResults';
 import Role from './Role';
 
 type User = {

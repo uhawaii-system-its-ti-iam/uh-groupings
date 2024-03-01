@@ -24,7 +24,7 @@ const config: Config = {
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     moduleDirectories: ['node_modules', '<rootDir>'],
     moduleNameMapper: {
-        "^@/(.*)$": "<rootDir>/src/$1"
+        '^@/(.*)$': '<rootDir>/src/$1'
     }
 };
 

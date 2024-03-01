@@ -3,8 +3,6 @@ import { createMockSession } from '../setupJest';
 import User, { AnonymousUser } from '@/access/User';
 import { redirect } from 'next/navigation';
 import IronSession from 'iron-session';
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 const casUrl = process.env.NEXT_PUBLIC_CAS_URL as string;
@@ -51,29 +49,22 @@ describe('AuthenticationService', () => {
 
     describe('handleLogin', () => {
 
-        let axiosMock: MockAdapter;
-
-        beforeEach(() => {
-            axiosMock = new MockAdapter(axios);
-        });
-
-        it('should return when ticket to validate is invalid', async () =>{
+        it('should return when ticket to validate is invalid', async () => {
+            fetchMock.mockAbort();
             const getIronSessionSpy = jest.spyOn(IronSession, 'getIronSession');
 
-            axiosMock.onPost().reply(500);
             await handleLogin('ticket');
 
             expect(getIronSessionSpy).not.toHaveBeenCalled();
         });
 
         it('should save the user to the session', async () => {
+            fetchMock.mockResponse(xmlSoapResponse);
+
             const session = createMockSession(testUser);
             jest.spyOn(IronSession, 'getIronSession').mockResolvedValue(session);
             const sessionSaveSpy = jest.spyOn(session, 'save');
             
-            axiosMock
-                .onPost().reply(200, xmlSoapResponse)
-                .onGet().reply(200, false);
             await handleLogin('ticket');
 
             expect(sessionSaveSpy).toHaveBeenCalled();
