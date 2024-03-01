@@ -8,7 +8,8 @@ import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import {sendFeedback} from "@/services/EmailService";
 import {EmailResult, Feedback} from "@/services/EmailService";
-import {AlertDestructive} from "@/components/layout/modals/DynamicModal";
+import {AlertDestructive, ErrorAlert} from "@/components/layout/alerts/ErrorAlert";
+import SuccessAlert from "@/components/layout/alerts/SuccessAlert";
 
 const Feedback = () => {
   const formSchema = z.object({
@@ -48,32 +49,19 @@ const Feedback = () => {
     } else {
       document.getElementById("failAlert")!.style.display = 'block';
     }
+
+    //will break without curly braces
+    form.reset({});
   }
 
   return (
     <Form {...form}>
       <>
-        <div id="successAlert" style={{display: "none"}} className="container">
-          <div className="flex items-center p-4 mb-4 text-green-800 rounded-md bg-green-100 dark:bg-gray-800 dark:text-green-400" role="alert">
-            <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span className="sr-only">Info</span>
-            <div className="ms-3 text-base">
-              <span className="font-bold">Thank you. </span>Your feedback has successfully been submitted.
-            </div>
-          </div>
+        <div id="successAlert" style={{display: "block"}} className="container">
+          <SuccessAlert></SuccessAlert>
         </div>
-        <div id="failAlert" style={{display: "none"}} className="container">
-          <div className="flex items-center p-4 mb-4 text-red-800 rounded-md bg-red-100 dark:bg-gray-800 dark:text-red-400" role="alert">
-            <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span className="sr-only">Info</span>
-            <div className="ms-3 text-base">
-              Email feedback was unsuccessful. Please try again. <a href="#" className="font-semibold underline hover:no-underline">Click here</a> for more information.
-            </div>
-          </div>
+        <div id="failAlert" style={{display: "block"}} className="container">
+          <ErrorAlert></ErrorAlert>
         </div>
         <div className="container grid grid-cols-12 pt-5 pb-4">
           <div className="col-span-5 pt-5">
