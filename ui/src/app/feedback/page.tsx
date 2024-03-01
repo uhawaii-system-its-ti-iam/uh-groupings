@@ -1,5 +1,5 @@
 "use client"
-import React from 'react';
+import React, {useState} from 'react';
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
@@ -8,10 +8,13 @@ import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
 import {sendFeedback} from "@/services/EmailService";
 import {EmailResult, Feedback} from "@/services/EmailService";
-import {AlertDestructive, ErrorAlert} from "@/components/layout/alerts/ErrorAlert";
+import ErrorAlert from "@/components/layout/alerts/ErrorAlert";
 import SuccessAlert from "@/components/layout/alerts/SuccessAlert";
 
 const Feedback = () => {
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [showErrorAlert, setShowErrorAlert] = useState(false);
+
   const formSchema = z.object({
     type: z.string(),
     name: z.string(),
@@ -43,11 +46,13 @@ const Feedback = () => {
       subject: results.subject,
       text: results.text
     };
+
+    (emailResult.resultCode == "SUCCESS") ? setShowSuccessAlert(true) : setShowErrorAlert(true);
+
     if (emailResult.resultCode == "SUCCESS") {
-      //the exclamation mark is to ensure that the element is not null
-      document.getElementById("successAlert")!.style.display = 'block';
+      setShowSuccessAlert(true);
     } else {
-      document.getElementById("failAlert")!.style.display = 'block';
+      setShowErrorAlert(true);
     }
 
     //will break without curly braces
@@ -57,10 +62,10 @@ const Feedback = () => {
   return (
     <Form {...form}>
       <>
-        <div id="successAlert" style={{display: "block"}} className="container">
+        <div id="successAlert" hidden={!showSuccessAlert} className="container">
           <SuccessAlert></SuccessAlert>
         </div>
-        <div id="failAlert" style={{display: "block"}} className="container">
+        <div id="failAlert" hidden={!showErrorAlert} className="container">
           <ErrorAlert></ErrorAlert>
         </div>
         <div className="container grid grid-cols-12 pt-5 pb-4">
