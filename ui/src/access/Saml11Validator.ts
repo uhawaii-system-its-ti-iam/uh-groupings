@@ -35,6 +35,15 @@ export const validateTicket = async (ticket: string): Promise<User> => {
             body: samlRequestBody
         });
         const data = await response.text();
+
+        const { statusCode }: { statusCode: string } = await transform(data, {
+            statusCode: '//*[local-name() = "Status"]/*[local-name() ="StatusCode"]/@Value'
+        });
+
+        if (statusCode.endsWith('RequestDenied')) {
+            throw new Error('Invalid ticket');
+        }
+
         const casUser = await transform(data, samlResponseTemplate);
 
         return {
