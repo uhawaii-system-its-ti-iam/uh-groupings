@@ -60,8 +60,7 @@ const About = () => (
                     <h3 className="text-text-color text-lg pb-1">How do I request a new grouping?</h3>
                     <p className="pb-7">
                         <a className="text-link-color hover:underline hover:text-link-hover-color"
-                            href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/
-                                UH+Groupings+Request+Form"
+                            href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/UH+Groupings+Request+Form"
                             aria-label="A request form is available">A request form is available</a>.
                     </p>
 

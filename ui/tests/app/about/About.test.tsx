@@ -1,4 +1,4 @@
-import {render, screen} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import About from '@/app/about/page';
 
 describe('About', () => {
@@ -14,8 +14,7 @@ describe('About', () => {
 
         expect(screen.getByText('GENERAL INFO')).toBeInTheDocument();
         expect(screen.getByRole('link', {name: 'A request form is available'}))
-            .toHaveAttribute('href', 'https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/' +
-                                                ' UH+Groupings+Request+Form');
+            .toHaveAttribute('href', 'https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/UH+Groupings+Request+Form');
         expect(screen.getByRole('link', {name: 'General information about groupings is available'}))
             .toHaveAttribute('href', 'https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13403213/UH+Groupings');
 

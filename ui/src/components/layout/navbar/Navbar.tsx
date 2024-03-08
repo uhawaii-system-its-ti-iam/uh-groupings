@@ -10,7 +10,7 @@ const Navbar = async () => {
     const currentUser = await getCurrentUser();
     
     return ( 
-        <nav className="border-b-[1px] pointer-events-auto">
+        <nav className="bg-white border-b-[1px] pointer-events-auto sticky top-0">
             <div className="container py-2">
                 <div className="flex justify-between">
                     <Link href="/" className="lg:inline hidden">

@@ -2,9 +2,22 @@
 
 import { ApiError } from '../groupings/GroupingsApiResults';
 import { getCurrentUser } from '@/access/AuthenticationService';
+import { sendStackTrace } from './EmailService';
 
 const maxRetries = 3;
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
+
+enum HTTPMethod {
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE'
+}
+
+enum Status {
+    COMPLETED = 'COMPLETED',
+    IN_PROGRESS = 'IN_PROGRESS'
+}
 
 /**
  * Sleep/wait for the specified milliseconds.
@@ -24,10 +37,10 @@ const delay = async (ms = 5000) => new Promise((res) => setTimeout(res, ms));
  */
 const poll = async <T> (jobId: number): Promise<T & ApiError> => {
     const currentUser = await getCurrentUser();
-    return fetch(`${baseUrl}/jobs/${jobId}`, { headers: { 'current_user': currentUser.uid } })
-        .then(res => res.json())
+    return await fetch(`${baseUrl}/jobs/${jobId}`, { headers: { 'current_user': currentUser.uid } })
+        .then(res => handleFetch(res, HTTPMethod.GET))
         .then(async res => {
-            if (res.status === 'COMPLETED') {
+            if (res.status === Status.COMPLETED) {
                 return res.result;
             } 
             await delay();
@@ -49,7 +62,7 @@ export const getRequest = async <T> (
     currentUserKey: string = ''
 ): Promise<T & ApiError> => 
     await fetch(endpoint, { headers: { 'current_user': currentUserKey } })
-        .then(res => res.json())
+        .then(res => handleFetch(res, HTTPMethod.GET))
         .catch(err => err);
 
 /**
@@ -65,12 +78,17 @@ export const postRequest = async <T> (
     endpoint: string, 
     currentUserKey: string,
     body?: object | string | string[], 
+    contentType = 'application/json'
 ): Promise<T & ApiError> => 
     await fetch(endpoint, { 
-        method: 'POST', 
-        headers: { 'current_user': currentUserKey }, 
-        body: JSON.stringify(body)})
-        .then(res => res.json())
+        method: HTTPMethod.POST, 
+        headers: { 
+            'current_user': currentUserKey,
+            'Content-Type': contentType
+        }, 
+        body: stringifyBody(body)
+    })
+        .then(res => handleFetch(res, HTTPMethod.POST))
         .catch(err => err);
 
 /**
@@ -85,10 +103,18 @@ export const postRequest = async <T> (
 export const postRequestAsync = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body: string | string[]
+    body?: object | string | string[],
+    contentType = 'application/json'
 ): Promise<T & ApiError> => 
-    await fetch(endpoint, { method: 'POST', headers: { 'current_user': currentUserKey }, body: JSON.stringify(body) })
-        .then(res => res.json())
+    await fetch(endpoint, { 
+        method: HTTPMethod.POST, 
+        headers: { 
+            'current_user': currentUserKey,
+            'Content-Type': contentType
+        }, 
+        body: stringifyBody(body)
+    })
+        .then(res => handleFetch(res, HTTPMethod.POST))
         .then(res => poll<T>(res))
         .catch(err => err);
 
@@ -104,16 +130,24 @@ export const postRequestAsync = async <T> (
 export const postRequestRetry = async <T> (
     endpoint: string, 
     currentUserKey: string,
-    body: string | string[],
+    body?: object | string | string[],
+    contentType = 'application/json',
     retries: number = maxRetries
 ): Promise<T & ApiError> =>
-    await fetch(endpoint, { method: 'POST', headers: { 'current_user': currentUserKey }, body: JSON.stringify(body) })
+    await fetch(endpoint, {
+        method: HTTPMethod.POST, 
+        headers: { 
+            'current_user': currentUserKey,
+            'Content-Type': contentType
+        }, 
+        body: stringifyBody(body)
+    })
         .then(async res => {
             if (res.status === 500 && retries > 0) {
                 await delay(2000 * Math.log(maxRetries / retries));
-                return postRequestRetry(endpoint, currentUserKey, body, retries - 1);
+                return postRequestRetry(endpoint, currentUserKey, body, contentType, retries - 1);
             }
-            return res.json();
+            return handleFetch(res, HTTPMethod.POST);
         })
         .catch(err => err);
     
@@ -130,13 +164,18 @@ export const postRequestRetry = async <T> (
 export const putRequest = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body?: object | string | string[]
+    body?: object | string | string[],
+    contentType = 'application/json'
 ): Promise<T & ApiError> => 
     await fetch(endpoint, { 
-        method: 'PUT', 
-        headers: { 'current_user': currentUserKey }, 
-        body: JSON.stringify(body) })
-        .then(res => res.json())
+        method: HTTPMethod.PUT, 
+        headers: { 
+            'current_user': currentUserKey,
+            'Content-Type': contentType
+        }, 
+        body: stringifyBody(body)
+    })
+        .then(res => handleFetch(res, HTTPMethod.PUT))
         .catch(err => err);
 
 /**
@@ -151,10 +190,18 @@ export const putRequest = async <T> (
 export const putRequestAsync = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body: string | string[]
+    body?: object | string | string[],
+    contentType = 'application/json'
 ): Promise<T & ApiError> => 
-    await fetch(endpoint, { method: 'PUT', headers: { 'current_user': currentUserKey }, body: JSON.stringify(body) })
-        .then(res => res.json())
+    await fetch(endpoint, { 
+        method: HTTPMethod.PUT, 
+        headers: { 
+            'current_user': currentUserKey,
+            'Content-Type': contentType
+        }, 
+        body: stringifyBody(body)
+    })
+        .then(res => handleFetch(res, HTTPMethod.PUT))
         .then(res => poll<T>(res))
         .catch(err => err);
 
@@ -170,11 +217,18 @@ export const putRequestAsync = async <T> (
 export const deleteRequest = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body?: object | string | string[]
+    body?: object | string | string[],
+    contentType = 'application/json'
 ): Promise<T & ApiError> =>
-    await fetch(endpoint, { method: 'DELETE', headers: { 'current_user': currentUserKey }, body: JSON.stringify(body) })
-        .then(res => res.json())
-        .then(res => (res))
+    await fetch(endpoint, { 
+        method: HTTPMethod.DELETE, 
+        headers: { 
+            'current_user': currentUserKey,
+            'Content-Type': contentType
+        }, 
+        body: stringifyBody(body)
+    })
+        .then(res => handleFetch(res, HTTPMethod.DELETE))
         .catch(err => err);
 
 /**
@@ -189,12 +243,49 @@ export const deleteRequest = async <T> (
 export const deleteRequestAsync = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body?: object | string | string[]
+    body?: object | string | string[],
+    contentType = 'application/json'
 ): Promise<T & ApiError> => 
     await fetch(endpoint, {
-        method: 'DELETE', 
-        headers: { 'current_user': currentUserKey }, 
-        body: JSON.stringify(body) })
-        .then(res => res.json())
+        method: HTTPMethod.DELETE, 
+        headers: { 
+            'current_user': currentUserKey,
+            'Content-Type': contentType
+        },
+        body: stringifyBody(body)
+    })
+        .then(res => handleFetch(res, HTTPMethod.DELETE))
         .then(res => poll<T>(res))
         .catch(err => err);
+
+/**
+ * Helper function for the .then clause of a fetch promise.
+ * Sends an email stack trace if an error is thrown.
+ * 
+ * @param res - the response
+ * @param httpMethod - the HTTPMethod
+ * 
+ * @returns The res.json()
+ */
+const handleFetch = (res: Response, httpMethod: HTTPMethod) => {
+    if (!res.ok) {
+        const error = Error(`${res.status} error from ${httpMethod} ${res.url}`);
+        sendStackTrace(error.stack as string);
+    }
+    return res.json();
+}
+
+/**
+ * Helper function to JSON.stringify the body of a request or keep as a string
+ * if the passed body is already a string.
+ * 
+ * @param body - the body of a request
+ * 
+ * @returns The stringified body
+ */
+const stringifyBody = (body: object | string | string[] | undefined) => {
+    if (typeof body === 'string') {
+        return body
+    }
+    return JSON.stringify(body)
+};
