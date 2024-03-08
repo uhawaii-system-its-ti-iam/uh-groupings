@@ -64,7 +64,7 @@ export const getRequest = async <T> (
 export const postRequest = async <T> (
     endpoint: string, 
     currentUserKey: string,
-    body?: string | string[], 
+    body?: object | string | string[], 
 ): Promise<T & ApiError> => 
     await fetch(endpoint, { 
         method: 'POST', 
@@ -130,7 +130,7 @@ export const postRequestRetry = async <T> (
 export const putRequest = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body?: string | string[]
+    body?: object | string | string[]
 ): Promise<T & ApiError> => 
     await fetch(endpoint, { 
         method: 'PUT', 
@@ -170,7 +170,7 @@ export const putRequestAsync = async <T> (
 export const deleteRequest = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body?: string | string[]
+    body?: object | string | string[]
 ): Promise<T & ApiError> =>
     await fetch(endpoint, { method: 'DELETE', headers: { 'current_user': currentUserKey }, body: JSON.stringify(body) })
         .then(res => res.json())
@@ -189,7 +189,7 @@ export const deleteRequest = async <T> (
 export const deleteRequestAsync = async <T> (
     endpoint: string,
     currentUserKey: string,
-    body?: string | string[]
+    body?: object | string | string[]
 ): Promise<T & ApiError> => 
     await fetch(endpoint, {
         method: 'DELETE', 

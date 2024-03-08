@@ -7,7 +7,8 @@ describe ('Footer', () => {
         render(<Footer />);
 
         expect(screen.getByRole('contentinfo')).toBeInTheDocument();
-        expect(screen.getByRole('img', { name: 'UH System logo' })).toBeInTheDocument();
+        expect(screen.getByRole('img', { name: 'UH System logo' }))
+            .toHaveAttribute('src', '/uhgroupings/uh-logo-system.svg');
         expect(screen.getByRole('link', { name: 'equal opportunity/affirmative action institution' }))
             .toHaveAttribute('href', 'https://www.hawaii.edu/offices/eeo/policies/?policy=antidisc');
         expect(screen.getByRole('link', { name: 'Usage Policy' }))
