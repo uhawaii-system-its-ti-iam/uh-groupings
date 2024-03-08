@@ -24,7 +24,11 @@ const config = {
             colors: {
                 'green-blue': '#004e59',
                 'uh-black': '#212121',
-                'uh-teal': '#0d7078'
+                'uh-teal': '#0d7078',
+                'seafoam': '#e3f2ef',
+                'text-color': '#1c6070',
+                'link-color' : '#006ffa',
+                'link-hover-color' : '#0056b3'
             },
             fontFamily: {
                 'source-sans-3': ['var(--font-source-sans-3)', 'Helvetica', 'Arial', 'sans-serif'],
