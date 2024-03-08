@@ -1,5 +1,5 @@
 import User from '@/access/User';
-import { Feedback, sendFeedback } from '@/services/EmailService';
+import { Feedback, sendFeedback, sendStackTrace } from '@/services/EmailService';
 import * as AuthenticationService from '@/access/AuthenticationService';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL as string;
@@ -10,7 +10,6 @@ jest.mock('@/access/AuthenticationService');
 describe('EmailService', () => {
 
     const currentUser =  testUser;
-    const headers = { 'current_user': currentUser.uid };
 
     beforeAll(() => {
         jest.spyOn(AuthenticationService, 'getCurrentUser').mockResolvedValue(testUser);
@@ -29,10 +28,30 @@ describe('EmailService', () => {
             await sendFeedback(feedback);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/email/send/feedback`, {
                 body: JSON.stringify(feedback),
-                headers,
+                headers: {
+                    'current_user': currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
                 method: 'POST'
             });
         });
-        
     });
+
+    describe('sendStackTrace', () => {
+
+        const stackTrace = 'stackTrace';
+
+        it('should make a POST request at the correct endpoint', async () => {
+            await sendStackTrace(stackTrace);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/email/send/stack-trace`, {
+                body: stackTrace,
+                headers: {
+                    'current_user': currentUser.uid,
+                    'Content-Type': 'text/plain'
+                },
+                method: 'POST'
+            });
+        });
+    });
+    
 });
