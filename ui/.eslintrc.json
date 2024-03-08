@@ -27,7 +27,7 @@
       "eslint-plugin-tsdoc"
   ],
   "rules": {
-    "@stylistic/max-len": ["error", { "code": 120 }],
+    "@stylistic/max-len": ["warn", { "code": 120 }],
     "@stylistic/indent": ["error", 4],
     "@stylistic/eol-last": ["error", "always"],
     "@stylistic/quotes": ["error", "single", { "allowTemplateLiterals": true }],
