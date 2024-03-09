@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 const About = () => (
     <main>
-        <div className="bg-seafoam pt-10 pb-10">
+        <div className="bg-seafoam py-10">
             <div className="container">
                 <div className="grid gap-2">
                     <h1 className="text-center text-4xl font-medium">What is a UH Grouping?</h1>
