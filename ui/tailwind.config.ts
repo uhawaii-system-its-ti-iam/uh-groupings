@@ -23,6 +23,7 @@ const config = {
         extend: {
             colors: {
                 'green-blue': '#004e59',
+                'uh-blue4': '#4c90a8',
                 'uh-black': '#212121',
                 'uh-teal': '#0d7078',
                 'seafoam': '#e3f2ef',
