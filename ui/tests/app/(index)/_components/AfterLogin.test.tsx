@@ -37,7 +37,7 @@ describe('AfterLogin', () => {
 
     const expectAdministration = (isAdmin: boolean) => {
         if (isAdmin) {
-            expect(screen.getByRole('img', {name: 'key-solid'})).toHaveAttribute('src', 'uhgroupings/key-solid.svg');
+            expect(screen.getByRole('img', {name: 'key-solid'})).toHaveAttribute('src', '/uhgroupings/key-solid.svg');
             expect(screen.queryByText('0')).not.toBeInTheDocument();
             expect(screen.getByRole('heading', {name: 'Admin'})).toBeInTheDocument();
             expect(screen.getByText('Manage the list of Administrators for this service. ' +
@@ -56,7 +56,7 @@ describe('AfterLogin', () => {
     };
 
     const expectMemberships = () => {
-        expect(screen.getByRole('img', {name: 'id-card'})).toHaveAttribute('src', 'uhgroupings/id-card-solid.svg');
+        expect(screen.getByRole('img', {name: 'id-card'})).toHaveAttribute('src', '/uhgroupings/id-card-solid.svg');
         expect(screen.getByText(numberOfMemberships)).toBeInTheDocument();
         expect(screen.getByRole('heading', {name: 'Memberships'})).toBeInTheDocument();
         expect(screen.getByText('View and manage my memberships. ' +
@@ -68,7 +68,7 @@ describe('AfterLogin', () => {
     const expectGroupings = (isOwner: boolean) => {
         if (isOwner) {
             expect(screen.getByRole('img', {name: 'wrench-solid'}))
-                .toHaveAttribute('src', 'uhgroupings/wrench-solid.svg');
+                .toHaveAttribute('src', '/uhgroupings/wrench-solid.svg');
             expect(screen.getByText(numberOfGroupings)).toBeInTheDocument();
             expect(screen.getByRole('heading', {name: 'Groupings'})).toBeInTheDocument();
             expect(screen.getByText('Review members, manage Include and Exclude lists, ' +
