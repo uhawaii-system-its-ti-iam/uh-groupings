@@ -9,11 +9,10 @@ import TimeoutModal from '@/components/modal/TimeoutModal';
 
 const Navbar = async () => {
     const currentUser = await getCurrentUser();
-    
-    return ( 
+    return (
         <>
             <TimeoutModal currentUser={currentUser} />
-            <nav className="bg-white border-b-[1px] pointer-events-auto sticky top-0">
+            <nav className="bg-white border-b-[1px] pointer-events-auto sticky top-0 z-50">
                 <div className="container py-2">
                     <div className="flex justify-between">
                         <Link href="/" className="lg:inline hidden">

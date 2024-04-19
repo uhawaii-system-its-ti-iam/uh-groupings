@@ -42,7 +42,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
  * 
  * @returns The promise of announcements or ApiError type
  */
-export const getAnnouncements = (): Promise<Announcements & ApiError> => {
+export const getAnnouncements = (): Promise<Announcements> => {
     const endpoint = `${baseUrl}/announcements`;
     return getRequest<Announcements>(endpoint);
 }
@@ -435,7 +435,7 @@ export const managePersonResults = async (
  * 
  * @returns The promise of the number of memberships or ApiError type
  */
-export const getNumberOfMemberships = async (): Promise<number & ApiError> => {
+export const getNumberOfMemberships = async (): Promise<number> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/members/${currentUser.uid}/memberships/count`;
     return getRequest<number>(endpoint, currentUser.uid);
@@ -543,7 +543,7 @@ export const ownerGroupings = async (): Promise<GroupingPaths & ApiError> => {
  * 
  * @returns The promise of the number of groupings or ApiError type
  */
-export const getNumberOfGroupings = async (): Promise<number & ApiError> => {
+export const getNumberOfGroupings = async (): Promise<number> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/owners/${currentUser.uid}/groupings/count`;
     return getRequest<number>(endpoint, currentUser.uid);

@@ -28,8 +28,10 @@ const config = {
                 'uh-teal': '#0d7078',
                 'seafoam': '#e3f2ef',
                 'text-color': '#1c6070',
+                'text-primary': '#004252',
                 'link-color' : '#006ffa',
-                'link-hover-color' : '#0056b3'
+                'link-hover-color' : '#0056b3',
+                'blue-background': '#00a6b2'
             },
             fontFamily: {
                 'source-sans-3': ['var(--font-source-sans-3)', 'Helvetica', 'Arial', 'sans-serif'],
