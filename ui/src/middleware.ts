@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers';
 import { NextResponse, NextRequest } from 'next/server';
 import { getIronSession } from 'iron-session';
-import { SessionData, SessionOptions } from './access/Session';
-import Role from './access/Role';
+import { SessionData, SessionOptions } from '@/access/session';
+import Role from '@/access/role';
 
 /**
  * Next.js middleware function that is called upon visiting a route that matches the config.

@@ -1,9 +1,9 @@
 import { config, middleware } from '@/middleware';
-import { createMockSession } from './setupJest';
+import { createMockSession } from './setup-jest';
 import { NextRequest, NextResponse } from 'next/server';
 import IronSession from 'iron-session';
-import User, { AnonymousUser } from '@/access/User';
-import Role from '@/access/Role';
+import User, { AnonymousUser } from '@/access/user';
+import Role from '@/access/role';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);

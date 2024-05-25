@@ -1,8 +1,8 @@
 import './globals.css';
 import { Source_Sans_3 } from 'next/font/google';
-import Footer from '@/app/_components/layout/footer/Footer';
+import Navbar from './_components/navbar/navbar';
+import Footer from './_components/footer/footer';
 import type { Metadata } from 'next';
-import Navbar from '@/app/_components/layout/navbar/Navbar';
 
 const sourceSans3 = Source_Sans_3({
     subsets: ['latin'],

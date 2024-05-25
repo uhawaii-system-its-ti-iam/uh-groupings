@@ -19,7 +19,7 @@ const config: Config = {
         customExportConditions: []
     },
     setupFilesAfterEnv: [
-        '<rootDir>/tests/setupJest.ts'
+        '<rootDir>/tests/setup-jest.ts'
     ],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     moduleDirectories: ['node_modules', '<rootDir>'],
