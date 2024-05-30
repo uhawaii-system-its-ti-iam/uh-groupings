@@ -1,7 +1,8 @@
 import Role from '@/access/Role';
 import User, { AnonymousUser } from '@/access/User';
 import MobileNavbar from '@/components/layout/navbar/MobileNavbar';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -13,10 +14,10 @@ describe('MobileNavbar', () => {
         expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
     });
 
-    it('should open the drawer on click', () => {
+    it('should open the drawer on click', async () => {
         render(<MobileNavbar currentUser={AnonymousUser} />);
 
-        fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+        await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
         expect(screen.getByRole('navigation')).toBeInTheDocument();
     });
 
@@ -25,7 +26,7 @@ describe('MobileNavbar', () => {
         it('should render the navbar with only the link to /about', async () => {
             render(<MobileNavbar currentUser={AnonymousUser} />);
 
-            fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Memberships' })).not.toBeInTheDocument();
@@ -46,7 +47,7 @@ describe('MobileNavbar', () => {
             testUser.roles.push(Role.UH);
             render(<MobileNavbar currentUser={testUser} />);
             
-            fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
@@ -59,7 +60,7 @@ describe('MobileNavbar', () => {
             testUser.roles.push(Role.OWNER, Role.UH);
             render(<MobileNavbar currentUser={testUser} />);
 
-            fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
@@ -72,7 +73,7 @@ describe('MobileNavbar', () => {
             testUser.roles.push(Role.ADMIN, Role.UH);
             render(<MobileNavbar currentUser={testUser} />);
 
-            fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
