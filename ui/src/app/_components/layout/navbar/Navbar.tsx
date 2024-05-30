@@ -5,7 +5,7 @@ import { getCurrentUser } from '@/access/AuthenticationService';
 import MobileNavbar from './MobileNavbar';
 import { NavLinks } from './NavLinks';
 import Role from '@/access/Role';
-import TimeoutModal from '@/components/modal/TimeoutModal';
+import TimeoutModal from '@/app/_components/layout/modal/TimeoutModal';
 
 const Navbar = async () => {
     const currentUser = await getCurrentUser();

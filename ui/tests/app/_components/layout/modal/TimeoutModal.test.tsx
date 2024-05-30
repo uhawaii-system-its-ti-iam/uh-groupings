@@ -1,6 +1,6 @@
 import Role from '@/access/Role';
 import User from '@/access/User';
-import TimeoutModal from '@/components/modal/TimeoutModal';
+import TimeoutModal from '@/app/_components/layout/modal/TimeoutModal';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import * as AuthenticationService from '@/access/AuthenticationService';
 

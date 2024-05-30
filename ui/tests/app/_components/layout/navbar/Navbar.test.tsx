@@ -1,38 +1,31 @@
-import Role from '@/access/Role';
 import User, { AnonymousUser } from '@/access/User';
-import MobileNavbar from '@/components/layout/navbar/MobileNavbar';
+import * as AuthenticationService from '@/access/AuthenticationService';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import Navbar from '@/app/_components/layout/navbar/Navbar';
+import Role from '@/access/Role';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-describe('MobileNavbar', () => {
+jest.mock('@/access/AuthenticationService');
 
-    it('should render the MobileNavbar with the sheet closed', () => {
-        render(<MobileNavbar currentUser={AnonymousUser} />);
-
-        expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
-    });
-
-    it('should open the drawer on click', async () => {
-        render(<MobileNavbar currentUser={AnonymousUser} />);
-
-        await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
-        expect(screen.getByRole('navigation')).toBeInTheDocument();
-    });
+describe('Navbar', () => {
 
     describe('User is logged-out', () => {
 
         it('should render the navbar with only the link to /about', async () => {
-            render(<MobileNavbar currentUser={AnonymousUser} />);
+            jest.spyOn(AuthenticationService, 'getCurrentUser').mockResolvedValue(AnonymousUser);
+            render(await Navbar());
 
-            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
+            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
+            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Memberships' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
             expect(screen.queryByRole('link', { name: 'Feedback' })).not.toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
         });
 
     });
@@ -45,41 +38,53 @@ describe('MobileNavbar', () => {
 
         it('should render only /memberships, /about, /feedback for the average user', async () => {
             testUser.roles.push(Role.UH);
-            render(<MobileNavbar currentUser={testUser} />);
-            
-            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
+            jest.spyOn(AuthenticationService, 'getCurrentUser').mockResolvedValue(testUser);
+            render(await Navbar());
+
             expect(screen.getByRole('navigation')).toBeInTheDocument();
+            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
+            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
             expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
             expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
 
         it('should render only /memberships, /groupings, /about, /feedback for an owner of a grouping', async () => {
             testUser.roles.push(Role.OWNER, Role.UH);
-            render(<MobileNavbar currentUser={testUser} />);
+            jest.spyOn(AuthenticationService, 'getCurrentUser').mockResolvedValue(testUser);
+            render(await Navbar());
 
-            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
+            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
+            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
             expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
             expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
             expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
 
         it('should render all links for an Admin', async () => {
             testUser.roles.push(Role.ADMIN, Role.UH);
-            render(<MobileNavbar currentUser={testUser} />);
+            jest.spyOn(AuthenticationService, 'getCurrentUser').mockResolvedValue(testUser);
+            render(await Navbar());
 
-            await userEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
+            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0])
+                .toHaveAttribute('src', '/uhgroupings/uh-groupings-logo.svg');
+            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
             expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
             expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
             expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
             expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
 
     });
