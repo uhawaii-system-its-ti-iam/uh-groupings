@@ -1,11 +1,11 @@
 import { GET } from '@/app/api/cas/login/route';
 import { redirect } from 'next/navigation';
-import { handleLogin } from '@/access/AuthenticationService';
+import { handleLogin } from '@/access/authentication';
 import { NextRequest } from 'next/server';
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 
-jest.mock('@/access/AuthenticationService');
+jest.mock('@/access/authentication');
 
 describe('/api/cas/login', () => {
 
