@@ -1,16 +1,14 @@
-
 import Role from '@/access/role';
 import User from '@/access/user';
-import TimeoutModal from '@/app/_components/modal/timeout-modal';
+import TimeoutModal from '@/components/modal/timeout-modal';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import * as AuthenticationService from '@/access/authentication';
+import * as Authentication from '@/access/authentication';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
 jest.mock('@/access/authentication');
 
 describe('TimeoutModal', () => {
-
     beforeEach(() => {
         jest.useFakeTimers();
     });
@@ -19,23 +17,23 @@ describe('TimeoutModal', () => {
         jest.useRealTimers();
         testUser.roles = [];
     });
-    
+
     it('should not open the timeout modal when the user is not logged-in', () => {
         render(<TimeoutModal currentUser={testUser} />);
-        
+
         act(() => jest.advanceTimersByTime(1000 * 60 * 25));
         fireEvent.focus(document);
-        
+
         expect(screen.queryByRole('alertdialog', { name: 'Inactivity Warning' })).not.toBeInTheDocument();
     });
 
     it('should not open the timeout modal before 25 minutes of idle', () => {
         testUser.roles.push(Role.UH);
         render(<TimeoutModal currentUser={testUser} />);
-        
+
         act(() => jest.advanceTimersByTime(1000 * 60 * 24));
         fireEvent.focus(document);
-        
+
         expect(screen.queryByRole('alertdialog', { name: 'Inactivity Warning' })).not.toBeInTheDocument();
     });
 
@@ -45,7 +43,7 @@ describe('TimeoutModal', () => {
 
         act(() => jest.advanceTimersByTime(1000 * 60 * 25));
         fireEvent.focus(document);
-        
+
         expect(screen.getByRole('alertdialog', { name: 'Inactivity Warning' })).toBeInTheDocument();
     });
 
@@ -60,7 +58,7 @@ describe('TimeoutModal', () => {
 
         for (let i = 5; i >= 0; i--) {
             expect(screen.getByText(i + ':00.')).toBeInTheDocument();
-            act(() => jest.advanceTimersByTime(1000 * 60)); 
+            act(() => jest.advanceTimersByTime(1000 * 60));
             fireEvent.focus(document);
         }
     });
@@ -73,7 +71,7 @@ describe('TimeoutModal', () => {
         fireEvent.focus(document);
 
         expect(screen.getByRole('alertdialog', { name: 'Inactivity Warning' })).toBeInTheDocument();
-        fireEvent.click(screen.getByRole('button', { name: 'Stay logged in'}));
+        fireEvent.click(screen.getByRole('button', { name: 'Stay logged in' }));
         expect(screen.queryByRole('alertdialog', { name: 'Inactivity Warning' })).not.toBeInTheDocument();
 
         act(() => jest.advanceTimersByTime(1000 * 60 * 24));
@@ -83,8 +81,8 @@ describe('TimeoutModal', () => {
     });
 
     it('should logout when "Log off now" is pressed', () => {
-        const logoutSpy = jest.spyOn(AuthenticationService, 'logout');
-        
+        const logoutSpy = jest.spyOn(Authentication, 'logout');
+
         testUser.roles.push(Role.UH);
         render(<TimeoutModal currentUser={testUser} />);
 
@@ -92,13 +90,13 @@ describe('TimeoutModal', () => {
         fireEvent.focus(document);
 
         expect(screen.getByRole('alertdialog', { name: 'Inactivity Warning' })).toBeInTheDocument();
-        fireEvent.click(screen.getByRole('button', { name: 'Log off now'}));
+        fireEvent.click(screen.getByRole('button', { name: 'Log off now' }));
         expect(logoutSpy).toHaveBeenCalled();
     });
 
     it('should logout after 30 minutes of idle', () => {
-        const logoutSpy = jest.spyOn(AuthenticationService, 'logout');
-        
+        const logoutSpy = jest.spyOn(Authentication, 'logout');
+
         testUser.roles.push(Role.UH);
         render(<TimeoutModal currentUser={testUser} />);
 
@@ -107,5 +105,4 @@ describe('TimeoutModal', () => {
 
         expect(logoutSpy).toHaveBeenCalled();
     });
-
 });

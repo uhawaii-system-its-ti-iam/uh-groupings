@@ -1,7 +1,7 @@
 import './globals.css';
 import { Source_Sans_3 } from 'next/font/google';
-import Navbar from './_components/navbar/navbar';
-import Footer from './_components/footer/footer';
+import Navbar from '@/components/layout/navbar/navbar';
+import Footer from '@/components/layout/footer';
 import type { Metadata } from 'next';
 
 const sourceSans3 = Source_Sans_3({
