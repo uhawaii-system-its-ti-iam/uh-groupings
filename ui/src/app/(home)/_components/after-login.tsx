@@ -96,7 +96,8 @@ const AfterLogin = async () => {
 
             <div className="container grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-10 mb-10">
                 {pageInfoItems
-                    .filter((pageInfoItem) => currentUser.roles.includes(pageInfoItem.role))
+                    .filter((pageInfoItem) => currentUser.roles.includes(Role.ADMIN)
+                        || currentUser.roles.includes(pageInfoItem.role))
                     .map((pageInfoItem, index) => (
                         <div key={index} className="flex flex-col justify-between">
                             <div>

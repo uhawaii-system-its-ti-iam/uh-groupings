@@ -4,10 +4,12 @@ const TechnicalInfoSection = () => {
         { name: 'shadcn/ui', url: 'https://ui.shadcn.com/docs', description: '(Guide)' },
         { name: 'Jest', url: 'https://jestjs.io/docs/getting-started', description: '(Introduction)' },
         { name: 'Next.js', url: 'https://nextjs.org/docs', description: '(Introduction)' },
-        { name: 'Tanstack Table', url: 'https://tanstack.com/table/v8/docs/introduction', description: '(Introduction)' },
+        { name: 'Tanstack Table', url: 'https://tanstack.com/table/v8/docs/introduction',
+            description: '(Introduction)' },
         { name: 'React Testing Library', url: 'https://testing-library.com/', description: '(Documentation)' },
         { name: 'Typescript', url: 'https://www.typescriptlang.org/docs/', description: '(Guide)' },
-        { name: 'Tanstack Query', url: 'https://tanstack.com/query/latest/docs/framework/react/overview', description: '(Guide)' },
+        { name: 'Tanstack Query', url: 'https://tanstack.com/query/latest/docs/framework/react/overview',
+            description: '(Guide)' },
         { name: '', url: '', description: ''},
         { name: 'Tailwind CSS', url: 'https://v2.tailwindcss.com/docs', description: '(Guide)' },
         { name: 'Iron Session', url: 'https://github.com/vvo/iron-session', description: '(GitHub)' }
@@ -31,7 +33,8 @@ const TechnicalInfoSection = () => {
                             <div key={index} >
                                 <p>
                                     {item.name}&nbsp;
-                                    <a className="text-link-color hover:underline hover:text-link-hover-color" href={item.url} aria-label={`Link to ${item.name} ${item.description}`}>
+                                    <a className="text-link-color hover:underline hover:text-link-hover-color" 
+                                        href={item.url} aria-label={`Link to ${item.name} ${item.description}`}>
                                         {item.description}
                                     </a>
                                 </p>
