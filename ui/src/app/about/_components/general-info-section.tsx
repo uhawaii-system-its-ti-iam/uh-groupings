@@ -12,7 +12,8 @@ const GeneralInfoSection = () => {
         },
         {
             question: 'What is the Include members list?',
-            answer: 'A grouping\'s Include is the portion of the grouping membership that is manually updated. It may be empty.'
+            answer: 'A grouping\'s Include is the portion of the grouping membership that is manually updated. ' +
+                'It may be empty.'
         },
         {
             question: 'Exactly what is a grouping?',
@@ -29,11 +30,13 @@ const GeneralInfoSection = () => {
         },
         {
             question: 'What is the Exclude members list?',
-            answer: 'A grouping\'s Exclude overrides automatic and manual membership by explicitly not including anyone listed here. It may be empty.'
+            answer: 'A grouping\'s Exclude overrides automatic and manual membership by' +
+                ' explicitly not including anyone listed here. It may be empty.'
         },
         {
             question: 'What is the Basis?',
-            answer: 'A grouping\'s Basis is the portion of the grouping membership that is automatically updated. It may be empty.'
+            answer: 'A grouping\'s Basis is the portion of the grouping membership that is automatically updated.' +
+                ' It may be empty.'
         }
     ];
 

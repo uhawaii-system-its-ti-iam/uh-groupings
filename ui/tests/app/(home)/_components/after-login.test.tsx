@@ -16,7 +16,7 @@ describe('after-login', () => {
 
     const admin: User = {
         ...testUser,
-        roles:[Role.UH, Role.OWNER,Role.ADMIN] as const
+        roles:[Role.UH, Role.ADMIN] as const
     };
 
     const owner: User = {
@@ -66,8 +66,8 @@ describe('after-login', () => {
         expect(screen.getByRole('button', {name: 'Memberships'})).toBeInTheDocument();
     }
 
-    const expectGroupings = (isOwner: boolean) => {
-        if (isOwner) {
+    const expectGroupings = ( isAdmin: boolean, isOwner: boolean) => {
+        if (isAdmin || isOwner) {
             expect(screen.getByRole('img', {name: 'wrench-solid'}))
                 .toHaveAttribute('src', '/uhgroupings/wrench-solid.svg');
             expect(screen.getByText(numberOfGroupings)).toBeInTheDocument();
@@ -99,7 +99,7 @@ describe('after-login', () => {
         expectWelcome(admin, 'Admin');
         expectAdministration(true);
         expectMemberships();
-        expectGroupings(true);
+        expectGroupings(true, false);
     });
 
     it('Should render correctly when logged in as Owner', async () => {
@@ -108,7 +108,7 @@ describe('after-login', () => {
         expectWelcome(owner, 'Owner');
         expectAdministration(false);
         expectMemberships();
-        expectGroupings(true);
+        expectGroupings(false, true);
     });
 
     it('Should render correctly when logged in as a user with a UH account', async () => {
@@ -117,6 +117,6 @@ describe('after-login', () => {
         expectWelcome(uhUser, 'Member');
         expectAdministration(false);
         expectMemberships();
-        expectGroupings(false);
+        expectGroupings(false, false);
     });
 })
