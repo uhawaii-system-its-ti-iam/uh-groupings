@@ -38,7 +38,10 @@ describe('TechnicalInfoSection', () => {
 
         expect(screen.getByText('Tanstack Query')).toBeInTheDocument();
         expect(guideLinks[2]).toBeInTheDocument();
-        expect(guideLinks[2]).toHaveAttribute('href', 'https://tanstack.com/query/latest/docs/framework/react/overview');
+        expect(guideLinks[2]).toHaveAttribute(
+            'href',
+            'https://tanstack.com/query/latest/docs/framework/react/overview'
+        );
 
         expect(screen.getByText('Tailwind CSS')).toBeInTheDocument();
         expect(guideLinks[3]).toBeInTheDocument();
