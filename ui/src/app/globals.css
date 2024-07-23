@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
     body {
         font-family: var(--font-source-sans-3), 'Helvetica', Arial, sans-serif;
@@ -10,4 +10,17 @@
     nav {
         font-family: var(--font-source-sans-3), 'Helvetica', Arial, sans-serif;
     }
+}
+
+.btn-gradient {
+    background: -moz-linear-gradient(to bottom, #5a9cb4, #7db1c4);
+    background: -webkit-gradient(linear, left top, left bottom, from(#5a9cb4), to(#7db1c4));
+    background: -webkit-linear-gradient(to bottom, #5a9cb4, #7db1c4);
+    background: -o-linear-gradient(to bottom, #5a9cb4, #7db1c4);
+    background: -ms-linear-gradient(to bottom, #5a9cb4, #7db1c4);
+    transition: background 0.15s ease-in-out;
+}
+
+.btn-gradient:hover, .btn-gradient-focus {
+    background: #004e59;
 }
