@@ -5,7 +5,14 @@ const Footer = () => (
         <div className="container py-2">
             <div className="grid sm:grid-cols-12">
                 <div className="mx-auto mb-6 col-span-6 md:col-span-5 lg:col-span-4">
-                    <Image src="/uhgroupings/uh-logo-system.svg" alt="UH System logo" width={235} height={235} />
+                    <Image
+                        src="/uhgroupings/uh-logo-system.svg"
+                        alt="UH System logo"
+                        width={235}
+                        height={82.162}
+                        sizes="(max-width: 575px) 210px, (min-width: 576px) 195px, (max-width: 991px) 209.988px, (min-width: 992px) 235px"
+                        className="w-[210px] h-[71.463px] sm:w-[195px] sm:h-[66.362px] md:w-[209.988px] md:h-[71.463px] lg:w-[235px] lg:h-[82.162px]"
+                    />
                 </div>
                 <div className="col-span-6 md:col-span-7 lg:col-span-8 text-white">
                     <p>
