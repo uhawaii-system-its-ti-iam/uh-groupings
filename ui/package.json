@@ -61,7 +61,7 @@
         "postcss": "^8.4.33",
         "postcss-preset-mantine": "^1.12.3",
         "postcss-simple-vars": "^7.0.1",
-        "prettier": "3.2.5",
+        "prettier": "3.3.3",
         "tailwindcss": "^3.3.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
