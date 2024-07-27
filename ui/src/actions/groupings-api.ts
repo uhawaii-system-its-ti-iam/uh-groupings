@@ -135,7 +135,7 @@ export const updateDescription = async (
 ): Promise<GroupingUpdateDescriptionResult & ApiError> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/description`;
-    return postRequest<GroupingUpdateDescriptionResult>(endpoint, currentUser.uid, description);
+    return putRequest<GroupingUpdateDescriptionResult>(endpoint, currentUser.uid, description);
 }
 
 /**
