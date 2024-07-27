@@ -31,7 +31,8 @@ const config = {
                 'text-primary': '#004252',
                 'link-color' : '#006ffa',
                 'link-hover-color' : '#0056b3',
-                'blue-background': '#00a6b2'
+                'blue-background': '#00a6b2',
+                'teal-tint': '#c7e7e0'
             },
             fontFamily: {
                 'source-sans-3': ['var(--font-source-sans-3)', 'Helvetica', 'Arial', 'sans-serif'],
