@@ -40,10 +40,10 @@ const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 export const updateDescription = async (
     description: string,
     groupingPath: string
-): Promise<GroupingUpdateDescriptionResult & ApiError> => {
+): Promise<GroupingUpdateDescriptionResult> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/description`;
-    return postRequest<GroupingUpdateDescriptionResult>(endpoint, currentUser.uid, description);
+    return putRequest<GroupingUpdateDescriptionResult>(endpoint, currentUser.uid, description);
 };
 
 /**

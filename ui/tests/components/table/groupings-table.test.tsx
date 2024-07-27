@@ -44,6 +44,15 @@ describe('GroupingsTable', () => {
         expect(screen.getByText('Last')).toBeInTheDocument();
     });
 
+    it('renders the correct link for manage grouping', () => {
+        render(<GroupingsTable groupingPaths={mockData} />);
+        const firstPageGroupings = mockData.slice(0, pageSize);
+        firstPageGroupings.forEach((group) => {
+            const linkElement = screen.getByRole('link', { name: group.name });
+            expect(linkElement).toHaveAttribute('href', `/groupings/${group.path}/all-members`);
+        });
+    });
+
     it('filters data correctly using global filter', () => {
         render(<GroupingsTable groupingPaths={mockData} />);
 
