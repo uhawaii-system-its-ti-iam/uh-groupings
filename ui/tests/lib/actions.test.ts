@@ -75,7 +75,7 @@ describe('actions', () => {
                     current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
-                method: 'POST'
+                method: 'PUT'
             });
         });
 
