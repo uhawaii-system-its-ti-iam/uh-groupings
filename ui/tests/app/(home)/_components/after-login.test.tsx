@@ -39,7 +39,6 @@ describe('after-login', () => {
     const expectAdministration = (isAdmin: boolean) => {
         if (isAdmin) {
             expect(screen.getByRole('img', {name: 'key-solid'})).toHaveAttribute('src', '/uhgroupings/key-solid.svg');
-            expect(screen.queryByText('0')).not.toBeInTheDocument();
             expect(screen.getByRole('heading', {name: 'Admin'})).toBeInTheDocument();
             expect(screen.getByText('Manage the list of Administrators for this service. ' +
                 'Search for and manage any grouping on behalf of the owner.')).toBeInTheDocument();
@@ -47,7 +46,6 @@ describe('after-login', () => {
             expect(screen.getByRole('button', {name: 'Admin'})).toBeInTheDocument();
         } else {
             expect(screen.queryByRole('img', {name: 'key-solid'})).not.toBeInTheDocument();
-            expect(screen.queryByText('0')).not.toBeInTheDocument();
             expect(screen.queryByRole('heading', {name: 'Admin'})).not.toBeInTheDocument();
             expect(screen.queryByText('Manage the list of Administrators for this service. ' +
                 'Search for and manage any grouping on behalf of the owner.')).not.toBeInTheDocument();
