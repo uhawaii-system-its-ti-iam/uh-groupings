@@ -108,7 +108,7 @@ const AfterLogin = async () => {
                                         width={pageInfoItem.icon.width}
                                         height={pageInfoItem.icon.height}
                                         className={`mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto`}/>
-                                    {pageInfoItem.number
+                                    {pageInfoItem.number !== null
                                         && <span className="text-[2.5rem] text-text-color">{pageInfoItem.number}</span>}
                                 </div>
                                 <h2 className="text-2xl text-text-color font-medium mb-2">{pageInfoItem.title}</h2>
