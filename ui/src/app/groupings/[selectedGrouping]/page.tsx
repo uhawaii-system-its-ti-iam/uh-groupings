@@ -5,15 +5,6 @@ import GroupingBody from '@/app/groupings/_components/grouping-body';
 import ExportDropdown from '@/app/groupings/_components/export-dropdown';
 import ReturnButtons from '@/app/groupings/_components/return-buttons';
 import GroupingHeader from '@/app/groupings/_components/grouping-header';
-import SideNav from '@/app/groupings/_components/side-nav';
-import Members from '@/app/groupings/_components/members';
-import Basis from '@/app/groupings/_components/basis';
-import Include from '@/app/groupings/_components/include';
-import Exclude from '@/app/groupings/_components/exclude';
-import Owners from '@/app/groupings/_components/owners';
-import SyncDestinations from '@/app/groupings/_components/sync-destinations';
-import Preferences from '@/app/groupings/_components/preferences';
-import Actions from '@/app/groupings/_components/actions';
 
 const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) => {
     const [fromManageSubject, setFromManageSubject] = useState(false);
@@ -26,7 +17,7 @@ const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) 
     const [descriptionForm, setDescriptionForm] = useState(false);
     const [groupingDescription, setGroupingDescription] = useState('');
     const [modelDescription, setModelDescription] = useState('');
-    const maxDescriptionLength = 255;
+    const maxDescriptionLength = 98;
 
     const returnToGroupingsList = () => {};
     const cancelDescriptionEdit = () => {};
@@ -34,7 +25,7 @@ const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) 
     const returnToManageSubject = () => {};
     const isGroupingEmpty = () => {};
     const exportGroupToCsv = (group, type) => { console.log(`Exporting ${type}:`, group); };
-    const getCSVToolTipMessage = () => { return 'Tool Tip Message'; };
+    const getCSVToolTipMessage = () => { return 'Tooltip Message'; };
     const descriptionDisplay = () => { return groupingDescription; };
     const editDescription = () => {};
     const saveDescription = () => {};
@@ -102,8 +93,6 @@ const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) 
                         <section>
                                 <GroupingBody/>
                         </section>
-
-
 
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { FileInput, ChevronDown } from 'lucide-react';
 
 const ExportDropdown = ({
                             paginatingComplete,
@@ -11,22 +12,20 @@ const ExportDropdown = ({
                             getCSVToolTipMessage
                         }) => (
     <div
-        className="btn-group dropdown"
+        className="btn-group dropdown float-right"
         id="csvButton"
         //tooltip
-        data-original-title={getCSVToolTipMessage()}
-    >
+        data-original-title={getCSVToolTipMessage()}>
         <Button
             type="button"
             className="form-control"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            ng-disabled={!paginatingComplete || isGroupingEmpty()}
-        >
-            <i className="fa fa-file-export mr-1"></i>
+            ng-disabled={!paginatingComplete || isGroupingEmpty()}>
+            <FileInput className="mr-1"></FileInput>
             Export Grouping
-            <i className="fa fa-caret-down ml-1"></i>
+            <ChevronDown className="ml-1"></ChevronDown>
         </Button>
         <div className="dropdown-menu dropdown-menu-right">
             {groupingMembers.length > 0 && (

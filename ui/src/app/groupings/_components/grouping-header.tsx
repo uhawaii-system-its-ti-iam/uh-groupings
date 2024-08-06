@@ -13,29 +13,30 @@ const GroupingHeader = ({
                             cancelDescriptionEdit,
                             descriptionLengthWarning
                         }) => (
-    <div className="card-header teal-bg">
-        <div className="row" id="selectedGroupHeader">
-            <div className="col-md-8" id="groupNameCol">
-                {selectedGrouping.name && (
-                    <h2 className="card-title text-light mb-0">{selectedGrouping.name}</h2>
+
+    <div className="overflow-hidden mt-4 card-tab-content:rounded-t-none card-tab-content:mt-0 bg-uh-teal">
+        <div className="flex flex-wrap" id="selectedGroupHeader">
+            <div className="w-full md:w-8/12" id="groupNameCol">
+                {selectedGrouping && (
+                    <h2 className="card-title text-light mb-0 text-xl font-bold">{selectedGrouping}</h2>
                 )}
             </div>
         </div>
 
-        <div className="row">
-            <div className="col-md-12">
-                <p className="text-light mb-0"><b>Path:</b> {selectedGrouping.path}</p>
+        <div className="flex flex-wrap">
+            <div className="w-full">
+                <p className="text-light mb-0 text-base"><b>Path:</b> {selectedGrouping.path}</p>
             </div>
         </div>
 
-        <div className="row">
-            <div className="col-md-12">
+        <div className="flex flex-wrap">
+            <div className="w-full">
                 {descriptionLoaded ? (
-                    <p className="text-light mb-0 text-break">
+                    <p className="text-light mb-0 text-base break-words">
                         <b>Description:</b> {descriptionDisplay()} &nbsp;
                         <Button
                             onClick={editDescription}
-                            className="far fa-fw fa-edit mr-2 teal-bg border-0 text-light tool"
+                            className="far fa-fw fa-edit mr-2 text-uh-teal border-0 text-light hidden"
                             data-placement="top"
                             aria-label="Edit Description"
                             role="button"
@@ -43,11 +44,10 @@ const GroupingHeader = ({
                         </Button>
                     </p>
                 ) : (
-                    <p className="text-light mb-0">
+                    <p className="text-light mb-0 text-base">
                         <b>Description:</b> {descriptionDisplay()}
                     </p>
                 )}
-
 
 
                 <div className="grouping-description-form">
@@ -89,15 +89,15 @@ const GroupingHeader = ({
                         </span>
                     </form>
                     {descriptionLengthWarning && (
-                        <div className="float-md-left alert alert-danger h-50 pt-2 pb-0 pl-2 pr-2 mb-1 mt-1 border fade show">
-                            {/*<p th:utext="#{screen.message.admin.selectedGrouping.descriptionWarning}"></p>*/}
+                        <div className="float-md-left alert alert-danger h-50 pt-2 pb-0 pl-2 pr-2 mb-1 mt-1 border fade hidden">
+                        {/*<p th:utext="#{screen.message.admin.selectedGrouping.descriptionWarning}"></p>*/}
                         </div>
                     )}
                 </div>
 
             </div>
         </div>
-    </div>
+   </div>
 );
 
 export default GroupingHeader;
