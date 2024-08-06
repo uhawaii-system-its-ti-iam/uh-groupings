@@ -9,11 +9,14 @@ import Preferences from '@/app/groupings/_components/preferences';
 import Actions from '@/app/groupings/_components/actions';
 
 const GroupingBody = () => (
-    <div className="card-body p-0 border-bottom border-left border-right rounded-bottom">
-        <div className="row mx-auto">
-            <div className="col-lg-1 col-md-2 col-12 teal-tint-bg pt-3 pb-3" id="pills-column">
+    <div className="card-body p-0 border-b border-l border-r rounded-b-l">
+        <div className="flex flex-row mx-auto">
+
+            <div className="w-full sm:w-1/6 md:w-1/6 lg:w-1/12 bg-teal-tint pt-3 pb-3" id="pills-column">
                 <SideNav />
             </div>
+
+
             <div className="tab-content col-lg-11 col-md-10 col-12" id="pill-content">
                 <Members />
                 <div id="basis" className="tab-pane fade">
