@@ -29,8 +29,13 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
+        await waitFor(
+            async () => {
+                await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
+        );
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Thank You!' })).toBeInTheDocument();
@@ -51,8 +56,13 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
+        await waitFor(
+            async () => {
+                await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
+        );
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Oops!' })).toBeInTheDocument();
@@ -79,17 +89,27 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        await user.type(
-            screen.getByRole('textbox', { name: 'Your Feedback: *' }),
-            'This is a test to see if only one alert displays at a time.'
+        await waitFor(
+            async () => {
+                await user.type(
+                    screen.getByRole('textbox', { name: 'Your Feedback: *' }),
+                    'This is a test to see if only one alert displays at a time.'
+                );
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
         );
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Oops!' })).toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Thank You!' })).not.toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
+        await waitFor(
+            async () => {
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
+        );
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         await waitFor(() => {

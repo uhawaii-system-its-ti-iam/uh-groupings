@@ -23,7 +23,7 @@ const RootLayout = ({
     <html lang="en">
         <body className={sourceSans3.variable}>
             <Navbar />
-            {children}
+            <main className="h-full 2xl:min-h-[72.3vh]">{children}</main>
             <Footer />
         </body>
     </html>
