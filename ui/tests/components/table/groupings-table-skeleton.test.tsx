@@ -1,4 +1,4 @@
-import GroupingsTableSkeleton from '@/components/table/groupings-table-skeleton';
+import GroupingsTableSkeleton from '@/components/table/groupings-table/groupings-table-skeleton';
 import { render, screen } from '@testing-library/react';
 
 describe('GroupingsTableSkeleton', () => {
