@@ -1,5 +1,5 @@
 import { render, screen} from '@testing-library/react';
-import GroupingNameCell from '@/components/table/table-element/ grouping-name-cell';
+import GroupingNameCell from '@/components/table/groupings-table/table-element/grouping-name-cell';
 
 describe('GroupingNameCell', () => {
     it('renders the link with the correct path and displays the name', () => {
