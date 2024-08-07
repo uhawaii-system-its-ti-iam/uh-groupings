@@ -1,12 +1,12 @@
-import SideNav from '@/app/groupings/_components/side-nav';
-import Members from '@/app/groupings/_components/members';
-import Basis from '@/app/groupings/_components/basis';
-import Include from '@/app/groupings/_components/include';
-import Exclude from '@/app/groupings/_components/exclude';
-import Owners from '@/app/groupings/_components/owners';
-import SyncDestinations from '@/app/groupings/_components/sync-destinations';
-import Preferences from '@/app/groupings/_components/preferences';
-import Actions from '@/app/groupings/_components/actions';
+import SideNav from '@/app/groupings/[selectedGrouping]/_components/side-nav';
+import Members from '@/app/groupings/[selectedGrouping]/_components/members';
+import Basis from '@/app/groupings/[selectedGrouping]/_components/basis';
+import Include from '@/app/groupings/[selectedGrouping]/_components/include';
+import Exclude from '@/app/groupings/[selectedGrouping]/_components/exclude';
+import Owners from '@/app/groupings/[selectedGrouping]/_components/owners';
+import SyncDestinations from '@/app/groupings/[selectedGrouping]/_components/sync-destinations';
+import Preferences from '@/app/groupings/[selectedGrouping]/_components/preferences';
+import Actions from '@/app/groupings/[selectedGrouping]/_components/actions';
 
 const GroupingBody = () => (
     <div className="card-body p-0 border-b border-l border-r rounded-b-l">

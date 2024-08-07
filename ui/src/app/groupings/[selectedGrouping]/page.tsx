@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import GroupingBody from '@/app/groupings/_components/grouping-body';
-import ExportDropdown from '@/app/groupings/_components/export-dropdown';
-import ReturnButtons from '@/app/groupings/_components/return-buttons';
-import GroupingHeader from '@/app/groupings/_components/grouping-header';
+import GroupingBody from '@/app/groupings/[selectedGrouping]/_components/grouping-body';
+import ExportDropdown from '@/app/groupings/[selectedGrouping]/_components/export-dropdown';
+import ReturnButtons from '@/app/groupings/[selectedGrouping]/_components/return-buttons';
+import GroupingHeader from '@/app/groupings/[selectedGrouping]/_components/grouping-header';
 
 const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) => {
     const [fromManageSubject, setFromManageSubject] = useState(false);
