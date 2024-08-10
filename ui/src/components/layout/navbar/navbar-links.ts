@@ -1,6 +1,6 @@
 import Role from '@/access/role';
 
-export const NavLinks = [
+export const NavbarLinks = [
     {
         name: 'Admin',
         link: '/admin',
