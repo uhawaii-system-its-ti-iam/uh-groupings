@@ -5,7 +5,7 @@ import { getCurrentUser } from '@/access/authentication';
 import { NavLinks } from './nav-links';
 import LoginButton from './login-button';
 import MobileNavbar from './mobile-navbar';
-import TimeoutModal from '../modal/timeout-modal';
+import TimeoutModal from '@/components/modal/timeout-modal';
 
 const Navbar = async () => {
     const currentUser = await getCurrentUser();
@@ -20,7 +20,8 @@ const Navbar = async () => {
                                 src="/uhgroupings/uh-groupings-logo.svg"
                                 alt="UH Groupings Logo"
                                 width={256}
-                                height={256} />
+                                height={256}
+                            />
                         </Link>
                         <div className="flex lg:hidden">
                             <MobileNavbar currentUser={currentUser} />
@@ -29,14 +30,15 @@ const Navbar = async () => {
                                     src="/uhgroupings/uh-groupings-logo-large.svg"
                                     alt="UH Groupings Logo"
                                     width={56}
-                                    height={56} />
+                                    height={56}
+                                />
                             </Link>
                         </div>
                         <div className="text-lg text-uh-black my-auto lg:space-x-5">
                             {NavLinks
-                                .filter(navLink =>
+                                .filter((navLink) =>
                                     currentUser.roles.includes(Role.ADMIN) || currentUser.roles.includes(navLink.role))
-                                .map(navLink =>
+                                .map((navLink) => 
                                     <Link
                                         href={navLink.link}
                                         key={navLink.name}
@@ -50,6 +52,6 @@ const Navbar = async () => {
             </nav>
         </>
     );
-}
+};
 
 export default Navbar;

@@ -1,4 +1,4 @@
-import { 
+import {
     addAdmin,
     addExcludeMembers,
     addExcludeMembersAsync,
@@ -6,36 +6,36 @@ import {
     addIncludeMembersAsync,
     addOwners,
     getAllGroupings,
-    getAnnouncements, 
-    getNumberOfGroupings, 
-    getNumberOfMemberships, 
-    groupingAdmins, 
-    groupingDescription, 
-    groupingOptAttributes, 
-    groupingOwners, 
-    groupingSyncDest, 
-    isSoleOwner, 
-    managePersonResults, 
-    memberAttributeResults, 
-    memberAttributeResultsAsync, 
-    membershipResults, 
-    optIn, 
-    optInGroupingPaths, 
-    optOut, 
-    ownedGrouping, 
-    ownerGroupings, 
-    removeAdmin, 
-    removeExcludeMembers, 
-    removeFromGroups, 
-    removeIncludeMembers, 
-    removeOwners, 
-    resetExcludeGroup, 
-    resetExcludeGroupAsync, 
-    resetIncludeGroup, 
-    resetIncludeGroupAsync, 
+    getAnnouncements,
+    getNumberOfGroupings,
+    getNumberOfMemberships,
+    groupingAdmins,
+    groupingDescription,
+    groupingOptAttributes,
+    groupingOwners,
+    groupingSyncDest,
+    isSoleOwner,
+    managePersonResults,
+    memberAttributeResults,
+    memberAttributeResultsAsync,
+    membershipResults,
+    optIn,
+    optInGroupingPaths,
+    optOut,
+    ownedGrouping,
+    ownerGroupings,
+    removeAdmin,
+    removeExcludeMembers,
+    removeFromGroups,
+    removeIncludeMembers,
+    removeOwners,
+    resetExcludeGroup,
+    resetExcludeGroupAsync,
+    resetIncludeGroup,
+    resetIncludeGroupAsync,
     updateDescription
 } from '@/actions/groupings-api';
-import * as AuthenticationService from '@/access/authentication';
+import * as Authentication from '@/access/authentication';
 import User from '@/access/user';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
@@ -45,44 +45,43 @@ jest.mock('@/access/authentication');
 jest.mock('@/actions/email');
 
 describe('groupings-api', () => {
+    const currentUser = testUser;
 
-    const currentUser =  testUser;
-    
     const uhIdentifier = 'testiwta';
     const uhIdentifiers = ['testiwta', 'testiwtb'];
     const groupingPath = 'tmp:testiwta:testiwta-aux';
     const groupPaths = [
-        `${groupingPath}:include`, 
         `${groupingPath}:include`,
-        `${groupingPath}:exclude`, 
+        `${groupingPath}:include`,
+        `${groupingPath}:exclude`,
         `${groupingPath}:owners`
     ];
 
     const mockResponse = {
         resultCode: 'SUCCESS'
-    }
+    };
     const mockAsyncCompletedResponse = {
         status: 'COMPLETED',
         result: {
             resultCode: 'SUCCESS'
         }
-    }
+    };
     const mockAsyncInProgressResponse = {
         status: 'IN_PROGRESS'
-    }
+    };
     const mockError = {
         resultCode: 'FAILURE'
-    }
+    };
 
     beforeAll(() => {
-        jest.spyOn(AuthenticationService, 'getCurrentUser').mockResolvedValue(testUser);
-    })
+        jest.spyOn(Authentication, 'getCurrentUser').mockResolvedValue(testUser);
+    });
 
     describe('getAnnouncements', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getAnnouncements();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/announcements`, {
-                headers: { 'current_user': ''}
+                headers: { current_user: '' }
             });
         });
 
@@ -114,15 +113,18 @@ describe('groupings-api', () => {
         it('should make a POST request at the correct endpoint', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
             await ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/group?`
-                + `page=${page}&size=${size}&sortString=${sortString}&isAscending=${isAscending}`, {
-                body: JSON.stringify(groupPaths),
-                headers: {
-                    'current_user': currentUser.uid,
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST'
-            });
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/group?` +
+                    `page=${page}&size=${size}&sortString=${sortString}&isAscending=${isAscending}`,
+                {
+                    body: JSON.stringify(groupPaths),
+                    headers: {
+                        current_user: currentUser.uid,
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST'
+                }
+            );
         });
 
         it('should handle the successful response', async () => {
@@ -171,7 +173,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingDescription(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/description`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -190,7 +192,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingSyncDest(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/groupings-sync-destinations`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -209,7 +211,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingOptAttributes(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/opt-attributes`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -232,7 +234,7 @@ describe('groupings-api', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/description`, {
                 body: description,
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -254,7 +256,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingAdmins();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping-admins`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -273,7 +275,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getAllGroupings();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/all-groupings`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -291,15 +293,14 @@ describe('groupings-api', () => {
     describe('AddIncludeMembers', () => {
         it('should make a PUT request at the correct endpoint', async () => {
             await addIncludeMembers(uhIdentifiers, groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members`, {
-                    body: JSON.stringify(uhIdentifiers), 
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'PUT'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members`, {
+                body: JSON.stringify(uhIdentifiers),
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -324,15 +325,14 @@ describe('groupings-api', () => {
 
         it('should make a PUT request at the correct endpoint', async () => {
             await addIncludeMembersAsync(uhIdentifiers, groupingPath);
-            expect(fetch).toHaveBeenCalledWith(
-                `${baseUrl}/groupings/${groupingPath}/include-members/async`,{
-                    body: JSON.stringify(uhIdentifiers), 
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'PUT'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members/async`, {
+                body: JSON.stringify(uhIdentifiers),
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -343,7 +343,7 @@ describe('groupings-api', () => {
 
             const res = addIncludeMembersAsync(uhIdentifiers, groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
-            
+
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
 
@@ -352,9 +352,7 @@ describe('groupings-api', () => {
             let res = addIncludeMembersAsync(uhIdentifiers, groupingPath);
             expect(await res).toEqual(mockError);
 
-            fetchMock
-                .mockResponseOnce(JSON.stringify(0))
-                .mockRejectOnce(() => Promise.reject(mockError));
+            fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = addIncludeMembersAsync(uhIdentifiers, groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
@@ -364,15 +362,14 @@ describe('groupings-api', () => {
     describe('addExcludeMembers', () => {
         it('should make a PUT request at the correct endpoint', async () => {
             await addExcludeMembers(uhIdentifiers, groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members`, {
-                    body: JSON.stringify(uhIdentifiers), 
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'PUT'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members`, {
+                body: JSON.stringify(uhIdentifiers),
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -397,15 +394,14 @@ describe('groupings-api', () => {
 
         it('should make a PUT request at the correct endpoint', async () => {
             await addExcludeMembersAsync(uhIdentifiers, groupingPath);
-            expect(fetch).toHaveBeenCalledWith(
-                `${baseUrl}/groupings/${groupingPath}/exclude-members/async`,{
-                    body: JSON.stringify(uhIdentifiers), 
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'PUT'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members/async`, {
+                body: JSON.stringify(uhIdentifiers),
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'PUT'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -416,7 +412,7 @@ describe('groupings-api', () => {
 
             const res = addExcludeMembersAsync(uhIdentifiers, groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
-            
+
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
 
@@ -425,9 +421,7 @@ describe('groupings-api', () => {
             let res = addExcludeMembersAsync(uhIdentifiers, groupingPath);
             expect(await res).toEqual(mockError);
 
-            fetchMock
-                .mockResponseOnce(JSON.stringify(0))
-                .mockRejectOnce(() => Promise.reject(mockError));
+            fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = addExcludeMembersAsync(uhIdentifiers, groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
@@ -439,7 +433,7 @@ describe('groupings-api', () => {
             await addOwners(uhIdentifiers, groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`, {
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -462,7 +456,7 @@ describe('groupings-api', () => {
             await addAdmin(uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins/${uhIdentifier}`, {
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -485,7 +479,7 @@ describe('groupings-api', () => {
             await removeFromGroups(uhIdentifier, groupPaths);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins/${groupPaths}/${uhIdentifier}`, {
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -509,7 +503,7 @@ describe('groupings-api', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -533,7 +527,7 @@ describe('groupings-api', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -556,7 +550,7 @@ describe('groupings-api', () => {
             await removeOwners(uhIdentifiers, groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`, {
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -577,9 +571,9 @@ describe('groupings-api', () => {
     describe('removeAdmin', () => {
         it('should make a DELETE request at the correct endpoint', async () => {
             await removeAdmin(uhIdentifier);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins/${uhIdentifier}`,  { 
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins/${uhIdentifier}`, {
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -603,7 +597,7 @@ describe('groupings-api', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -635,10 +629,10 @@ describe('groupings-api', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/async`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    'current_user': currentUser.uid,
+                    current_user: currentUser.uid,
                     'Content-Type': 'application/json'
                 },
-                method: 'POST' 
+                method: 'POST'
             });
         });
 
@@ -650,7 +644,7 @@ describe('groupings-api', () => {
 
             const res = memberAttributeResultsAsync(uhIdentifiers);
             await jest.advanceTimersByTimeAsync(5000);
-            
+
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
 
@@ -659,9 +653,7 @@ describe('groupings-api', () => {
             let res = memberAttributeResultsAsync(uhIdentifiers);
             expect(await res).toEqual(mockError);
 
-            fetchMock
-                .mockResponseOnce(JSON.stringify(0))
-                .mockRejectOnce(() => Promise.reject(mockError));
+            fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = memberAttributeResultsAsync(uhIdentifiers);
             await jest.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
@@ -671,14 +663,16 @@ describe('groupings-api', () => {
     describe('optIn', () => {
         it('should make a PUT request at the correct endpoint', async () => {
             await optIn(groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members/${currentUser.uid}/self`, {
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/${groupingPath}/include-members/${currentUser.uid}/self`,
+                {
                     headers: {
-                        'current_user': currentUser.uid,
+                        current_user: currentUser.uid,
                         'Content-Type': 'application/json'
                     },
                     method: 'PUT'
-                });
+                }
+            );
         });
 
         it('should handle the successful response', async () => {
@@ -695,14 +689,16 @@ describe('groupings-api', () => {
     describe('optOut', () => {
         it('should make a PUT request at the correct endpoint', async () => {
             await optOut(groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members/${currentUser.uid}/self`, {
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/${groupingPath}/exclude-members/${currentUser.uid}/self`,
+                {
                     headers: {
-                        'current_user': currentUser.uid,
+                        current_user: currentUser.uid,
                         'Content-Type': 'application/json'
                     },
                     method: 'PUT'
-                })
+                }
+            );
         });
 
         it('should handle the successful response', async () => {
@@ -720,7 +716,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await membershipResults();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${currentUser.uid}/memberships`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -739,7 +735,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await managePersonResults(uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/groupings`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -758,7 +754,7 @@ describe('groupings-api', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getNumberOfMemberships();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${currentUser.uid}/memberships/count`, {
-                headers: { 'current_user': currentUser.uid }
+                headers: { current_user: currentUser.uid }
             });
         });
 
@@ -776,10 +772,9 @@ describe('groupings-api', () => {
     describe('optInGroupingPaths', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await optInGroupingPaths();
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`, {
-                    headers: { 'current_user': currentUser.uid }
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`, {
+                headers: { current_user: currentUser.uid }
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -796,14 +791,13 @@ describe('groupings-api', () => {
     describe('resetIncludeGroup', () => {
         it('should make a DELETE request at the correct endpoint', async () => {
             await resetIncludeGroup(groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include`, { 
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'DELETE'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include`, {
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'DELETE'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -828,14 +822,13 @@ describe('groupings-api', () => {
 
         it('should make a DELETE request at the correct endpoint', async () => {
             await resetIncludeGroupAsync(groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include/async`, {
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'DELETE'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include/async`, {
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'DELETE'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -846,7 +839,7 @@ describe('groupings-api', () => {
 
             const res = resetIncludeGroupAsync(groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
-            
+
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
 
@@ -855,9 +848,7 @@ describe('groupings-api', () => {
             let res = resetIncludeGroupAsync(groupingPath);
             expect(await res).toEqual(mockError);
 
-            fetchMock
-                .mockResponseOnce(JSON.stringify(0))
-                .mockRejectOnce(() => Promise.reject(mockError));
+            fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = resetIncludeGroupAsync(groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
@@ -867,14 +858,13 @@ describe('groupings-api', () => {
     describe('resetExcludeGroup', () => {
         it('should make a DELETE request at the correct endpoint', async () => {
             await resetExcludeGroup(groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude`, {
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'DELETE'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude`, {
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'DELETE'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -887,7 +877,7 @@ describe('groupings-api', () => {
             expect(await resetExcludeGroup(groupingPath)).toEqual(mockError);
         });
     });
-    
+
     describe('resetExcludeGroupAsync', () => {
         beforeEach(() => {
             jest.useFakeTimers();
@@ -899,14 +889,13 @@ describe('groupings-api', () => {
 
         it('should make a DELETE request at the correct endpoint', async () => {
             await resetExcludeGroupAsync(groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude/async`, {
-                    headers: {
-                        'current_user': currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'DELETE'
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude/async`, {
+                headers: {
+                    current_user: currentUser.uid,
+                    'Content-Type': 'application/json'
+                },
+                method: 'DELETE'
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -917,7 +906,7 @@ describe('groupings-api', () => {
 
             const res = resetExcludeGroupAsync(groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
-            
+
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
 
@@ -926,9 +915,7 @@ describe('groupings-api', () => {
             let res = resetExcludeGroupAsync(groupingPath);
             expect(await res).toEqual(mockError);
 
-            fetchMock
-                .mockResponseOnce(JSON.stringify(0))
-                .mockRejectOnce(() => Promise.reject(mockError));
+            fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = resetExcludeGroupAsync(groupingPath);
             await jest.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
@@ -938,10 +925,9 @@ describe('groupings-api', () => {
     describe('groupingOwners', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingOwners(groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/owners`, {
-                    headers: { 'current_user': currentUser.uid }
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/owners`, {
+                headers: { current_user: currentUser.uid }
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -958,10 +944,9 @@ describe('groupings-api', () => {
     describe('ownersGroupings', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await ownerGroupings();
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/owners/${currentUser.uid}/groupings`, {
-                    headers: { 'current_user': currentUser.uid }
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/owners/${currentUser.uid}/groupings`, {
+                headers: { current_user: currentUser.uid }
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -978,10 +963,9 @@ describe('groupings-api', () => {
     describe('getNumberOfGroupings', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getNumberOfGroupings();
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/owners/${currentUser.uid}/groupings/count`, {
-                    headers: { 'current_user': currentUser.uid }
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/owners/${currentUser.uid}/groupings/count`, {
+                headers: { current_user: currentUser.uid }
+            });
         });
 
         it('should handle the successful response', async () => {
@@ -998,10 +982,9 @@ describe('groupings-api', () => {
     describe('isSoleOwner', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isSoleOwner(uhIdentifier, groupingPath);
-            expect(fetch)
-                .toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`, {
-                    headers: { 'current_user': currentUser.uid }
-                });
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`, {
+                headers: { current_user: currentUser.uid }
+            });
         });
 
         it('should handle the successful response', async () => {
