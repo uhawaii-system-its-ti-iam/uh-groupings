@@ -1,7 +1,14 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import {groupingAdmins} from '@/actions/groupings-api';
+import AdminTable from '@/components/table/adminTable/AdminTable';
+import AddAdmin from '@/components/table/adminTable/table-element/AddAdmin';
 
-const Admin = () => {
-    return ( 
+
+const Admin = async () => {
+    const res = await groupingAdmins();
+    const members = res.members;
+
+    return (
         <main>
             <div className="bg-seafoam pt-3">
                 <div className="container">
@@ -38,7 +45,8 @@ const Admin = () => {
                     <TabsContent value="manage-admins">
                         <div className="bg-white">
                             <div className="container">
-                                {/* AdminTable goes here */}
+                                <AdminTable data={members}/>
+                                {/*<AddAdmin/>*/}
                             </div>
                         </div>
                     </TabsContent>

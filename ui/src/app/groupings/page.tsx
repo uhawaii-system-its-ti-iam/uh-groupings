@@ -1,4 +1,4 @@
-import GroupingsTable from '@/components/table/GroupingsTable';
+import GroupingsTable from '@/components/table/groupingsTable/GroupingsTable';
 import {ownerGroupings} from '@/actions/groupings-api';
 
 const Groupings = async () => {
