@@ -1,19 +1,19 @@
 import Role from '@/access/role';
 import User, { AnonymousUser } from '@/access/user';
-import MobileNavbar from '@/components/layout/navbar/mobile-navbar';
+import NavbarMenu from '@/components/layout/navbar/navbar-menu';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-describe('MobileNavbar', () => {
-    it('should render the MobileNavbar with the sheet closed', () => {
-        render(<MobileNavbar currentUser={AnonymousUser} />);
+describe('NavbarMenu', () => {
+    it('should render the NavbarMenu with the sheet closed', () => {
+        render(<NavbarMenu currentUser={AnonymousUser} />);
 
         expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
     });
 
     it('should open the drawer on click', () => {
-        render(<MobileNavbar currentUser={AnonymousUser} />);
+        render(<NavbarMenu currentUser={AnonymousUser} />);
 
         fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
         expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -21,7 +21,7 @@ describe('MobileNavbar', () => {
 
     describe('User is logged-out', () => {
         it('should render the navbar with only the link to /about', () => {
-            render(<MobileNavbar currentUser={AnonymousUser} />);
+            render(<NavbarMenu currentUser={AnonymousUser} />);
 
             fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('MobileNavbar', () => {
 
         it('should render only /memberships, /about, /feedback for the average user', () => {
             testUser.roles.push(Role.UH);
-            render(<MobileNavbar currentUser={testUser} />);
+            render(<NavbarMenu currentUser={testUser} />);
 
             fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe('MobileNavbar', () => {
 
         it('should render only /memberships, /groupings, /about, /feedback for an owner of a grouping', () => {
             testUser.roles.push(Role.OWNER, Role.UH);
-            render(<MobileNavbar currentUser={testUser} />);
+            render(<NavbarMenu currentUser={testUser} />);
 
             fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -66,7 +66,7 @@ describe('MobileNavbar', () => {
 
         it('should render all links for an Admin', () => {
             testUser.roles.push(Role.ADMIN, Role.UH);
-            render(<MobileNavbar currentUser={testUser} />);
+            render(<NavbarMenu currentUser={testUser} />);
 
             fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
