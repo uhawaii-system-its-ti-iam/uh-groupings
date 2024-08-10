@@ -2,9 +2,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Role from '@/access/role';
 import { getCurrentUser } from '@/access/authentication';
-import { NavLinks } from './nav-links';
+import { NavbarLinks } from './navbar-links';
 import LoginButton from './login-button';
-import MobileNavbar from './mobile-navbar';
+import NavbarMenu from './navbar-menu';
 import TimeoutModal from '@/components/modal/timeout-modal';
 
 const Navbar = async () => {
@@ -24,7 +24,7 @@ const Navbar = async () => {
                             />
                         </Link>
                         <div className="flex lg:hidden">
-                            <MobileNavbar currentUser={currentUser} />
+                            <NavbarMenu currentUser={currentUser} />
                             <Link href="/">
                                 <Image
                                     src="/uhgroupings/uh-groupings-logo-large.svg"
@@ -35,15 +35,16 @@ const Navbar = async () => {
                             </Link>
                         </div>
                         <div className="text-lg text-uh-black my-auto lg:space-x-5">
-                            {NavLinks
-                                .filter((navLink) =>
-                                    currentUser.roles.includes(Role.ADMIN) || currentUser.roles.includes(navLink.role))
-                                .map((navLink) => 
+                            {NavbarLinks
+                                .filter((navbarLink) =>
+                                    currentUser.roles.includes(Role.ADMIN) || 
+                                    currentUser.roles.includes(navbarLink.role))
+                                .map((navbarLink) => 
                                     <Link
-                                        href={navLink.link}
-                                        key={navLink.name}
+                                        href={navbarLink.link}
+                                        key={navbarLink.name}
                                         className="hover:text-uh-teal lg:inline hidden">
-                                        {navLink.name}
+                                        {navbarLink.name}
                                     </Link>)}
                             <LoginButton currentUser={currentUser} />
                         </div>
