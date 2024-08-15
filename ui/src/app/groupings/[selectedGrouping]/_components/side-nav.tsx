@@ -17,7 +17,7 @@ const SideNav = () => {
                 //th:title="#{screen.message.common.tooltip.nav.members}
                 data-tip="All Members" data-place="right">
                 <a data-toggle="tab" href="#all"
-                   className="py-2 px-4 rounded-circle d-flex items-center justify-center"
+                   className="nav-link pl-[0.75rem] rounded-circle d-flex items-center justify-center"
                    aria-label="All Members" onClick={resetFields}>
                     <Users aria-hidden="true" />
                 </a>
