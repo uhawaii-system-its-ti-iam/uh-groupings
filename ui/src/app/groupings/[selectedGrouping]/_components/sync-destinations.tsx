@@ -1,6 +1,6 @@
 const SyncDestinations = () => {
     return (
-        <h1></h1>
+        <h1>sync-destinations</h1>
     );
 }
 

@@ -1,6 +1,6 @@
 const Preferences = () => {
     return (
-        <h1></h1>
+        <h1>preferences</h1>
     );
 }
 
