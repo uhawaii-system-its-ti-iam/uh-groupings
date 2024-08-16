@@ -1,6 +1,11 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import GroupingsTable from '@/components/table/GroupingsTable';
+import {getAllGroupings} from '@/actions/groupings-api';
 
-const Admin = () => {
+const Admin = async () => {
+    const res = await getAllGroupings();
+    const groupingPaths = res.groupingPaths;
+
     return ( 
         <main>
             <div className="bg-seafoam pt-3">
@@ -31,7 +36,7 @@ const Admin = () => {
                     <TabsContent value="manage-groupings">
                         <div className="bg-white">
                             <div className="container">
-                                {/* GroupingsTable goes here */}
+                                <GroupingsTable data={groupingPaths}/>
                             </div>
                         </div>
                     </TabsContent>
