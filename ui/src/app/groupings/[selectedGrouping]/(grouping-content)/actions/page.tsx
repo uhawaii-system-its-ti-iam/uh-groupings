@@ -1,6 +1,6 @@
 const Actions = () => {
     return (
-        <h1></h1>
+        <h1>actions</h1>
     );
 }
 

@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import GroupingBody from '@/app/groupings/[selectedGrouping]/_components/grouping-body';
-import ExportDropdown from '@/app/groupings/[selectedGrouping]/_components/export-dropdown';
-import ReturnButtons from '@/app/groupings/[selectedGrouping]/_components/return-buttons';
 import GroupingHeader from '@/app/groupings/[selectedGrouping]/_components/grouping-header';
 
 const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) => {
@@ -20,11 +18,6 @@ const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) 
     }, []);
 
     return (
-        <div className="container">
-            <div className="mt-4">
-                <ReturnButtons />
-                <ExportDropdown />
-            </div>
             <div className={`${tabContent ? 'card-tab-content' : ''}`} id="sel">
                 <div className="overflow-hidden mb-5 mt-0">
                     <section>
@@ -35,8 +28,6 @@ const SelectedGrouping = ({ params }: { params: { selectedGrouping: string } }) 
                     </section>
                 </div>
             </div>
-
-        </div>
     );
 };
 

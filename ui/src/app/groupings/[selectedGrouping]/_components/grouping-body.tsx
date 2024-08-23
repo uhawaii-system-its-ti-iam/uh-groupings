@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import SideNav from '@/app/groupings/[selectedGrouping]/_components/side-nav';
-import SyncDestinations from '@/app/groupings/[selectedGrouping]/_components/sync-destinations';
-import Preferences from '@/app/groupings/[selectedGrouping]/_components/preferences';
-import Actions from '@/app/groupings/[selectedGrouping]/_components/actions';
+
 
 const GroupingBody = () => {
     const [activeTab, setActiveTab] = useState('all');
@@ -18,19 +16,20 @@ const GroupingBody = () => {
                     {activeTab === 'include' && <div id="include" className="tab-pane fade"></div>}
                     {activeTab === 'exclude' && <div id="exclude" className="tab-pane fade"></div>}
                     {activeTab === 'owners' && <div id="owners" className="tab-pane fade"></div>}
+
                     {activeTab === 'sync-destinations' && (
                         <div id="sync-destinations" className="tab-pane fade">
-                            <SyncDestinations />
+
                         </div>
                     )}
                     {activeTab === 'preferences' && (
                         <div id="preferences" className="tab-pane fade">
-                            <Preferences />
+
                         </div>
                     )}
                     {activeTab === 'actions' && (
                         <div id="actions" className="tab-pane fade">
-                            <Actions />
+
                         </div>
                     )}
                 </div>
