@@ -145,7 +145,7 @@ export const updateDescription = async (
  */
 export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError> => {
     const currentUser = await getCurrentUser();
-    const endpoint = `${baseUrl}/grouping-admins`;
+    const endpoint = `${baseUrl}/groupings/admins`;
     return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
 }
 
@@ -156,7 +156,7 @@ export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError>
  */
 export const getAllGroupings = async (): Promise<GroupingPaths & ApiError> => {
     const currentUser = await getCurrentUser();
-    const endpoint = `${baseUrl}/all-groupings`;
+    const endpoint = `${baseUrl}/groupings`;
     return getRequest<GroupingPaths>(endpoint, currentUser.uid);
 }
 
