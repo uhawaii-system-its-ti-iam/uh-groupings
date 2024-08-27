@@ -12,28 +12,42 @@ interface ToolTipProps {
 }
 
 // Modal Component
-export const Modal: React.FC<ModalProps> = ({ title, message, onClose, onConfirm, showConfirmButtons = false, syncType = "Undefined" }) => (
+export const Modal: React.FC<ModalProps> = ({
+                                                title,
+                                                message,
+                                                onClose,
+                                                onConfirm,
+                                                showConfirmButtons = false,
+                                                syncType,
+                                            }) => (
     <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="fixed inset-0 bg-black opacity-50"></div>
         <div className="bg-white p-4 rounded shadow-lg z-10 max-w-lg w-full">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl text-cyan-800">{title}</h2>
-                <button onClick={onClose} className="text-black hover:text-gray-700">&times;</button>
+                <button onClick={onClose} className="text-black hover:text-gray-700">
+                    &times;
+                </button>
             </div>
             <hr className="mb-4" />
 
-            {/* Display warning and specific confirmation message only for checkbox modal */}
+            {/* Display confirmation message based on the syncType */}
             {showConfirmButtons ? (
                 <>
                     <div className="bg-yellow-100 text-yellow-800 p-3 rounded mb-4">
-                        <p>Please be thoughtful about any changes here as some changes are operationally very expensive. Avoid rapidly enabling and disabling a synchronization destination.</p>
+                        <p>
+                            Please be thoughtful about any changes here as some changes are
+                            operationally very expensive. Avoid rapidly enabling and disabling
+                            a synchronization destination.
+                        </p>
                     </div>
                     <p>
-                        Are you sure you want to enable the synchronization destination: <strong>{syncType}</strong>?
+                        Are you sure you want to enable the synchronization destination:{' '}
+                        <strong>{syncType}</strong>?
                     </p>
                 </>
             ) : (
-                // Display regular message for icon modal
+                // Display regular message if not confirmation mode
                 <p>{message}</p>
             )}
 
@@ -41,15 +55,24 @@ export const Modal: React.FC<ModalProps> = ({ title, message, onClose, onConfirm
             <div className="flex justify-end mt-4">
                 {showConfirmButtons ? (
                     <>
-                        <button onClick={onConfirm} className="bg-cyan-700 hover:bg-cyan-800 text-white py-1 px-4 rounded mr-2">
+                        <button
+                            onClick={onConfirm}
+                            className="bg-cyan-700 hover:bg-cyan-800 text-white py-1 px-4 rounded mr-2"
+                        >
                             Yes
                         </button>
-                        <button onClick={onClose} className="bg-gray-500 hover:bg-gray-600 text-white py-1 px-4 rounded">
+                        <button
+                            onClick={onClose}
+                            className="bg-white text-black border-cyan-700 hover:bg-cyan-700 hover:text-white py-1 px-4 rounded"
+                        >
                             Cancel
                         </button>
                     </>
                 ) : (
-                    <button onClick={onClose} className="bg-cyan-700 hover:bg-cyan-800 text-white py-1 px-4 rounded">
+                    <button
+                        onClick={onClose}
+                        className="bg-cyan-700 hover:bg-cyan-800 text-white py-1 px-4 rounded"
+                    >
                         OK
                     </button>
                 )}

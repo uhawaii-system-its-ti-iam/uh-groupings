@@ -17,12 +17,29 @@ const SyncDestinations = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-    const [confirmationModalContent, setConfirmationModalContent] = useState('');
+    const [syncType, setSyncType] = useState(''); // Add state to hold syncType
     const [pendingCheckbox, setPendingCheckbox] = useState(null);
 
     const handleCheckboxClick = (checkboxType) => {
         setPendingCheckbox(checkboxType);
-        setConfirmationModalContent('Are you sure you want to enable the synchronization destination: ' + '?');
+
+        // Set the syncType dynamically based on the checkbox type
+        let selectedSyncType = '';
+        switch (checkboxType) {
+            case 'include':
+                selectedSyncType = 'CAS/LDAP: uhReleasedGrouping';
+                break;
+            case 'exclude':
+                selectedSyncType = 'Google-Group: Email';
+                break;
+            case 'listserv':
+                selectedSyncType = 'LISTSERV: Email';
+                break;
+            default:
+                break;
+        }
+
+        setSyncType(selectedSyncType);
         setIsConfirmationModalOpen(true);
     };
 
@@ -44,6 +61,7 @@ const SyncDestinations = () => {
         }
         setPendingCheckbox(null);
         setIsConfirmationModalOpen(false);
+        setSyncType(''); // Reset syncType when closing modal
     };
 
     const clickWithEnter = (event, checkboxType) => {
@@ -64,9 +82,12 @@ const SyncDestinations = () => {
     return (
         <div id="actions-display" className="block">
             <div className="flex flex-wrap">
-                <div className="md:w-2/3 pr-4 pl-4">
-                    <h1 className="font-bold text-3xl text-gray-900 mt-4 -ml-2 inline-block">Synchronization Destinations</h1>
-                    <p className="text-gray-900 -ml-2 mb-2">
+                {/* Ensure the container has no margin and uses full width */}
+                <div className="w-full pr-4 pl-4">
+                    {/* Heading aligned with the paragraph */}
+                    <h1 className="font-bold text-3xl text-gray-900 mt-4 ml-0">Synchronization Destinations</h1>
+                    {/* Paragraph with full width and aligned to the left */}
+                    <p className="text-gray-900 mb-2 w-full ml-0">
                         Changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases, a request may take several hours to be fully processed, depending on the number of members and the synchronization destination.
                     </p>
                 </div>
@@ -116,7 +137,7 @@ const SyncDestinations = () => {
                                     onKeyDown={(event) => clickWithEnter(event, 'exclude')}
                                 />
                                 <label className="text-gray-900 pl-2 mb-0" htmlFor="resetExcludeCheck">
-                                    Google-Group: ruichen-aux@gtest.hawaii.edu
+                                    Google-Group: Email
                                 </label>
                                 <div
                                     className="relative ml-2"
@@ -143,7 +164,7 @@ const SyncDestinations = () => {
                                     onKeyDown={(event) => clickWithEnter(event, 'listserv')}
                                 />
                                 <label className="text-gray-900 pl-2 mb-0" htmlFor="resetListservCheck">
-                                    LISTSERV: ruichen-aux@lists.hawaii.edu
+                                    LISTSERV: Email
                                 </label>
                                 <div
                                     className="relative ml-2"
@@ -176,10 +197,11 @@ const SyncDestinations = () => {
             {isConfirmationModalOpen && (
                 <Modal
                     title="Synchronization Destination Confirmation"
-                    message={confirmationModalContent}
+                    message={`Are you sure you want to enable the synchronization destination: ${syncType}?`}
                     onClose={() => handleConfirmation(false)}
                     onConfirm={() => handleConfirmation(true)}
                     showConfirmButtons={true}  // Yes and Cancel buttons
+                    syncType={syncType} // Pass the syncType to the modal
                 />
             )}
         </div>
@@ -187,3 +209,4 @@ const SyncDestinations = () => {
 };
 
 export default SyncDestinations;
+

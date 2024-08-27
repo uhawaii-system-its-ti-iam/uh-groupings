@@ -34,9 +34,12 @@ const Preferences = () => {
     return (
         <div id="actions-display" className="block">
             <div className="flex flex-wrap">
-                <div className="md:w-2/3 pr-4 pl-4">
-                    <h1 className="font-bold text-3xl text-gray-900 mt-4 -ml-2 inline-block">Preferences</h1>
-                    <p className="text-gray-900 -ml-2 mb-2">
+                {/* Ensure the container has no margin and uses full width */}
+                <div className="w-full pr-4 pl-4">
+                    {/* Heading aligned with the paragraph */}
+                    <h1 className="font-bold text-3xl text-gray-900 mt-4 ml-0">Synchronization Destinations</h1>
+                    {/* Paragraph with full width and aligned to the left */}
+                    <p className="text-gray-900 mb-2 w-full ml-0">
                         Changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases, a request may take several hours to be fully processed, depending on the number of members and the synchronization destination.
                     </p>
                 </div>
