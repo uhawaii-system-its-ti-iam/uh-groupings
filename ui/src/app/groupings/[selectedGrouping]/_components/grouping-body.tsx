@@ -20,10 +20,10 @@ const GroupingBody = () => (
                 <div id="sync-destinations" className="tab-pane fade">
                     <SyncDestinations />
                 </div>
-                <div id="preferences" className="tab-pane fade">
+                <div id="preferences" className="tab-pane fade invisible">
                     <Preferences />
                 </div>
-                <div id="actions" className="tab-pane fade">
+                <div id="actions" className="tab-pane fade invisible">
                     <Actions />
                 </div>
             </div>
