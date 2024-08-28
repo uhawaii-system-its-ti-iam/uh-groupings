@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 
 const GroupingHeader = () => {
@@ -24,9 +26,7 @@ const GroupingHeader = () => {
             <div className="flex flex-row table m-auto w-full p-0">
                 <div className="md:w-2/3 table-footer-group">
                     {selectedGrouping && (
-                        <h2 className="text-gray-100 mb-0 text-[2rem] text-center md:text-left">
-                            {selectedGrouping}
-                        </h2>
+                        <h2 className="text-gray-100 mb-0 text-[2rem] text-center md:text-left">{selectedGrouping}</h2>
                     )}
                 </div>
             </div>
@@ -66,13 +66,15 @@ const GroupingHeader = () => {
                                     aria-label="Grouping Description"
                                     value={modelDescription}
                                     onChange={(e) => setModelDescription(e.target.value)}
-                                    maxLength={maxDescriptionLength}/>
+                                    maxLength={maxDescriptionLength}
+                                />
                                 <span className="grouping-description-form">
                                     <button
                                         type="button"
                                         aria-label="Save description"
                                         className="description-form-button"
-                                        onClick={saveDescription}>
+                                        onClick={saveDescription}
+                                    >
                                         <i className="far fa-check-circle fa-2x" role="button" aria-hidden="true"></i>
                                     </button>
                                 </span>
@@ -82,7 +84,8 @@ const GroupingHeader = () => {
                                         type="button"
                                         aria-label="Cancel changes"
                                         className="description-form-button rounded-right"
-                                        onClick={cancelDescriptionEdit}>
+                                        onClick={cancelDescriptionEdit}
+                                    >
                                         <i className="far fa-times-circle fa-2x" role="button" aria-hidden="true"></i>
                                     </button>
                                 </span>

@@ -1,10 +1,11 @@
-import {useState, useEffect} from 'react';
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/router';
 
 const ReturnButtons = () => {
-
     const [fromManageSubject, setFromManageSubject] = useState(false);
 
     /*
@@ -23,7 +24,6 @@ const ReturnButtons = () => {
     }, [router.pathname]);
     */
 
-
     const returnToGroupingsList = () => {};
     const returnToManageSubject = () => {};
     const cancelDescriptionEdit = () => {};
@@ -39,7 +39,8 @@ const ReturnButtons = () => {
                         returnToGroupingsList();
                         cancelDescriptionEdit();
                         toggleShowAdminTab();
-                    }}>
+                    }}
+                >
                     <ArrowLeft className="mr-1" /> Return to Groupings List
                 </Button>
             ) : (
@@ -50,7 +51,8 @@ const ReturnButtons = () => {
                         returnToManageSubject();
                         cancelDescriptionEdit();
                         toggleShowAdminTab();
-                    }}>
+                    }}
+                >
                     <ArrowLeft className="mr-1" /> Return to Manage Person
                 </Button>
             )}
