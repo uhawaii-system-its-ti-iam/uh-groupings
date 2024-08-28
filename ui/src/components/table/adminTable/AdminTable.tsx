@@ -12,7 +12,7 @@ import AdminTableHeaders from '@/components/table/adminTable/table-element/Admin
 import PaginationBar from '@/components/table/table-element/Pagination';
 import GlobalFilter from '@/components/table/table-element/GlobalFilter';
 import SortArrow from '@/components/table/table-element/SortArrow';
-import RemoveAdminsModal from '@/components/table/adminTable/table-element/RemoveAdminsModal';
+import RemoveAdminsDialog from '@/components/table/adminTable/table-element/RemoveAdminsDialog';
 import {useState} from 'react';
 
 const AdminTable = ({data}) => {
@@ -83,7 +83,7 @@ const AdminTable = ({data}) => {
                                             </div>
                                         </div>
                                         {cell.column.id === 'REMOVE' && (
-                                            <RemoveAdminsModal/>
+                                            <RemoveAdminsDialog/>
                                         )}
                                     </div>
                                 </TableCell>

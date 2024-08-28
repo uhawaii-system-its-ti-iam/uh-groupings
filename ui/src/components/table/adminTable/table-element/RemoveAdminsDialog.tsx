@@ -2,9 +2,8 @@ import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, Di
 import {Label} from '@/components/ui/label';
 import {Button} from '@/components/ui/button';
 import { Trash2Icon } from 'lucide-react';
-import { RemoveAdminsIcon } from '@/components/table/adminTable/table-element/RemoveAdminsIcon';
 
-const RemoveAdminsModal = () => {
+const RemoveAdminsDialog = () => {
 
   return (
       <Dialog>
@@ -22,18 +21,18 @@ const RemoveAdminsModal = () => {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                          Name
+                      <Label htmlFor="name" className="font-bold text-xs text-left">
+                          NAME:
                       </Label>
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                          UH USERNAME
+                      <Label htmlFor="name" className="font-bold text-xs text-left">
+                          UH USERNAME:
                       </Label>
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="name" className="text-right">
-                          UH USER ID
+                      <Label htmlFor="name" className="font-bold text-xs text-left">
+                          UH USER ID:
                       </Label>
                   </div>
               </div>
@@ -45,4 +44,4 @@ const RemoveAdminsModal = () => {
   );
 };
 
-export default RemoveAdminsModal;
+export default RemoveAdminsDialog;
