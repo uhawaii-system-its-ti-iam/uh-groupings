@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MessageCircleQuestion } from 'lucide-react';
-import { Modal, ToolTip } from './UIComponents';
+import { DisplayDynamicModal, ToolTip } from './UIComponents';
 
 const Preferences = () => {
     const [includeCheck, setIncludeCheck] = useState(false);
@@ -37,7 +37,7 @@ const Preferences = () => {
                 {/* Ensure the container has no margin and uses full width */}
                 <div className="w-full pr-4 pl-4">
                     {/* Heading aligned with the paragraph */}
-                    <h1 className="font-bold text-3xl text-gray-900 mt-4 ml-0">Synchronization Destinations</h1>
+                    <h1 className="font-bold text-3xl text-gray-900 mt-4 ml-0">Preferences</h1>
                     {/* Paragraph with full width and aligned to the left */}
                     <p className="text-gray-900 mb-2 w-full ml-0">
                         Changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases, a request may take several hours to be fully processed, depending on the number of members and the synchronization destination.
@@ -106,7 +106,7 @@ const Preferences = () => {
             </div>
 
             {isModalOpen && (
-                <Modal
+                <DisplayDynamicModal
                     title="Preferences Information"
                     message={modalContent}
                     onClose={() => setIsModalOpen(false)}

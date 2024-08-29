@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MessageCircleQuestion } from 'lucide-react';
-import { Modal, ToolTip } from './UIComponents';
+import { DisplayDynamicModal, DisplaySyncDestModal, ToolTip } from './UIComponents';
 
 const SyncDestinations = () => {
     const [includeCheck, setIncludeCheck] = useState(false);
@@ -17,7 +17,7 @@ const SyncDestinations = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-    const [syncType, setSyncType] = useState(''); // Add state to hold syncType
+    const [syncType, setSyncType] = useState('');
     const [pendingCheckbox, setPendingCheckbox] = useState(null);
 
     const handleCheckboxClick = (checkboxType) => {
@@ -120,7 +120,7 @@ const SyncDestinations = () => {
                                 >
                                     <MessageCircleQuestion className="w-6 h-6 cursor-pointer" />
                                     {isHoveredInclude && (
-                                        <ToolTip message="Enable the opt-in self-service so that new members can discover and join this grouping. " />
+                                        <ToolTip message="Synchronize an individual’s membership with the individual’s CAS/LDAP attribute uhReleasedGrouping." />
                                     )}
                                 </div>
                             </div>
@@ -147,7 +147,7 @@ const SyncDestinations = () => {
                                 >
                                     <MessageCircleQuestion className="w-6 h-6 cursor-pointer" />
                                     {isHoveredExclude && (
-                                        <ToolTip message="Enable the opt-out self-service so that members can leave at any time. " />
+                                        <ToolTip message="Synchronize the grouping's membership with the corresponding Google Group." />
                                     )}
                                 </div>
                             </div>
@@ -174,7 +174,7 @@ const SyncDestinations = () => {
                                 >
                                     <MessageCircleQuestion className="w-6 h-6 cursor-pointer" />
                                     {isHoveredListserv && (
-                                        <ToolTip message="Manage subscriptions for the LISTSERV mailing list. " />
+                                        <ToolTip message="Synchronize the grouping's membership with a corresponding LISTSERV list, which will be created as needed." />
                                     )}
                                 </div>
                             </div>
@@ -185,22 +185,19 @@ const SyncDestinations = () => {
 
             {/* Icon-related Modal */}
             {isModalOpen && (
-                <Modal
+                <DisplayDynamicModal
                     title="Sync Destinations Information"
                     message={modalContent}
                     onClose={() => setIsModalOpen(false)}
-                    showConfirmButtons={false}  // Only OK button
                 />
             )}
 
             {/* Confirmation Modal with Warning */}
             {isConfirmationModalOpen && (
-                <Modal
+                <DisplaySyncDestModal
                     title="Synchronization Destination Confirmation"
-                    message={`Are you sure you want to enable the synchronization destination: ${syncType}?`}
                     onClose={() => handleConfirmation(false)}
                     onConfirm={() => handleConfirmation(true)}
-                    showConfirmButtons={true}  // Yes and Cancel buttons
                     syncType={syncType} // Pass the syncType to the modal
                 />
             )}
@@ -209,4 +206,5 @@ const SyncDestinations = () => {
 };
 
 export default SyncDestinations;
+
 
