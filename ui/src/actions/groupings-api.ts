@@ -98,9 +98,9 @@ export const groupingDescription = async (
  * 
  * @returns The promise of the grouping sync destinations or ApiError type
  */
-export const getGroupingSyncDest = async (
+export const getGroupingSyncDestinations = async (
     groupingPath: string
-): Promise<GroupingSyncDestinations & ApiError> => {
+): Promise<GroupingSyncDestinations> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/groupings-sync-destinations`;
     return getRequest<GroupingSyncDestinations>(endpoint, currentUser.uid);
