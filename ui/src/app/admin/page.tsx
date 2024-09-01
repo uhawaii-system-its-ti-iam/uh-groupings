@@ -1,4 +1,5 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import PersonTable from '@/app/admin/personTable/page';
 
 const Admin = () => {
     return (
@@ -28,7 +29,7 @@ const Admin = () => {
             </TabsContent>
             <TabsContent value="manage-person">
                 <div className="bg-white">
-                    <div className="container">{/* PersonTable goes here */}</div>
+                    <div className="container">{<PersonTable />}</div>
                 </div>
             </TabsContent>
         </Tabs>
