@@ -1,11 +1,11 @@
 import {
-    AlertDialog, 
-    AlertDialogContent, 
-    AlertDialogDescription,
-    AlertDialogFooter, 
-    AlertDialogHeader, 
-    AlertDialogTitle, 
-    AlertDialogTrigger
+  AlertDialog, AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -89,7 +89,7 @@ const RemoveAdminsDialog = () => {
               </div>
               <AlertDialogFooter>
                   <Button>Yes</Button>
-                  <Button variant="secondary">Cancel</Button>
+                  <AlertDialogCancel onClick={() => close()}>Cancel</AlertDialogCancel>
               </AlertDialogFooter>
           </AlertDialogContent>
       </AlertDialog>
