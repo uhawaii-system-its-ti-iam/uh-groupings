@@ -14,6 +14,7 @@ import GlobalFilter from '@/components/table/table-element/GlobalFilter';
 import SortArrow from '@/components/table/table-element/SortArrow';
 import RemoveAdminsDialog from '@/components/table/adminTable/table-element/RemoveAdminsDialog';
 import {useState} from 'react';
+import AddAdmin from '@/components/table/adminTable/table-element/AddAdmin';
 
 const AdminTable = ({data}) => {
     const [globalFilter, setGlobalFilter] = useState('');
@@ -92,7 +93,8 @@ const AdminTable = ({data}) => {
                     ))}
                 </TableBody>
             </Table>
-          <PaginationBar table={table}/>
+            <PaginationBar table={table}/>
+            <AddAdmin/>
         </div>
     );
 };

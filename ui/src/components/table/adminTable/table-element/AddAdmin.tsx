@@ -1,33 +1,33 @@
 import { Input } from '@/components/ui/input'
 import {Dispatch, SetStateAction} from 'react';
-/*
-import { addAdmin } from '@/actions/groupings-api';
-*/
-import { Button } from '@/components/ui/button';
+import {ClipboardIcon} from 'lucide-react';
 
 interface InputProps {
   input: string;
   setInput:  Dispatch<SetStateAction<string>>;
 }
-const AddAdmin = ({input, setInput} : InputProps) => (
-    <div className="flex items-center w-full outline outline-1 rounded h-6 m-1">
-        <Input
-            /*className="flex-1 h-6 text-input-text-grey text-[0.875rem]
-            border-none rounded-none w-[161] truncate"*/
-            placeholder={'UH Username or UH Number'}
-            value={input || ''}
 
-            onChange={e => setInput(e.target.value)}
+const handleClick = () => {
+
+};
+const AddAdmin = ({input, setInput} : InputProps) => {
+  return (
+    <div>
+        <Input
+          placeholder={'UH Username or UH Number'}
+          value={input}
+
+          onChange={e => setInput(e.target.value)}
         />
-        <Button
-          /*className="relative flex-shrink-0 flex items-center
-          justify-center hover:bg-green-blue h-6 p-2"*/
-          variant="default"
-          /*onClick={() => addAdmin(input)}*/
+        <button
+          onClick={handleClick}
+          className="relative flex-shrink-0 flex items-center
+                                   justify-center hover:bg-green-blue h-6 p-2"
         >
-          Add
-        </Button>
+          <ClipboardIcon className="h-4 w-4 text-gray-600"/>
+        </button>
     </div>
-);
+  );
+}
 
 export default AddAdmin;
