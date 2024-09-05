@@ -1,28 +1,12 @@
-import {useState, useEffect} from 'react';
+'use client';
+
+import {useState} from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/router';
 
 const ReturnButtons = () => {
 
     const [fromManageSubject, setFromManageSubject] = useState(false);
-
-    /*
-    //Check current page
-    const router = useRouter();
-    const checkCurrentPage = () => {
-        if (router.pathname.includes('/manage-subject')) {
-            setFromManageSubject(true);
-        } else if (router.pathname.includes('/manage-groupings')) {
-            setFromManageSubject(false);
-        }
-    };
-
-    useEffect(() => {
-        checkCurrentPage();
-    }, [router.pathname]);
-    */
-
 
     const returnToGroupingsList = () => {};
     const returnToManageSubject = () => {};
