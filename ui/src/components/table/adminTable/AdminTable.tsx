@@ -84,7 +84,11 @@ const AdminTable = ({data}) => {
                                             </div>
                                         </div>
                                         {cell.column.id === 'REMOVE' && (
-                                            <RemoveAdminsDialog/>
+                                            <RemoveAdminsDialog
+                                                uid={row.getValue('uid')}
+                                                name={row.getValue('name')}
+                                                uhUuid={row.getValue('uhUuid')}
+                                            />
                                         )}
                                     </div>
                                 </TableCell>

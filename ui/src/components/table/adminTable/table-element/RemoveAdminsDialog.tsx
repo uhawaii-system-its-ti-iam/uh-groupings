@@ -11,8 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {Label} from '@/components/ui/label';
 import { Trash2Icon } from 'lucide-react';
+import {MemberResult} from '@/models/groupings-api-results';
 
-const RemoveAdminsDialog = () => {
+const RemoveAdminsDialog = ({uid, name, uhUuid} : MemberResult) => {
 
   return (
       <AlertDialog>
@@ -53,24 +54,24 @@ const RemoveAdminsDialog = () => {
                   <div className="grid">
                       <div className="grid grid-cols-3 items-center">
                           <Label htmlFor="name" className="text-s text-left whitespace-nowrap">
-                            NAME
+                              {name}
                           </Label>
                       </div>
                       <div className="grid grid-cols-4 items-center">
                           <Label htmlFor="name" className="text-s text-left whitespace-nowrap">
-                              UH USERNAME
+                              {uid}
                           </Label>
                       </div>
                       <div className="grid grid-cols-4 items-center">
                           <Label htmlFor="name" className="text-s text-left whitespace-nowrap">
-                              UH USER ID
+                              {uhUuid}
                           </Label>
                       </div>
                   </div>
               </div>
               <div>
                   <AlertDialogDescription>
-                      Are you sure you want to remove <span className="font-bold text-text-color">NAME</span> from the admins list?
+                      Are you sure you want to remove <span className="font-bold text-text-color">{name}</span> from the admins list?
                   </AlertDialogDescription>
               </div>
               <div className="px-3">
