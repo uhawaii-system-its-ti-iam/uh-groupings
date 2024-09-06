@@ -18,6 +18,7 @@ import AddAdmin from '@/components/table/adminTable/table-element/AddAdmin';
 
 const AdminTable = ({data}) => {
     const [globalFilter, setGlobalFilter] = useState('');
+    const [adminInput, setAdminInput] = useState('');
     const [sorting, setSorting] = useState([]);
 
     const table = useReactTable({
@@ -97,8 +98,14 @@ const AdminTable = ({data}) => {
                     ))}
                 </TableBody>
             </Table>
-            <PaginationBar table={table}/>
-            <AddAdmin/>
+            <div className="grid grid-cols-2 items-center">
+              <div>
+                <AddAdmin input={adminInput} setInput={setAdminInput}/>
+              </div>
+              <div className="flex justify-end">
+                <PaginationBar table={table}/>
+              </div>
+            </div>
         </div>
     );
 };

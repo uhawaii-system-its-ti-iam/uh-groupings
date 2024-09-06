@@ -1,9 +1,6 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {groupingAdmins} from '@/actions/groupings-api';
 import AdminTable from '@/components/table/adminTable/AdminTable';
-/*
-import AddAdmin from '@/components/table/adminTable/table-element/AddAdmin';
-*/
 
 
 const Admin = async () => {
