@@ -35,17 +35,19 @@ const Navbar = async () => {
                             </Link>
                         </div>
                         <div className="text-lg text-uh-black my-auto lg:space-x-5">
-                            {NavbarLinks
-                                .filter((navbarLink) =>
-                                    currentUser.roles.includes(Role.ADMIN) || 
-                                    currentUser.roles.includes(navbarLink.role))
-                                .map((navbarLink) => 
-                                    <Link
-                                        href={navbarLink.link}
-                                        key={navbarLink.name}
-                                        className="hover:text-uh-teal lg:inline hidden">
-                                        {navbarLink.name}
-                                    </Link>)}
+                            {NavbarLinks.filter(
+                                (navbarLink) =>
+                                    currentUser.roles.includes(Role.ADMIN) ||
+                                    currentUser.roles.includes(navbarLink.role)
+                            ).map((navbarLink) => (
+                                <Link
+                                    href={navbarLink.link}
+                                    key={navbarLink.name}
+                                    className="hover:text-uh-teal lg:inline hidden"
+                                >
+                                    {navbarLink.name}
+                                </Link>
+                            ))}
                             <LoginButton currentUser={currentUser} />
                         </div>
                     </div>
