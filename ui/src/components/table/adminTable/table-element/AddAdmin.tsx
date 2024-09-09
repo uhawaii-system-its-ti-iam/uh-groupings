@@ -29,13 +29,21 @@ const AddAdmin = ({input, setInput}: InputProps) => (
 
                 onChange={e => setInput(e.target.value)}
             />
-
-            <Button
-                className="rounded-l-none"
-                onClick={() => handleClick(input)}
-                >
-                Add
-            </Button>
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            className="rounded-l-none"
+                            onClick={() => handleClick(input)}
+                        >
+                            Add
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Add to admins</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         </div>
 );
 

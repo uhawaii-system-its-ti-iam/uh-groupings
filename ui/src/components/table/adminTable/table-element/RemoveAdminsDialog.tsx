@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {Label} from '@/components/ui/label';
 import { Trash2Icon } from 'lucide-react';
 import {MemberResult} from '@/models/groupings-api-results';
+import {removeAdmin} from '@/actions/groupings-api';
 
 const RemoveAdminsDialog = ({uid, name, uhUuid} : MemberResult) => {
 
@@ -89,7 +90,7 @@ const RemoveAdminsDialog = ({uid, name, uhUuid} : MemberResult) => {
                   </Alert>
               </div>
               <AlertDialogFooter>
-                  <Button>Yes</Button>
+                  <Button onClick={() => removeAdmin(uid)}>Yes</Button>
                   <AlertDialogCancel onClick={() => close()}>Cancel</AlertDialogCancel>
               </AlertDialogFooter>
           </AlertDialogContent>
