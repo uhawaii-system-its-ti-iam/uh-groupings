@@ -6,7 +6,7 @@ const Groupings = () => {
     const router = useRouter();
 
     const handleButtonClick = () => {
-        const selectedGrouping = 'tmp:hokwai:hokwai-aux';
+        const selectedGrouping = 'tmp:ruichen:ruichen-aux';
         router.push(`/groupings/${selectedGrouping}`);
     };
 

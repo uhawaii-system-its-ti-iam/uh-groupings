@@ -2,11 +2,10 @@
 
 import React, { useState } from 'react';
 import { MessageCircleQuestion } from 'lucide-react';
-import { DisplayDynamicModal, DisplaySyncDestModal, ToolTip } from './UIComponents';
+import { DisplayDynamicModal, DisplaySyncDestModal, ToolTip } from '@/app/groupings/[selectedGrouping]/@tab/UIComponents';
 
-const SyncDestinations = ({ syncDestinations = [] }) => { // Default to empty array if undefined
-                                                          // State for modal and checkbox management
-    const [syncDestArray, setSyncDestArray] = useState(syncDestinations); // Initialize state with fetched data
+const SyncDestination = ({ syncDestArray, tooltips }) => {
+    // State for modal and checkbox management
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState('');
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -23,10 +22,8 @@ const SyncDestinations = ({ syncDestinations = [] }) => { // Default to empty ar
 
     const handleConfirmation = (confirmed) => {
         if (confirmed && pendingCheckbox) {
-            setSyncDestArray((prevArray) =>
-                prevArray.map((item) =>
-                    item.name === pendingCheckbox ? { ...item, synced: !item.synced } : item
-                )
+            syncDestArray = syncDestArray.map((item) =>
+                item.name === pendingCheckbox ? { ...item, synced: !item.synced } : item
             );
         }
         setPendingCheckbox(null);
@@ -72,17 +69,17 @@ const SyncDestinations = ({ syncDestinations = [] }) => { // Default to empty ar
                                             onKeyDown={(event) => clickWithEnter(event, syncDest.name)}
                                         />
                                         <label className="text-gray-900 pl-2 mb-0" htmlFor={`reset-${syncDest.name}-Check`}>
-                                            {syncDest.description}
+                                            {syncDest.name}
                                         </label>
                                         <div
                                             className="relative ml-2"
                                             onMouseEnter={() => setHovered(syncDest.name)}
                                             onMouseLeave={() => setHovered(null)}
-                                            onClick={() => openModal(syncDest.tooltip)}
+                                            onClick={() => openModal(tooltips[syncDest.name])} // Display tooltip when clicked
                                         >
                                             <MessageCircleQuestion className="w-6 h-6 cursor-pointer" />
                                             {hovered === syncDest.name && (
-                                                <ToolTip message={syncDest.tooltip} />
+                                                <ToolTip message={tooltips[syncDest.name]} />
                                             )}
                                         </div>
                                     </div>
@@ -115,4 +112,4 @@ const SyncDestinations = ({ syncDestinations = [] }) => { // Default to empty ar
     );
 };
 
-export default SyncDestinations;
+export default SyncDestination;
