@@ -14,13 +14,7 @@ import { Trash2Icon } from 'lucide-react';
 import {MemberResult} from '@/models/groupings-api-results';
 import {removeAdmin} from '@/actions/groupings-api';
 
-interface DialogProps {
-  title: string;
-  description: string;
-  func: 
-}
-
-const RemoveAdminsDialog = ({title, description} : DialogProps, {uid, name, uhUuid} : MemberResult) => {
+const RemoveAdminsDialog = ({uid, name, uhUuid} : MemberResult) => {
 
   return (
       <AlertDialog>
@@ -31,10 +25,10 @@ const RemoveAdminsDialog = ({title, description} : DialogProps, {uid, name, uhUu
           </AlertDialogTrigger>
           <AlertDialogContent className="sm:max-w-[500px]">
               <AlertDialogHeader>
-                  <AlertDialogTitle className="text-[1.4rem] text-text-color">Remove Member {title}</AlertDialogTitle>
+                  <AlertDialogTitle className="text-[1.4rem] text-text-color">Remove Member</AlertDialogTitle>
                   {/*<hr/>*/}
                   <AlertDialogDescription>
-                      You are about to {description} remove the following member from the admins list.
+                      You are about to remove the following member from the admins list.
                   </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="grid grid-cols-2">
@@ -76,11 +70,9 @@ const RemoveAdminsDialog = ({title, description} : DialogProps, {uid, name, uhUu
                       </div>
                   </div>
               </div>
-              <div>
-                  <AlertDialogDescription>
-                      Are you sure you want to {description} remove<span className="font-bold text-text-color">{name}</span>from the admins list?
-                  </AlertDialogDescription>
-              </div>
+              <AlertDialogDescription>
+                  Are you sure you want to remove <span className="font-bold text-text-color">{name}</span> from the admins list?
+              </AlertDialogDescription>
               <div className="px-3">
                   <Alert className="bg-yellow-100 border border-yellow-200 mb-2">
                       <AlertDescription>

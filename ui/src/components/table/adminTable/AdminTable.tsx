@@ -14,8 +14,7 @@ import GlobalFilter from '@/components/table/table-element/GlobalFilter';
 import SortArrow from '@/components/table/table-element/SortArrow';
 import RemoveAdminsDialog from '@/components/table/adminTable/table-element/RemoveAdminsDialog';
 import {useState} from 'react';
-import AddAdmin from '@/components/table/adminTable/table-element/AddAdmin';
-
+import AddAdminsDialog from '@/components/table/adminTable/table-element/AddAdminsDialog';
 const AdminTable = ({data}) => {
     const [globalFilter, setGlobalFilter] = useState('');
     const [adminInput, setAdminInput] = useState('');
@@ -99,12 +98,13 @@ const AdminTable = ({data}) => {
                 </TableBody>
             </Table>
             <div className="grid grid-cols-2 items-center">
-              <div>
-                <AddAdmin input={adminInput} setInput={setAdminInput}/>
-              </div>
-              <div className="flex justify-end">
-                <PaginationBar table={table}/>
-              </div>
+                <div>
+                    {/*<AddAdmin input={adminInput} setInput={setAdminInput}/>*/}
+                    <AddAdminsDialog input={adminInput} setInput={setAdminInput}/>
+                </div>
+                <div className="flex justify-end">
+                    <PaginationBar table={table}/>
+                </div>
             </div>
         </div>
     );

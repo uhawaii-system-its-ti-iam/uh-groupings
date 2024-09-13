@@ -48,30 +48,3 @@ const AddAdmin = ({input, setInput}: InputProps) => (
 );
 
 export default AddAdmin;
-
-/*
-const handleClick = () => {
-  setTooltipContent('copied!');
-  setTooltipVisible(true);
-  setTimeout(() => {
-    setTooltipContent('copy');
-    setTooltipVisible(false);
-  }, 2000);
-};*/
-
-/*<TooltipProvider>
-  <Tooltip open={tooltipVisible} onOpenChange={setTooltipVisible}>
-    <TooltipTrigger asChild>
-      <button
-        onClick={handleClick}
-        className="relative flex-shrink-0 flex items-center
-                             justify-center hover:bg-green-blue h-6 p-2"
-      >
-        <ClipboardIcon className="h-4 w-4 text-gray-600" />
-      </button>
-    </TooltipTrigger>
-    <TooltipContent>
-      <p>{tooltipContent}</p>
-    </TooltipContent>
-  </Tooltip>
-</TooltipProvider>*/
