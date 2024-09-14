@@ -4,26 +4,21 @@ import SyncDestination from './sync-destination'; // Client component
 const SyncDestinationsTab = async ({ params }: { params: { selectedGrouping: string } }) => {
     // Fetch the data
     const syncDestinations = await getGroupingSyncDestinations(params.selectedGrouping);
-
-    // Ensure that syncDestinations is an array
-    const syncDestArray = Array.isArray(syncDestinations) ? syncDestinations : [];
-
-    // Process data: syncDestArray stores descriptions, tooltips store corresponding tooltips
+    // Extract the array from data.
+    const syncDestArray = Array.isArray(syncDestinations.syncDestinations) ? syncDestinations.syncDestinations : [];
+    // Process the data
     const processedSyncDestArray = syncDestArray.map(dest => ({
         name: dest.description,    // Checkbox label
         synced: dest.synced,       // Checkbox checked state
-        hidden: dest.hidden        // Whether the item is hidden
+        hidden: dest.hidden,        // Whether the item is hidden
+        tooltip: dest.tooltip,
     }));
 
-    const tooltips = syncDestArray.reduce((acc, dest) => {
-        acc[dest.description] = dest.tooltip; // Storing tooltips by description
-        return acc;
-    }, {});
 
-    // Pass data to the client-side component
+    // Pass the processedSyncDestArray and tooltips to the client-side component
     return (
         <>
-            <SyncDestination syncDestArray={processedSyncDestArray} tooltips={tooltips} />
+            <SyncDestination syncDestArray={processedSyncDestArray} />
         </>
     );
 };

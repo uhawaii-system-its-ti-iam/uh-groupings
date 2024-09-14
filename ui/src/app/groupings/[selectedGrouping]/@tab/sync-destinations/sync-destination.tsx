@@ -2,43 +2,49 @@
 
 import React, { useState } from 'react';
 import { MessageCircleQuestion } from 'lucide-react';
-import { DisplayDynamicModal, DisplaySyncDestModal, ToolTip } from '@/app/groupings/[selectedGrouping]/@tab/UIComponents';
+import { DisplaySyncDestModal, DisplayDynamicModal, ToolTip } from '@/app/groupings/[selectedGrouping]/@tab/UIComponents';
 
-const SyncDestination = ({ syncDestArray, tooltips }) => {
-    // State for modal and checkbox management
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalContent, setModalContent] = useState('');
-    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-    const [syncType, setSyncType] = useState('');
-    const [pendingCheckbox, setPendingCheckbox] = useState(null);
-    const [hovered, setHovered] = useState(null);
+const SyncDestination = ({ syncDestArray }) => {
+    const [hovered, setHovered] = useState(null);  // Keep track of the hovered item
+    const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);  // Modal state for icon
+    const [isSyncDestModalOpen, setIsSyncDestModalOpen] = useState(false);  // Modal state for checkbox
+    const [modalContent, setModalContent] = useState('');  // Content for DisplayDynamicModal
+    const [modalSyncDestContent, setModalSyncDestContent] = useState('');  // Content for DisplaySyncDestModal
+    const [pendingCheckbox, setPendingCheckbox] = useState(null);  // Checkbox awaiting confirmation
+    const [syncDestState, setSyncDestState] = useState(syncDestArray); // Manage the state of the sync destinations
 
-    // Handle checkbox click
-    const handleCheckboxClick = (syncDestName) => {
-        setPendingCheckbox(syncDestName);
-        setSyncType(syncDestName);
-        setIsConfirmationModalOpen(true);
+    // Handle checkbox click and open the modal for confirmation
+    const handleCheckboxClick = (syncDest) => {
+        setPendingCheckbox(syncDest);  // Track which checkbox is being clicked
+        setModalSyncDestContent(syncDest.name);  // Set the content to only the syncDest name
+        setIsSyncDestModalOpen(true);  // Open the confirmation modal
+    };
+    // Handle icon click to open the modal with tooltip data
+    const openIconModal = (syncDestName) => {
+        const syncDest = syncDestArray.find(dest => dest.name === syncDestName);
+        setModalContent(syncDest.tooltip || 'No tooltip available');  // Use tooltip from syncDestArray
+        setIsDynamicModalOpen(true);  // Open the modal for the icon
     };
 
-    const handleConfirmation = (confirmed) => {
-        if (confirmed && pendingCheckbox) {
-            syncDestArray = syncDestArray.map((item) =>
-                item.name === pendingCheckbox ? { ...item, synced: !item.synced } : item
-            );
-        }
-        setPendingCheckbox(null);
-        setIsConfirmationModalOpen(false);
+    // Handle confirmation from the checkbox modal
+    const handleConfirmCheckbox = () => {
+        // Update the checkbox state based on confirmation
+        setSyncDestState((prevState) =>
+            prevState.map(dest =>
+                dest.name === pendingCheckbox.name ? { ...dest, synced: !dest.synced } : dest
+            )
+        );
+        setIsSyncDestModalOpen(false);  // Close the modal
     };
 
-    const openModal = (content) => {
-        setModalContent(content);
-        setIsModalOpen(true);
+    // Handle modal close without confirming for checkbox
+    const handleCloseCheckbox = () => {
+        setIsSyncDestModalOpen(false);  // Just close the modal, don't change the checkbox state
     };
 
-    const clickWithEnter = (event, syncDestName) => {
-        if (event.keyCode === 13) {
-            handleCheckboxClick(syncDestName);
-        }
+    // Handle modal close for the icon modal
+    const handleCloseIcon = () => {
+        setIsDynamicModalOpen(false);  // Close the icon modal
     };
 
     return (
@@ -57,29 +63,30 @@ const SyncDestination = ({ syncDestArray, tooltips }) => {
                     <h3 className="text-xl text-cyan-800 mt-0">Sync Destinations</h3>
                     <div>
                         <form onSubmit={(e) => e.preventDefault()}>
-                            {syncDestArray.map((syncDest, index) => (
+                            {syncDestState.map((syncDest, index) => (
                                 !syncDest.hidden && ( // Ensure hidden destinations are not rendered
-                                    <div className="flex items-center mb-0" key={index}>
+                                    <div className="flex items-center mb-0 relative" key={index}>
                                         <input
                                             type="checkbox"
                                             className="ml-5"
                                             id={`reset-${syncDest.name}-Check`}
-                                            onChange={() => handleCheckboxClick(syncDest.name)}
-                                            checked={syncDest.synced}
-                                            onKeyDown={(event) => clickWithEnter(event, syncDest.name)}
+                                            onChange={() => handleCheckboxClick(syncDest)}  // Open the checkbox confirmation modal
+                                            checked={syncDest.synced}  // Reflect the synced state
                                         />
                                         <label className="text-gray-900 pl-2 mb-0" htmlFor={`reset-${syncDest.name}-Check`}>
                                             {syncDest.name}
                                         </label>
+                                        {/* MessageCircleQuestion icon */}
                                         <div
-                                            className="relative ml-2"
+                                            className="relative ml-2 cursor-pointer"
                                             onMouseEnter={() => setHovered(syncDest.name)}
                                             onMouseLeave={() => setHovered(null)}
-                                            onClick={() => openModal(tooltips[syncDest.name])} // Display tooltip when clicked
+                                            onClick={() => openIconModal(syncDest.name)}  // Open the icon modal on click
                                         >
-                                            <MessageCircleQuestion className="w-6 h-6 cursor-pointer" />
+                                            <MessageCircleQuestion size={20} />
+                                            {/* Show Tooltip on Hover using the description */}
                                             {hovered === syncDest.name && (
-                                                <ToolTip message={tooltips[syncDest.name]} />
+                                                <ToolTip message={`This option sync destinations to ${syncDest.name}`} />
                                             )}
                                         </div>
                                     </div>
@@ -90,22 +97,22 @@ const SyncDestination = ({ syncDestArray, tooltips }) => {
                 </div>
             </div>
 
-            {/* Icon-related Modal */}
-            {isModalOpen && (
-                <DisplayDynamicModal
-                    title="Sync Destinations Information"
-                    message={modalContent}
-                    onClose={() => setIsModalOpen(false)}
+            {/* Modal Component for Confirming Checkbox Action */}
+            {isSyncDestModalOpen && (
+                <DisplaySyncDestModal
+                    title="Synchronization Destination Confirmation"
+                    syncType={modalSyncDestContent}  // The sync destination name with action
+                    onConfirm={handleConfirmCheckbox}  // Confirm action
+                    onClose={handleCloseCheckbox}  // Close without action
                 />
             )}
 
-            {/* Confirmation Modal with Warning */}
-            {isConfirmationModalOpen && (
-                <DisplaySyncDestModal
-                    title="Synchronization Destination Confirmation"
-                    onClose={() => handleConfirmation(false)}
-                    onConfirm={() => handleConfirmation(true)}
-                    syncType={syncType}
+            {/* Modal Component for Icon Info */}
+            {isDynamicModalOpen && (
+                <DisplayDynamicModal
+                    title="Sync Destinations Information"
+                    message={modalContent}
+                    onClose={handleCloseIcon}  // Close the modal for the icon
                 />
             )}
         </div>
@@ -113,3 +120,6 @@ const SyncDestination = ({ syncDestArray, tooltips }) => {
 };
 
 export default SyncDestination;
+
+
+
