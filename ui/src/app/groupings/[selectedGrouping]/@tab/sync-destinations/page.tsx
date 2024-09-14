@@ -1,3 +1,4 @@
+
 import { getGroupingSyncDestinations } from '@/actions/groupings-api';
 import SyncDestination from './sync-destination'; // Client component
 
@@ -24,4 +25,3 @@ const SyncDestinationsTab = async ({ params }: { params: { selectedGrouping: str
 };
 
 export default SyncDestinationsTab;
-

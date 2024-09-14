@@ -1,24 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Edit, CheckCircle, XCircle } from 'lucide-react';
 import { updateDescription } from '@/actions/groupings-api';
 
-const GroupingHeader = ({ groupName, groupPath, description }) => {
-    const [descriptionLoaded, setDescriptionLoaded] = useState(true);
+const GroupingHeader = ({ groupName, description, groupPath }: { groupName: string, description: string, groupPath: string }) => {
     const [descriptionForm, setDescriptionForm] = useState(false);
     const [modelDescription, setModelDescription] = useState(description || '');
+    const [currentDescription, setCurrentDescription] = useState(description || '');
     const maxDescriptionLength = 98;
-    const grouping = 'GroupingPath Name';
+
+    useEffect(() => {
+        setModelDescription(description);
+        setCurrentDescription(description);
+    }, [description]);
 
     const editDescription = () => {
         setDescriptionForm(true);
-        setModelDescription(description);
+        setModelDescription(currentDescription);
     };
 
     const saveDescription = async () => {
         await updateDescription(modelDescription, groupPath);
-        setDescriptionLoaded(true);
         setDescriptionForm(false);
     };
 
@@ -27,11 +30,12 @@ const GroupingHeader = ({ groupName, groupPath, description }) => {
     };
 
     const descriptionDisplay = () => {
-        return description;
+
+        return currentDescription;
     };
 
     const descriptionLengthWarning = () => {
-        return false;
+        return modelDescription.length > maxDescriptionLength;
     };
 
     return (
@@ -56,7 +60,11 @@ const GroupingHeader = ({ groupName, groupPath, description }) => {
 
             <div className="flex flex-row">
                 <div className="md:w-full">
-                    {descriptionLoaded ? (
+                    {descriptionForm ? (
+                        <p className="text-gray-100 mb-0">
+                            <b>Description:</b> {descriptionDisplay()} &nbsp;
+                        </p>
+                    ) : (
                         <p className="text-gray-100 mb-0 break-words">
                             <b>Description:</b> {descriptionDisplay()} &nbsp;
                             <button
@@ -67,22 +75,18 @@ const GroupingHeader = ({ groupName, groupPath, description }) => {
                                 <Edit size={20} />
                             </button>
                         </p>
-                    ) : (
-                        <p className="text-gray-100 mb-0">
-                            <b>Description:</b> {descriptionDisplay()}
-                        </p>
                     )}
 
                     {descriptionForm && (
                         <div className="grouping-description-form">
-                            <form className="d-flex mw-100 rounded bg-white ng-pristine ng-valid">
+                            <form className="flex items-center bg-white rounded">
                                 <input
-                                    className="form-control border-0 float-left edit-description-input-box"
+                                    className="form-control border-0 bg-transparent outline-none w-full px-2 py-1"
                                     aria-label="Grouping Description"
                                     value={modelDescription}
                                     onChange={(e) => setModelDescription(e.target.value)}
                                     maxLength={maxDescriptionLength} />
-                                <span className="grouping-description-form">
+                                <span className="ml-2">
                                     <button
                                         type="button"
                                         aria-label="Save description"
@@ -92,11 +96,11 @@ const GroupingHeader = ({ groupName, groupPath, description }) => {
                                     </button>
                                 </span>
 
-                                <span className="grouping-description-form">
+                                <span className="ml-2">
                                     <button
                                         type="button"
                                         aria-label="Cancel changes"
-                                        className="description-form-button rounded-right"
+                                        className="description-form-button rounded-r"
                                         onClick={cancelDescriptionEdit}>
                                         <XCircle size={20} role="button" aria-hidden="true" />
                                     </button>
@@ -106,8 +110,8 @@ const GroupingHeader = ({ groupName, groupPath, description }) => {
                     )}
 
                     {descriptionLengthWarning() && (
-                        <div className="float-md-left alert alert-danger h-50 pt-2 pb-0 pl-2 pr-2 mb-1 mt-1 border fade hidden">
-                            {/*<p th:utext="#{screen.message.admin.selectedGrouping.descriptionWarning}"></p>*/}
+                        <div className="float-md-left alert alert-danger h-50 pt-2 pb-0 pl-2 pr-2 mb-1 mt-1 border fade">
+                            <p>Maximum length reached. A grouping&apos;s description cannot exceed {maxDescriptionLength} characters.</p>
                         </div>
                     )}
                 </div>

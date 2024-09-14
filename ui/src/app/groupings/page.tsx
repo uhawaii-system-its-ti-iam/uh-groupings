@@ -2,20 +2,21 @@
 
 import { useRouter } from 'next/navigation';
 import {Button} from '@/components/ui/button';
+
+
+
 const Groupings = () => {
     const router = useRouter();
-
-    const handleButtonClick = () => {
-        const selectedGrouping = 'tmp:ruichen:ruichen-aux';
-        router.push(`/groupings/${selectedGrouping}`);
-    };
+    const selectedGrouping = 'tmp:hokwai:hokwai-single';
 
     return (
         <div className="bg-white">
             <div className="container">
-                {/* Add your GroupingsTable here if needed */}
-                <Button onClick={handleButtonClick} className="btn btn-primary">
-                    Go to Selected Grouping
+                <Button onClick={() => {
+                    sessionStorage.setItem('fromPage', 'groupings');
+                    router.push(`/groupings/${selectedGrouping}/all`);
+                }}>
+                    To Grouping
                 </Button>
             </div>
         </div>

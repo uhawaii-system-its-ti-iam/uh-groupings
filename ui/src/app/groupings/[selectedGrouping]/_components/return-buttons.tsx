@@ -1,15 +1,29 @@
 'use client';
 
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 const ReturnButtons = () => {
-
+    const router = useRouter();
     const [fromManageSubject, setFromManageSubject] = useState(false);
 
-    const returnToGroupingsList = () => {};
-    const returnToManageSubject = () => {};
+    useEffect(() => {
+        const fromPage = sessionStorage.getItem('fromPage');
+        if (fromPage === 'manage-person') {
+            setFromManageSubject(true);
+        }
+    }, []);
+
+    const returnToGroupingsList = () => {
+        router.push('/groupings');
+    };
+
+    const returnToManageSubject = () => {
+        router.push('/manage-person');
+    };
+
     const cancelDescriptionEdit = () => {};
     const toggleShowAdminTab = () => {};
 

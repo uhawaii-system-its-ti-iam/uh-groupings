@@ -8,11 +8,11 @@ import {groupingDescription} from '@/actions/groupings-api';
 const SelectedGroupingLayout = async ({ params, tab }: { params: { selectedGrouping: string }; tab: React.ReactNode }) => {
 
     const res = await groupingDescription(params.selectedGrouping);
-    console.log(res);
-    const groupPath = res.groupPath;
-    const description = res.description;
-    const groupName = 'groupName';
-    //const groupName = groupPath.split(':').pop();
+
+    const groupPath = res?.groupPath || '';
+    const description = res?.description || '';
+    const groupName = groupPath.split(':').pop() || '';
+
 
     return (
         <div className="container">
