@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as Email from '@/actions/email';
+import * as Actions from '@/lib/actions';
 import User from '@/access/user';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
 
-jest.mock('@/actions/email');
+jest.mock('@/lib/actions');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -21,7 +21,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValue({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValue({
             resultCode: 'SUCCESS',
             recipient: 'recipient',
             from: 'from',
@@ -43,7 +43,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValue({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValue({
             resultCode: 'FAILURE',
             recipient: 'recipient',
             from: 'from',
@@ -63,7 +63,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValueOnce({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValueOnce({
             resultCode: 'FAILURE',
             recipient: 'recipient',
             from: 'from',
@@ -71,7 +71,7 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValueOnce({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValueOnce({
             resultCode: 'SUCCESS',
             recipient: 'recipient',
             from: 'from',
