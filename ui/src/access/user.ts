@@ -1,9 +1,9 @@
-import { MemberResult } from '@/models/groupings-api-results';
+import { MemberResult } from '@/lib/types';
 import Role from './role';
 
 type User = {
-    roles: Role[]
-} & MemberResult
+    roles: Role[];
+} & MemberResult;
 
 export const AnonymousUser: User = {
     name: '',
@@ -12,6 +12,6 @@ export const AnonymousUser: User = {
     uid: '',
     uhUuid: '',
     roles: [Role.ANONYMOUS] as const
-}
+};
 
 export default User;

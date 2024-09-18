@@ -1,11 +1,11 @@
 import Role from '@/access/role';
 import { render, screen } from '@testing-library/react';
 import User from '@/access/user';
-import * as GroupingsApi from '@/actions/groupings-api';
+import * as Fetchers from '@/lib/fetchers';
 import * as Authentication from '@/access/authentication';
 import afterLogin from '@/app/(home)/_components/after-login';
 
-jest.mock('@/actions/groupings-api');
+jest.mock('@/lib/fetchers');
 jest.mock('@/access/authentication');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
@@ -103,8 +103,8 @@ describe('AfterLogin', () => {
     };
 
     beforeEach(() => {
-        jest.spyOn(GroupingsApi, 'getNumberOfGroupings').mockResolvedValue(numberOfGroupings);
-        jest.spyOn(GroupingsApi, 'getNumberOfMemberships').mockResolvedValue(numberOfMemberships);
+        jest.spyOn(Fetchers, 'getNumberOfGroupings').mockResolvedValue(numberOfGroupings);
+        jest.spyOn(Fetchers, 'getNumberOfMemberships').mockResolvedValue(numberOfMemberships);
     });
 
     it('Should render correctly when logged in as an admin', async () => {
