@@ -30,7 +30,7 @@ describe('GroupingsTable', () => {
 
         const firstPageGroupings = mockData.slice(0, pageSize);
         firstPageGroupings.forEach((group) => {
-            expect(screen.getAllByTestId('square-pen-icon')[0]).toBeInTheDocument();
+            expect(screen.getAllByTestId('edit-icon')[0]).toBeInTheDocument();
             expect(screen.getByText(group.name)).toBeInTheDocument();
             expect(screen.getByText(group.description)).toBeInTheDocument();
             expect(screen.queryByDisplayValue(group.path)).not.toBeInTheDocument();
