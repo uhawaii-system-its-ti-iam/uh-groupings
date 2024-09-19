@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import Role from '@/access/role';
 import User from '@/access/user';
 import { login, logout } from '@/access/authentication';
-import { LogInIcon, LogOutIcon } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+
 
 const LoginButton = ({ 
     currentUser 
@@ -16,14 +18,14 @@ const LoginButton = ({
             <Button 
                 variant="default" 
                 onClick={() => login()}>
-                Login <LogInIcon className="ml-1" />
+                Login <FontAwesomeIcon className="ml-1" icon={faSignInAlt} />
             </Button>
         ) : (
             <Button 
                 variant="outline" 
                 onClick={() => logout()}>
                 Logout&nbsp;
-                <span className="sm:inline hidden">({currentUser.uid})</span> <LogOutIcon className="ml-1" />
+                <span className="sm:inline hidden">({currentUser.uid})</span> <FontAwesomeIcon className="ml-1" icon={faSignOutAlt} />
             </Button>
         )}
     </> 
