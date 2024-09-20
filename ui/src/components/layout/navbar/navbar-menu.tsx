@@ -1,12 +1,13 @@
 'use client';
 
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import User from '@/access/user';
 import Link from 'next/link';
 import { NavbarLinks } from './navbar-links';
 import { useState } from 'react';
 import Role from '@/access/role';
 import NavbarMenuIcon from './navbar-menu-icon';
+import {VisuallyHidden} from '@radix-ui/react-visually-hidden';
 
 const NavbarMenu = ({ currentUser }: { currentUser: User }) => {
     const [open, setOpen] = useState(false);
@@ -20,13 +21,22 @@ const NavbarMenu = ({ currentUser }: { currentUser: User }) => {
                 <NavbarMenuIcon open={open} aria-hidden="true" />
             </SheetTrigger>
 
-            <SheetContent className="mt-[3.9rem] text-xl pt-5 lg:hidden" side="top" onClickOutside={handleClick}>
+            <SheetContent
+                className="mt-[3.9rem] text-xl pt-5 lg:hidden"
+                side="top"
+                onClickOutside={handleClick}>
+                <VisuallyHidden>
+                    <SheetHeader>
+                        <SheetTitle>Main Navigation Menu</SheetTitle>
+                        <SheetDescription/>
+                    </SheetHeader>
+                </VisuallyHidden>
                 <nav className="container flex flex-col space-y-5 h-1/4">
                     {NavbarLinks
                         .filter((navbarLink) =>
-                            currentUser.roles.includes(Role.ADMIN) || 
+                            currentUser.roles.includes(Role.ADMIN) ||
                             currentUser.roles.includes(navbarLink.role))
-                        .map((navbarLink) => 
+                        .map((navbarLink) =>
                             <Link href={navbarLink.link} key={navbarLink.name} className="hover:text-uh-teal">
                                 {navbarLink.name}
                             </Link>)}

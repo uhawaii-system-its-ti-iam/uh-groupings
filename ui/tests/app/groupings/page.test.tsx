@@ -1,21 +1,35 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import Groupings from '@/app/groupings/page';
-import GroupingsLayout from '@/app/groupings/layout';
+import * as Fetchers from '@/lib/fetchers';
+import { GroupingPaths } from '@/lib/types';
+
+jest.mock('@/lib/fetchers');
+
+const mockData: GroupingPaths = {
+    resultCode: 'SUCCESS',
+    groupingPaths: Array.from({ length: 10 }, (_, i) => ({
+        path: `tmp:example:example-${i}`,
+        name: `example-${i}`,
+        description: `Test Description ${i}`
+    }))
+};
+
+beforeEach(() => {
+    jest.spyOn(Fetchers, 'ownerGroupings').mockResolvedValue(mockData);
+});
 
 describe('Groupings', () => {
-    it('should render the Groupings page with the appropriate header', () => {
-        render(
-            <GroupingsLayout>
-                <Groupings />
-            </GroupingsLayout>
-        );
-        expect(screen.getByRole('main')).toBeInTheDocument();
+    it('renders the Groupings page with the appropriate header and group data', async () => {
+        render(await Groupings());
+        await waitFor(async () => {
+            expect(screen.getByRole('table')).toBeInTheDocument();
+        });
 
-        expect(screen.getByRole('heading', { name: 'Manage My Groupings' })).toBeInTheDocument();
-        expect(
-            screen.getByText(
-                'View and manage groupings I own. Manage members, configure grouping options and sync destinations.'
-            )
-        ).toBeInTheDocument();
+        await waitFor(async () => {
+            mockData.groupingPaths.forEach((group) => {
+                expect(screen.getByText(group.name)).toBeInTheDocument();
+                expect(screen.getByText(group.description)).toBeInTheDocument();
+            });
+        });
     });
 });

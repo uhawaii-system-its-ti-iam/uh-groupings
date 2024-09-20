@@ -5,7 +5,7 @@ const Feedback = async () => {
     const currentUser = await getCurrentUser();
 
     return (
-        <div className="container grid sm:grid-cols-12 pt-5 pb-4 h-full 2xl:min-h-[72.3vh]">
+        <div className="container grid sm:grid-cols-12 pt-5 pb-4">
             <div className="col-span-5 pt-5">
                 <h1 className="text-center md:text-left text-[2rem] font-bold">Feedback</h1>
                 <p className="text-center md:text-left text-xl mt-1">

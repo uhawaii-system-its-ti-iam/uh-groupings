@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { redirect } from 'next/navigation';
 import User, { AnonymousUser } from '@/access/user';
@@ -14,13 +14,17 @@ describe('LoginButton', () => {
         it('should render a Login button', () => {
             render(<LoginButton currentUser={AnonymousUser} />);
 
-            expect(screen.getByRole('button', { name: 'Login Here' })).toBeInTheDocument;
+            expect(screen.getByRole('button', { name: 'Login Here' })).toBeInTheDocument();
         });
+
         it('should visit the CAS login url on click', async () => {
             render(<LoginButton currentUser={AnonymousUser} />);
 
             const casLoginUrl = `${casUrl}/login?service=${encodeURIComponent(`${baseUrl}/api/cas/login`)}`;
-            await userEvent.click(screen.getByRole('button', { name: 'Login Here' }));
+            await waitFor(async () => {
+                await userEvent.click(screen.getByRole('button', { name: 'Login Here' }));
+            });
+
             expect(redirect).toHaveBeenCalledWith(casLoginUrl);
         });
     });
@@ -33,7 +37,7 @@ describe('LoginButton', () => {
         it('should render a Logout button with the uid of the logged-in user', () => {
             render(<LoginButton currentUser={testUser} />);
 
-            expect(screen.getByRole('button', { name: 'Logout' })).toBeInTheDocument;
+            expect(screen.getByRole('button', { name: 'Logout' })).toBeInTheDocument();
         });
 
         it('should visit the CAS logout url on click', async () => {

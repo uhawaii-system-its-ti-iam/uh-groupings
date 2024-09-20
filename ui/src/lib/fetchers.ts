@@ -178,7 +178,7 @@ export const groupingOwners = async (groupingPath: string): Promise<GroupingGrou
  *
  * @returns The promise of the grouping paths or ApiError type
  */
-export const ownerGroupings = async (): Promise<GroupingPaths & ApiError> => {
+export const ownerGroupings = async (): Promise<GroupingPaths> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/owners/${currentUser.uid}/groupings`;
     return getRequest<GroupingPaths>(endpoint, currentUser.uid);
