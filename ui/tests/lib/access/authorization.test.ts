@@ -1,13 +1,11 @@
-import { setRoles } from '@/access/authorization';
-import Role from '@/access/role';
-import User, { AnonymousUser } from '@/access/user';
+import { setRoles } from '@/lib/access/authorization';
+import Role from '@/lib/access/role';
+import User, { AnonymousUser } from '@/lib/access/user';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
 describe('authorization', () => {
-    
     describe('setRoles', () => {
-
         afterEach(() => {
             AnonymousUser.roles = [];
             testUser.roles = [];
@@ -15,7 +13,7 @@ describe('authorization', () => {
 
         it('should set the ANONYMOUS role', async () => {
             fetchMock
-                .mockResponseOnce(JSON.stringify(false))  // isOwner
+                .mockResponseOnce(JSON.stringify(false)) // isOwner
                 .mockResponseOnce(JSON.stringify(false)); // isAdmin
 
             await setRoles(AnonymousUser);
@@ -27,7 +25,7 @@ describe('authorization', () => {
 
         it('should set the UH role', async () => {
             fetchMock
-                .mockResponseOnce(JSON.stringify(false))  // isOwner
+                .mockResponseOnce(JSON.stringify(false)) // isOwner
                 .mockResponseOnce(JSON.stringify(false)); // isAdmin
 
             await setRoles(testUser);
@@ -39,7 +37,7 @@ describe('authorization', () => {
 
         it('should set the UH and ADMIN roles', async () => {
             fetchMock
-                .mockResponseOnce(JSON.stringify(false))  // isOwner
+                .mockResponseOnce(JSON.stringify(false)) // isOwner
                 .mockResponseOnce(JSON.stringify(true)); // isAdmin
 
             await setRoles(testUser);
@@ -51,7 +49,7 @@ describe('authorization', () => {
 
         it('should set the UH and OWNER roles', async () => {
             fetchMock
-                .mockResponseOnce(JSON.stringify(true))  // isOwner
+                .mockResponseOnce(JSON.stringify(true)) // isOwner
                 .mockResponseOnce(JSON.stringify(false)); // isAdmin
 
             await setRoles(testUser);
@@ -63,7 +61,7 @@ describe('authorization', () => {
 
         it('should set the UH, ADMIN, and OWNER roles', async () => {
             fetchMock
-                .mockResponseOnce(JSON.stringify(true))  // isOwner
+                .mockResponseOnce(JSON.stringify(true)) // isOwner
                 .mockResponseOnce(JSON.stringify(true)); // isAdmin
 
             await setRoles(testUser);
@@ -82,7 +80,5 @@ describe('authorization', () => {
             expect(testUser.roles.includes(Role.OWNER)).toBeFalsy();
             expect(testUser.roles.includes(Role.UH)).toBeTruthy();
         });
-
     });
-
 });

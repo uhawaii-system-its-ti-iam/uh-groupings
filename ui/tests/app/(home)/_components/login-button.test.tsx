@@ -1,13 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { redirect } from 'next/navigation';
-import User, { AnonymousUser } from '@/access/user';
-import Role from '@/access/role';
+import User, { AnonymousUser } from '@/lib/access/user';
+import Role from '@/lib/access/role';
 import LoginButton from '@/app/(home)/_components/login-button';
+import * as NextCasClient from 'next-cas-client';
 
-const casUrl = process.env.NEXT_PUBLIC_CAS_URL as string;
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
+
+jest.mock('next-cas-client');
 
 describe('LoginButton', () => {
     describe('User is not logged in', () => {
@@ -20,12 +20,8 @@ describe('LoginButton', () => {
         it('should visit the CAS login url on click', async () => {
             render(<LoginButton currentUser={AnonymousUser} />);
 
-            const casLoginUrl = `${casUrl}/login?service=${encodeURIComponent(`${baseUrl}/api/cas/login`)}`;
-            await waitFor(async () => {
-                await userEvent.click(screen.getByRole('button', { name: 'Login Here' }));
-            });
-
-            expect(redirect).toHaveBeenCalledWith(casLoginUrl);
+            await userEvent.click(screen.getByRole('button', { name: 'Login Here' }));
+            expect(NextCasClient.login).toHaveBeenCalled();
         });
     });
 
@@ -43,9 +39,8 @@ describe('LoginButton', () => {
         it('should visit the CAS logout url on click', async () => {
             render(<LoginButton currentUser={testUser} />);
 
-            const casLogoutUrl = `${casUrl}/logout?service=${encodeURIComponent(`${baseUrl}/api/cas/logout`)}`;
             await userEvent.click(screen.getByRole('button', { name: 'Logout' }));
-            expect(redirect).toHaveBeenCalledWith(casLogoutUrl);
+            expect(NextCasClient.logout).toHaveBeenCalled();
         });
     });
 });

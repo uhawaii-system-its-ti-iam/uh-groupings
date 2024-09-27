@@ -1,28 +1,18 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import Role from '@/access/role';
-import User from '@/access/user';
-import { login, logout } from '@/access/authentication';
+import Role from '@/lib/access/role';
+import { login, logout } from 'next-cas-client';
+import { User } from '@/lib/access/user';
 
-const LoginButton = ({
-    currentUser
-}: {
-    currentUser: User;
-}) => (
+const LoginButton = ({ currentUser }: { currentUser: User }) => (
     <>
-        {!currentUser.roles.includes(Role.UH) ? (
-            <Button
-                size="lg"
-                variant="default"
-                onClick={() => login()}>
+        {!currentUser?.roles.includes(Role.UH) ? (
+            <Button size="lg" variant="default" onClick={() => login()}>
                 Login Here
             </Button>
         ) : (
-            <Button
-                size="lg"
-                variant="default"
-                onClick={() => logout()}>
+            <Button size="lg" variant="default" onClick={() => logout()}>
                 Logout
             </Button>
         )}

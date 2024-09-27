@@ -1,4 +1,4 @@
-import User from '@/access/user';
+import User from '@/lib/access/user';
 import {
     getAllGroupings,
     getAnnouncements,
@@ -16,13 +16,13 @@ import {
     ownedGrouping,
     ownerGroupings
 } from '@/lib/fetchers';
-import * as Authentication from '@/access/authentication';
+import * as NextCasClient from 'next-cas-client/app';
 import * as Actions from '@/lib/actions';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('@/access/authentication');
+jest.mock('next-cas-client/app');
 jest.mock('@/lib/actions');
 
 describe('fetchers', () => {
@@ -45,7 +45,7 @@ describe('fetchers', () => {
     };
 
     beforeAll(() => {
-        jest.spyOn(Authentication, 'getCurrentUser').mockResolvedValue(testUser);
+        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
         jest.spyOn(Actions, 'sendStackTrace');
     });
 

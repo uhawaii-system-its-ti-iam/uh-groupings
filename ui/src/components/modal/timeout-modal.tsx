@@ -1,33 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { 
+import {
     AlertDialog,
-    AlertDialogHeader, 
-    AlertDialogContent, 
-    AlertDialogDescription, 
-    AlertDialogTitle, 
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogTitle,
     AlertDialogFooter,
     AlertDialogAction,
     AlertDialogCancel
 } from '@/components/ui/alert-dialog';
 import { useIdleTimer } from 'react-idle-timer';
-import { logout } from '@/access/authentication';
-import User from '@/access/user';
-import Role from '@/access/role';
+import User from '@/lib/access/user';
+import { logout } from 'next-cas-client';
+import Role from '@/lib/access/role';
 
 const timeout = 1000 * 60 * 30; // Total timeout - 30 minutes in milliseconds
 const promptBeforeIdle = 1000 * 60 * 5; // Time prior to timeout until modal opens - 5 minutes in milliseconds
 
-const TimeoutModal = ({
-    currentUser
-}: {
-    currentUser: User
-}) => {
+const TimeoutModal = ({ currentUser }: { currentUser: User }) => {
     const [open, setOpen] = useState(false);
     const [remainingTime, setRemainingTime] = useState<number>(timeout);
 
-    const { activate,  getRemainingTime } = useIdleTimer({
+    const { activate, getRemainingTime } = useIdleTimer({
         onIdle: () => logout(),
         onPrompt: () => setOpen(true),
         timeout,
@@ -40,7 +36,7 @@ const TimeoutModal = ({
         const interval = setInterval(() => {
             setRemainingTime(getRemainingTime());
         }, 500);
-    
+
         return () => {
             clearInterval(interval);
         };
@@ -50,15 +46,15 @@ const TimeoutModal = ({
      * Closes the modal and resets the timer.
      */
     const close = () => {
-        activate(); 
+        activate();
         setOpen(false);
     };
 
     /**
      * Convert miliseconds into mm:ss string format.
-     * 
+     *
      * @param ms - the number of milliseconds
-     * 
+     *
      * @returns the mm:ss formatted string
      */
     const formatTime = (ms: number) => {
@@ -69,14 +65,13 @@ const TimeoutModal = ({
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     };
 
-    return ( 
+    return (
         <AlertDialog open={open}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Inactivity Warning</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Warning! This session will expire soon. 
-                        Time remaining: 
+                        Warning! This session will expire soon. Time remaining:
                         <span className="text-text-color"> {formatTime(remainingTime)}.</span>
                     </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -87,6 +82,6 @@ const TimeoutModal = ({
             </AlertDialogContent>
         </AlertDialog>
     );
-}
- 
+};
+
 export default TimeoutModal;

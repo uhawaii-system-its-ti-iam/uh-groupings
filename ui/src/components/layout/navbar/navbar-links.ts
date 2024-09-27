@@ -1,4 +1,4 @@
-import Role from '@/access/role';
+import Role from '@/lib/access/role';
 
 export const NavbarLinks = [
     {

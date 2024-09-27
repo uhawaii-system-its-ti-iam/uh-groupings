@@ -1,12 +1,12 @@
-import Role from '@/access/role';
-import User from '@/access/user';
+import Role from '@/lib/access/role';
+import User from '@/lib/access/user';
 import TimeoutModal from '@/components/modal/timeout-modal';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import * as Authentication from '@/access/authentication';
+import * as NextCasClient from 'next-cas-client';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('@/access/authentication');
+jest.mock('next-cas-client');
 
 describe('TimeoutModal', () => {
     beforeEach(() => {
@@ -81,7 +81,7 @@ describe('TimeoutModal', () => {
     });
 
     it('should logout when "Log off now" is pressed', () => {
-        const logoutSpy = jest.spyOn(Authentication, 'logout');
+        const logoutSpy = jest.spyOn(NextCasClient, 'logout');
 
         testUser.roles.push(Role.UH);
         render(<TimeoutModal currentUser={testUser} />);
@@ -95,7 +95,7 @@ describe('TimeoutModal', () => {
     });
 
     it('should logout after 30 minutes of idle', () => {
-        const logoutSpy = jest.spyOn(Authentication, 'logout');
+        const logoutSpy = jest.spyOn(NextCasClient, 'logout');
 
         testUser.roles.push(Role.UH);
         render(<TimeoutModal currentUser={testUser} />);

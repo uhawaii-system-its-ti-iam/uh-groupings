@@ -1,8 +1,8 @@
+import { getUser } from '@/lib/access/user';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
-import { getCurrentUser } from '@/access/authentication';
 
 const Feedback = async () => {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getUser();
 
     return (
         <div className="container grid sm:grid-cols-12 pt-5 pb-4">

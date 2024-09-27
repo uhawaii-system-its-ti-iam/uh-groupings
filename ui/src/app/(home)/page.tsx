@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import BeforeLogin from '@/app/(home)/_components/before-login';
 import AfterLogin from '@/app/(home)/_components/after-login';
-import { getCurrentUser } from '@/access/authentication';
-import Role from '@/access/role';
+import Role from '@/lib/access/role';
 import LoginButton from '@/app/(home)/_components/login-button';
 import Announcements from '@/app/(home)/_components/announcements';
+import { getUser } from '@/lib/access/user';
 
 const Home = async () => {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getUser();
 
     return (
         <main>

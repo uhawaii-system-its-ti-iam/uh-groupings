@@ -1,8 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import ApiErrorModal from '@/components/modal/api-error-modal';
 
-jest.mock('@/access/authentication');
-
 describe('ApiErrorModal', () => {
     it('should open the API Error modal', () => {
         render(<ApiErrorModal open={true} />);
