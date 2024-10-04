@@ -6,10 +6,10 @@ import AdminTable from '@/components/table/adminTable/AdminTable';
 
 
 const Admin = async () => {
-    const gr-res = await getAllGroupings();
-    const groupingPaths = gr-res.groupingPaths;
-    const ad-res = await groupingAdmins();
-    const members = res.members;
+    const groupingRes = await getAllGroupings();
+    const groupingPaths = groupingRes.groupingPaths;
+    const adminRes = await groupingAdmins();
+    const members = adminRes.members;
 
     return (
         <main>
