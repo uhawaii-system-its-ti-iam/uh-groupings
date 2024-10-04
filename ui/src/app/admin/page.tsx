@@ -1,10 +1,14 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import {groupingAdmins} from '@/actions/groupings-api';
+import {getAllGroupings} from '@/lib/fetchers';
+import {groupingAdmins} from '@/lib/fetchers';
+import GroupingsTable from '@/components/table/GroupingsTable';
 import AdminTable from '@/components/table/adminTable/AdminTable';
 
 
 const Admin = async () => {
-    const res = await groupingAdmins();
+    const gr-res = await getAllGroupings();
+    const groupingPaths = gr-res.groupingPaths;
+    const ad-res = await groupingAdmins();
     const members = res.members;
 
     return (
@@ -13,31 +17,31 @@ const Admin = async () => {
                 <div className="container">
                     <h1 className="mb-1 font-bold text-[2rem] text-center md:text-left">UH Groupings Administration</h1>
                     <p className="pb-8 text-xl text-center md:text-left">
-                        Search for and manage any grouping on behalf of its owner. 
-                        Manage the list of UH Groupings administrators.
+                      Search for and manage any grouping on behalf of its owner.
+                      Manage the list of UH Groupings administrators.
                     </p>
                 </div>
                 <Tabs defaultValue="manage-groupings">
                     <div className="container">
                         <TabsList variant="outline">
-                            <TabsTrigger 
+                            <TabsTrigger
                                 value="manage-groupings" variant="outline" >
-                                    Manage Groupings
+                                Manage Groupings
                             </TabsTrigger>
-                            <TabsTrigger 
+                            <TabsTrigger
                                 value="manage-admins" variant="outline" >
-                                    Manage Admins
+                                Manage Admins
                             </TabsTrigger>
-                            <TabsTrigger 
+                            <TabsTrigger
                                 value="manage-person" variant="outline" >
-                                    Manage Person
+                                Manage Person
                             </TabsTrigger>
                         </TabsList>
                     </div>
                     <TabsContent value="manage-groupings">
                         <div className="bg-white">
                             <div className="container">
-                                {/* GroupingsTable goes here */}
+                                <GroupingsTable data={groupingPaths}/>
                             </div>
                         </div>
                     </TabsContent>
@@ -61,5 +65,5 @@ const Admin = async () => {
         </main>
     );
 }
- 
+
 export default Admin;

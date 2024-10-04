@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { KeyRound } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { getNumberOfGroupings, getNumberOfMemberships } from '@/actions/groupings-api';
+import { getNumberOfGroupings, getNumberOfMemberships } from '@/lib/fetchers';
 import { getCurrentUser } from '@/access/authentication';
 
 const AfterLogin = async () => {
@@ -22,14 +22,15 @@ const AfterLogin = async () => {
     const pageInfoItems = [
         {
             title: 'Admin',
-            description: 'Manage the list of Administrators for this service.' +
+            description:
+                'Manage the list of Administrators for this service.' +
                 ' Search for and manage any grouping on behalf of the owner.',
             href: '/admin',
             icon: {
                 alt: 'key-solid',
                 src: '/uhgroupings/key-solid.svg',
                 width: 48,
-                height: 48,
+                height: 48
             },
             role: Role.ADMIN
         },
@@ -41,15 +42,15 @@ const AfterLogin = async () => {
                 src: '/uhgroupings/id-card-solid.svg',
                 alt: 'id-card',
                 width: 54,
-                height: 48,
+                height: 48
             },
             number: numberOfMemberships,
             role: Role.UH
         },
         {
             title: 'Groupings',
-            description: 'Review members, manage Include and Exclude lists, ' +
-                'configure preferences, and export members.',
+            description:
+                'Review members, manage Include and Exclude lists, ' + 'configure preferences, and export members.',
             href: '/groupings',
             icon: {
                 alt: 'wrench-solid',
@@ -68,27 +69,26 @@ const AfterLogin = async () => {
                 <div className="container bg-seafoam pt-7 pb-7">
                     <div className="grid sm:grid-cols-12 text-center justify-center items-center gap-4">
                         <div className="sm:col-span-3 md:col-span-2">
-                            <div className="flex justify-center items-center rounded-full
-                            h-[100px] w-[100px] bg-white mx-auto relative lg:ml-0">
-                                <Image
-                                    src="/uhgroupings/user-solid.svg"
-                                    alt="user-solid"
-                                    width={56}
-                                    height={64}
-                                />
+                            <div
+                                className="flex justify-center items-center rounded-full
+                            h-[100px] w-[100px] bg-white mx-auto relative lg:ml-0"
+                            >
+                                <Image src="/uhgroupings/user-solid.svg" alt="user-solid" width={56} height={64} />
                                 <div
                                     className="bg-blue-background rounded-full flex justify-center
-                                    items-center h-[30px] w-[30px] absolute left-3 bottom-0 ml-16">
-                                    <KeyRound className="fill-white stroke-none p-0.5" aria-label='key-round'/>
+                                    items-center h-[30px] w-[30px] absolute left-3 bottom-0 ml-16"
+                                >
+                                    <KeyRound className="fill-white stroke-none p-0.5" aria-label="key-round" />
                                 </div>
                             </div>
                         </div>
                         <div className="sm:col-span-9 md:col-span-10 text-center md:text-left">
-                            <h1 className="whitespace-nowrap text-[1.75rem]"
-                                data-testid="welcome-message">Welcome, <span
-                                    className="text-text-color">{currentUser.firstName}</span>!</h1>
-                            <h1 className="whitespace-nowrap text-[1.75rem]" data-testid="role">Role: <span
-                                className="text-text-color">{getHighestRole()}</span></h1>
+                            <h1 className="whitespace-nowrap text-[1.75rem]" data-testid="welcome-message">
+                                Welcome, <span className="text-text-color">{currentUser.firstName}</span>!
+                            </h1>
+                            <h1 className="whitespace-nowrap text-[1.75rem]" data-testid="role">
+                                Role: <span className="text-text-color">{getHighestRole()}</span>
+                            </h1>
                         </div>
                     </div>
                 </div>
@@ -96,8 +96,10 @@ const AfterLogin = async () => {
 
             <div className="container grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-10 mb-10">
                 {pageInfoItems
-                    .filter((pageInfoItem) => currentUser.roles.includes(Role.ADMIN)
-                        || currentUser.roles.includes(pageInfoItem.role))
+                    .filter(
+                        (pageInfoItem) =>
+                            currentUser.roles.includes(Role.ADMIN) || currentUser.roles.includes(pageInfoItem.role)
+                    )
                     .map((pageInfoItem, index) => (
                         <div key={index} className="flex flex-col justify-between">
                             <div>
@@ -107,9 +109,11 @@ const AfterLogin = async () => {
                                         src={pageInfoItem.icon.src}
                                         width={pageInfoItem.icon.width}
                                         height={pageInfoItem.icon.height}
-                                        className={`mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto`}/>
-                                    {pageInfoItem.number !== null
-                                        && <span className="text-[2.5rem] text-text-color">{pageInfoItem.number}</span>}
+                                        className={`mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto`}
+                                    />
+                                    {pageInfoItem.number !== null && (
+                                        <span className="text-[2.5rem] text-text-color">{pageInfoItem.number}</span>
+                                    )}
                                 </div>
                                 <h2 className="text-2xl text-text-color font-medium mb-2">{pageInfoItem.title}</h2>
                                 <p className="mb-4 text-base font-normal">{pageInfoItem.description}</p>

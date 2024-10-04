@@ -27,7 +27,7 @@ const Home = async () => {
 
                             <p className="text-xl mt-1"> Manage your groupings in one place, use them in many.</p>
                             <div className="mt-4">
-                                <LoginButton currentUser={currentUser}/>
+                                <LoginButton currentUser={currentUser} />
                             </div>
                         </div>
                     </div>
@@ -42,13 +42,9 @@ const Home = async () => {
                 </div>
             </div>
 
-            {currentUser.roles.includes(Role.UH) ? (
-                <AfterLogin/>
-            ) : (
-                <BeforeLogin/>
-            )}
+            {currentUser.roles.includes(Role.UH) ? <AfterLogin /> : <BeforeLogin />}
         </main>
     );
-}
+};
 
 export default Home;

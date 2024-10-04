@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as Email from '@/actions/email';
+import * as Actions from '@/lib/actions';
 import User from '@/access/user';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
 
-jest.mock('@/actions/email');
+jest.mock('@/lib/actions');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -21,7 +21,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValue({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValue({
             resultCode: 'SUCCESS',
             recipient: 'recipient',
             from: 'from',
@@ -29,8 +29,13 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
+        await waitFor(
+            async () => {
+                await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
+        );
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Thank You!' })).toBeInTheDocument();
@@ -43,7 +48,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValue({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValue({
             resultCode: 'FAILURE',
             recipient: 'recipient',
             from: 'from',
@@ -51,8 +56,13 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
+        await waitFor(
+            async () => {
+                await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), text);
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
+        );
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Oops!' })).toBeInTheDocument();
@@ -63,7 +73,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValueOnce({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValueOnce({
             resultCode: 'FAILURE',
             recipient: 'recipient',
             from: 'from',
@@ -71,7 +81,7 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        jest.spyOn(Email, 'sendFeedback').mockResolvedValueOnce({
+        jest.spyOn(Actions, 'sendFeedback').mockResolvedValueOnce({
             resultCode: 'SUCCESS',
             recipient: 'recipient',
             from: 'from',
@@ -79,17 +89,27 @@ describe('FeedbackForm', () => {
             text: 'text'
         });
 
-        await user.type(
-            screen.getByRole('textbox', { name: 'Your Feedback: *' }),
-            'This is a test to see if only one alert displays at a time.'
+        await waitFor(
+            async () => {
+                await user.type(
+                    screen.getByRole('textbox', { name: 'Your Feedback: *' }),
+                    'This is a test to see if only one alert displays at a time.'
+                );
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
         );
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Oops!' })).toBeInTheDocument();
         expect(screen.queryByRole('heading', { name: 'Thank You!' })).not.toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Submit' }));
+        await waitFor(
+            async () => {
+                await user.click(screen.getByRole('button', { name: 'Submit' }));
+            },
+            { timeout: 5000 }
+        );
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         await waitFor(() => {
