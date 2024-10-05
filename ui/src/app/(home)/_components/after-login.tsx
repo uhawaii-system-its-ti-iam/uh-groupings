@@ -1,6 +1,6 @@
 import Role from '@/access/role';
-import Image from 'next/image';
-import { KeyRound } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faKey, faIdCard, faWrench, faUser} from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getNumberOfGroupings, getNumberOfMemberships } from '@/lib/fetchers';
@@ -26,40 +26,34 @@ const AfterLogin = async () => {
                 'Manage the list of Administrators for this service.' +
                 ' Search for and manage any grouping on behalf of the owner.',
             href: '/admin',
-            icon: {
-                alt: 'key-solid',
-                src: '/uhgroupings/key-solid.svg',
-                width: 48,
-                height: 48
-            },
-            role: Role.ADMIN
+            icon: faKey,
+            width: 48,
+            height: 48,
+            role: Role.ADMIN,
+            ariaLabel: 'key'
         },
         {
             title: 'Memberships',
             description: 'View and manage my memberships. Search for new groupings to join as a member.',
             href: '/memberships',
-            icon: {
-                src: '/uhgroupings/id-card-solid.svg',
-                alt: 'id-card',
-                width: 54,
-                height: 48
-            },
+            icon: faIdCard,
+            width: 54,
+            height: 48,
             number: numberOfMemberships,
-            role: Role.UH
+            role: Role.UH,
+            ariaLabel: 'id-card'
         },
         {
             title: 'Groupings',
             description:
                 'Review members, manage Include and Exclude lists, ' + 'configure preferences, and export members.',
             href: '/groupings',
-            icon: {
-                alt: 'wrench-solid',
-                src: '/uhgroupings/wrench-solid.svg',
-                width: 48,
-                height: 48
-            },
+            icon: faWrench,
+            width: 48,
+            height: 48,
             number: numberOfGroupings,
-            role: Role.OWNER
+            role: Role.OWNER,
+            ariaLabel: 'wrench'
         }
     ];
 
@@ -73,12 +67,12 @@ const AfterLogin = async () => {
                                 className="flex justify-center items-center rounded-full
                             h-[100px] w-[100px] bg-white mx-auto relative lg:ml-0"
                             >
-                                <Image src="/uhgroupings/user-solid.svg" alt="user-solid" width={56} height={64} />
+                                <FontAwesomeIcon className="w-14 h-16" aria-label="user" icon={faUser} />
                                 <div
                                     className="bg-blue-background rounded-full flex justify-center
                                     items-center h-[30px] w-[30px] absolute left-3 bottom-0 ml-16"
                                 >
-                                    <KeyRound className="fill-white stroke-none p-0.5" aria-label="key-round" />
+                                    <FontAwesomeIcon className="text-white stroke-none p-0.5" aria-label="key-round" icon={faKey} />
                                 </div>
                             </div>
                         </div>
@@ -104,13 +98,7 @@ const AfterLogin = async () => {
                         <div key={index} className="flex flex-col justify-between">
                             <div>
                                 <div className="flex items-center mb-1">
-                                    <Image
-                                        alt={pageInfoItem.icon.alt}
-                                        src={pageInfoItem.icon.src}
-                                        width={pageInfoItem.icon.width}
-                                        height={pageInfoItem.icon.height}
-                                        className={`mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto`}
-                                    />
+                                    <FontAwesomeIcon icon={pageInfoItem.icon} style={{ width: `${pageInfoItem.width}px`, height: `${pageInfoItem.height}px` }} className="mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto" aria-label={pageInfoItem.ariaLabel} />
                                     {pageInfoItem.number !== null && (
                                         <span className="text-[2.5rem] text-text-color">{pageInfoItem.number}</span>
                                     )}
