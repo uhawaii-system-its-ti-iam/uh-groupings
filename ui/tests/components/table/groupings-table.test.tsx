@@ -158,4 +158,24 @@ describe('GroupingsTable', () => {
         await checkPageContent('Last', mockData.length - pageSize, mockData.length - 1);
         await checkPageContent('Previous', mockData.length - pageSize * 2, mockData.length - pageSize - 1);
     });
+    it('should show tooltip if description content is truncated', async () => {
+        Object.defineProperties(HTMLElement.prototype, {
+            scrollWidth: { get: () => 500, configurable: true },
+            clientWidth: { get: () => 30, configurable: true }
+        });
+        render(<GroupingsTable groupingPaths={mockData} />);
+        const firstButton = screen.getByText('First');
+
+        fireEvent.click(firstButton);
+
+        const description = screen.getByText('Test Description 0');
+        await waitFor(async () => {
+            await userEvent.hover(description);
+        });
+
+        // Wait for the tooltip to appear
+        await waitFor(() => {
+            expect(screen.getAllByTestId('tooltip-on-truncate')[0]).toBeInTheDocument();
+        });
+    });
 });

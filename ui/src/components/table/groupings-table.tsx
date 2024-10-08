@@ -22,6 +22,7 @@ import GroupingPathCell from '@/components/table/table-element/grouping-path-cel
 import Link from 'next/link';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
+import TooltipOnTruncate from '@/components/table/table-element/tooltip-on-truncate';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -109,15 +110,17 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                                             )}
                                         </div>
                                         {cell.column.id === 'description' && (
-                                            <div
-                                                className={`${
-                                                    columnCount === 3
-                                                        ? 'truncate sm:max-w-[calc(6ch+1em)] md:max-w-[calc(40ch+1em)]'
-                                                        : 'truncate'
-                                                }`}
-                                            >
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </div>
+                                            <TooltipOnTruncate value={String(cell.getValue() as string)}>
+                                                <div
+                                                    className={`${
+                                                        columnCount === 3
+                                                            ? 'truncate sm:max-w-[calc(6ch+1em)] md:max-w-[calc(40ch+1em)]'
+                                                            : 'truncate'
+                                                    }`}
+                                                >
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </div>
+                                            </TooltipOnTruncate>
                                         )}
                                         {cell.column.id === 'path' && (
                                             <GroupingPathCell path={cell.row.getValue('path')} />
