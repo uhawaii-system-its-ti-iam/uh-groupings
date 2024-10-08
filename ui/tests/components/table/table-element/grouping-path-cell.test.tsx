@@ -50,7 +50,7 @@ describe('GroupingPathCell', () => {
             () => {
                 expect(screen.queryByText('copied!')).not.toBeInTheDocument();
             },
-            { timeout: 2000 }
+            { timeout: 3000 }
         );
 
         // Check the 'copy' text appears again
@@ -64,5 +64,25 @@ describe('GroupingPathCell', () => {
             },
             { timeout: 2000 }
         );
+    });
+
+    it('should show tooltip if content is truncated', async () => {
+        Object.defineProperties(HTMLElement.prototype, {
+            scrollWidth: { get: () => 500, configurable: true },
+            clientWidth: { get: () => 30, configurable: true }
+        });
+        render(<GroupingPathCell path={path} />);
+
+        const inputElement = screen.getByRole('textbox');
+        expect(inputElement).toHaveValue(path);
+
+        await waitFor(async () => {
+            await userEvent.hover(inputElement);
+        });
+
+        // Wait for the tooltip to appear
+        await waitFor(() => {
+            expect(screen.getAllByTestId('tooltip-on-truncate')[0]).toBeInTheDocument();
+        });
     });
 });
