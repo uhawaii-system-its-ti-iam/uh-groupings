@@ -1,9 +1,9 @@
 import { ownerGroupings } from '@/lib/fetchers';
 import dynamic from 'next/dynamic';
-import GroupingsTableSkeleton from '@/components/table/groupings-table-skeleton';
+import GroupingsTableSkeleton from '@/components/table/groupingsTable/groupings-table-skeleton';
 
 // Require dynamic import for localStorage
-const GroupingsTable = dynamic(() => import('@/components/table/groupings-table'), {
+const GroupingsTable = dynamic(() => import('@/components/table/groupingsTable/groupings-table'), {
     ssr: false,
     loading: () => <GroupingsTableSkeleton />
 });

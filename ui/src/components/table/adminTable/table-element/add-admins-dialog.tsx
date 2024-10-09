@@ -13,7 +13,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { MemberResult } from '@/models/groupings-api-results';
-import { addAdmin } from '@/actions/groupings-api';
+import { addAdmin } from '@/lib/actions';
 
 interface InputProps {
   input: string;

@@ -12,13 +12,13 @@ import {
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import ColumnSettings from '@/components/table/table-element/column-settings';
-import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
+import GroupingsTableColumns from '@/components/table/groupingsTable/table-element/groupings-table-columns';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 import { useState } from 'react';
 import { SquarePen } from 'lucide-react';
-import GroupingPathCell from '@/components/table/table-element/grouping-path-cell';
+import GroupingPathCell from '@/components/table/groupingsTable/table-element/grouping-path-cell';
 import Link from 'next/link';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
@@ -56,7 +56,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
                 <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Groupings</h1>
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
-                    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+                    <GlobalFilter placeholder={'Filter Groupings...'} filter={globalFilter} setFilter={setGlobalFilter} />
                     <div className="hidden sm:block">
                         <ColumnSettings table={table} />
                     </div>

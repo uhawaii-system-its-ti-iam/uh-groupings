@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {Label} from '@/components/ui/label';
 import { Trash2Icon } from 'lucide-react';
 import {MemberResult} from '@/models/groupings-api-results';
-import {removeAdmin} from '@/actions/groupings-api';
+import {removeAdmin} from '@/lib/actions';
 
 const RemoveAdminsDialog = ({uid, name, uhUuid} : MemberResult) => {
 

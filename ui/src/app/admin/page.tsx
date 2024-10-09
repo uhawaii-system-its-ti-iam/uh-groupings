@@ -1,26 +1,29 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import {getAllGroupings} from '@/lib/fetchers';
-import {groupingAdmins} from '@/lib/fetchers';
-import GroupingsTable from '@/components/table/GroupingsTable';
-import AdminTable from '@/components/table/adminTable/AdminTable';
+/*import {getAllGroupings} from '@/lib/fetchers';*/
+import {ownerGroupings} from '@/lib/fetchers';
+//import {groupingAdmins} from '@/lib/fetchers';
+//import AdminTable from '@/components/table/adminTable/AdminTable';
+import dynamic from 'next/dynamic';
+import GroupingsTableSkeleton from '@/components/table/groupingsTable/groupings-table-skeleton';
 
+// Require dynamic import for localStorage
+const GroupingsTable = dynamic(() => import('@/components/table/groupingsTable/groupings-table'), {
+  ssr: false,
+  loading: () => <GroupingsTableSkeleton />
+});
 
 const Admin = async () => {
-    const groupingRes = await getAllGroupings();
+    /*const groupingRes = await getAllGroupings();
     const groupingPaths = groupingRes.groupingPaths;
     const adminRes = await groupingAdmins();
-    const members = adminRes.members;
+    const members = adminRes.members;*/
+
+    /*const { groupingPaths } = await getAllGroupings();*/
+    const { groupingPaths } = await ownerGroupings();
 
     return (
         <main>
             <div className="bg-seafoam pt-3">
-                <div className="container">
-                    <h1 className="mb-1 font-bold text-[2rem] text-center md:text-left">UH Groupings Administration</h1>
-                    <p className="pb-8 text-xl text-center md:text-left">
-                      Search for and manage any grouping on behalf of its owner.
-                      Manage the list of UH Groupings administrators.
-                    </p>
-                </div>
                 <Tabs defaultValue="manage-groupings">
                     <div className="container">
                         <TabsList variant="outline">
@@ -41,14 +44,14 @@ const Admin = async () => {
                     <TabsContent value="manage-groupings">
                         <div className="bg-white">
                             <div className="container">
-                                <GroupingsTable data={groupingPaths}/>
+                                <GroupingsTable groupingPaths = {groupingPaths}/>
                             </div>
                         </div>
                     </TabsContent>
                     <TabsContent value="manage-admins">
                         <div className="bg-white">
                             <div className="container">
-                                <AdminTable data={members}/>
+                                {/*<AdminTable data={members}/>*/}
                                 {/*<AddAdmin/>*/}
                             </div>
                         </div>

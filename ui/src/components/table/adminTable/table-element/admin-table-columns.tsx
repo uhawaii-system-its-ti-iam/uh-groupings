@@ -1,4 +1,4 @@
-const AdminTableHeaders = [
+const AdminTableColumns = [
   {
     header: 'ADMIN NAME',
     accessorKey: 'name'
@@ -12,8 +12,9 @@ const AdminTableHeaders = [
     accessorKey: 'uid'
   },
   {
-    header: 'REMOVE'
+    header: 'REMOVE',
+    accessorKey: 'remove'
   }
 ];
 
-export default AdminTableHeaders;
+export default AdminTableColumns;

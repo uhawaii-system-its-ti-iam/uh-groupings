@@ -1,4 +1,4 @@
-import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
+import GroupingsTableColumns from '@/components/table/groupingsTable/table-element/groupings-table-columns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
