@@ -1,3 +1,4 @@
+'use client';
 import { ClipboardIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -22,14 +23,14 @@ const GroupingPathCell = ({ path }: { path: string }) => {
     };
 
     return (
-        <div className="flex items-center w-full outline outline-1 rounded h-6 m-1">
+        <div className="flex items-center w-full outline outline-1 rounded h-6 m-1 ml-4">
             <TooltipOnTruncate value={path}>
                 <Input
                     id="dataInput"
                     value={path}
                     readOnly
                     className="flex-1 h-6 text-input-text-grey text-[0.875rem]
-                        border-none rounded-none w-full truncate"
+                        border-none rounded-none w-[161px] truncate"
                 />
             </TooltipOnTruncate>
 

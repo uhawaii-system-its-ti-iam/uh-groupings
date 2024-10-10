@@ -24,7 +24,10 @@ const TooltipOnTruncate = ({ children, value }: { children: React.ReactNode; val
                     {children}
                 </TooltipTrigger>
                 {isTruncated && (
-                    <TooltipContent className="max-w-[190px] max-h-[180px] text-center whitespace-normal break-words bg-black text-white">
+                    <TooltipContent
+                        className="max-w-[190px] max-h-[180px] text-center
+                         whitespace-normal break-words bg-black text-white"
+                    >
                         <p data-testid="tooltip-on-truncate">{value}</p>
                     </TooltipContent>
                 )}
