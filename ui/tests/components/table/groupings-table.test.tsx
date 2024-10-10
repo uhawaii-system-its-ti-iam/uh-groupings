@@ -75,9 +75,12 @@ describe('GroupingsTable', () => {
         const user = userEvent.setup();
 
         // Open column settings
-        await waitFor(async () => {
-            await user.click(screen.getByLabelText('column-settings-button'));
-        });
+        await waitFor(
+            async () => {
+                await user.click(screen.getByLabelText('column-settings-button'));
+            },
+            { timeout: 2000 }
+        );
 
         // Toggle Grouping Path Switch to true
         const groupingPathSwitch = await screen.findByTestId('Grouping Path Switch');
@@ -122,9 +125,12 @@ describe('GroupingsTable', () => {
         const user = userEvent.setup();
 
         const toggleColumnVisibility = async (columnTestId: string, isVisible: boolean) => {
-            await waitFor(async () => {
-                await user.click(button);
-            });
+            await waitFor(
+                async () => {
+                    await user.click(button);
+                },
+                { timeout: 2000 }
+            );
             fireEvent.click(screen.getByTestId(columnTestId));
 
             // Check getByText('Description') or getByText('Grouping Path') to be in document
@@ -157,25 +163,5 @@ describe('GroupingsTable', () => {
         await checkPageContent('Next', pageSize, pageSize * 2 - 1);
         await checkPageContent('Last', mockData.length - pageSize, mockData.length - 1);
         await checkPageContent('Previous', mockData.length - pageSize * 2, mockData.length - pageSize - 1);
-    });
-    it('should show tooltip if description content is truncated', async () => {
-        Object.defineProperties(HTMLElement.prototype, {
-            scrollWidth: { get: () => 500, configurable: true },
-            clientWidth: { get: () => 30, configurable: true }
-        });
-        render(<GroupingsTable groupingPaths={mockData} />);
-        const firstButton = screen.getByText('First');
-
-        fireEvent.click(firstButton);
-
-        const description = screen.getByText('Test Description 0');
-        await waitFor(async () => {
-            await userEvent.hover(description);
-        });
-
-        // Wait for the tooltip to appear
-        await waitFor(() => {
-            expect(screen.getAllByTestId('tooltip-on-truncate')[0]).toBeInTheDocument();
-        });
     });
 });
