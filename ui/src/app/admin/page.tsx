@@ -1,34 +1,45 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import PersonTable from '@/app/admin/personTable/page';
+import AdminTable from '@/app/admin/adminTable/page';
+import GroupingsTable from '@/app/admin/groupingsTable/page';
+import Link from 'next/link';
 
-const Admin = () => {
+const Admin = ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
+    const tab = searchParams.tab || 'groupings';
     return (
-        <Tabs className="bg-seafoam" defaultValue="manage-groupings">
+        <Tabs className="bg-seafoam" defaultValue={`manage-${tab}`}>
             <div className="container">
                 <TabsList variant="outline">
-                    <TabsTrigger value="manage-groupings" variant="outline">
-                        Manage Groupings
-                    </TabsTrigger>
-                    <TabsTrigger value="manage-admins" variant="outline">
-                        Manage Admins
-                    </TabsTrigger>
-                    <TabsTrigger value="manage-person" variant="outline">
-                        Manage Person
-                    </TabsTrigger>
+                    <Link key={'groupings'} href={`?tab=groupings`} replace>
+                        <TabsTrigger value="manage-groupings" variant="outline">
+                            Manage Groupings
+                        </TabsTrigger>
+                    </Link>
+                    <Link key={'admins'} href={'?tab=admins'} replace>
+                        <TabsTrigger value="manage-admins" variant="outline">
+                            Manage Admins
+                        </TabsTrigger>
+                    </Link>
+                    <Link key={'person'} href={'?tab=person'} replace>
+                        <TabsTrigger value="manage-person" variant="outline">
+                            Manage Person
+                        </TabsTrigger>
+                    </Link>
                 </TabsList>
             </div>
             <TabsContent value="manage-groupings">
                 <div className="bg-white">
-                    <div className="container">{/* GroupingsTable goes here */}</div>
+                    <div className="container">{<GroupingsTable />}</div>
                 </div>
             </TabsContent>
             <TabsContent value="manage-admins">
                 <div className="bg-white">
-                    <div className="container">{/* AdminTable goes here */}</div>
+                    <div className="container">{<AdminTable />}</div>
                 </div>
             </TabsContent>
             <TabsContent value="manage-person">
                 <div className="bg-white">
-                    <div className="container">{/* PersonTable goes here */}</div>
+                    <div className="container">{<PersonTable searchParams={searchParams} />}</div>
                 </div>
             </TabsContent>
         </Tabs>
