@@ -1,10 +1,9 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-/*import {getAllGroupings} from '@/lib/fetchers';*/
-import {ownerGroupings} from '@/lib/fetchers';
-//import {groupingAdmins} from '@/lib/fetchers';
-//import AdminTable from '@/components/table/adminTable/AdminTable';
-import dynamic from 'next/dynamic';
+import { getAllGroupings } from '@/lib/fetchers';
+import { groupingAdmins } from '@/lib/fetchers';
 import GroupingsTableSkeleton from '@/components/table/groupingsTable/groupings-table-skeleton';
+import AdminTableSkeleton from '@/components/table/adminTable/admin-table-skeleton';
+import dynamic from 'next/dynamic';
 
 // Require dynamic import for localStorage
 const GroupingsTable = dynamic(() => import('@/components/table/groupingsTable/groupings-table'), {
@@ -12,14 +11,15 @@ const GroupingsTable = dynamic(() => import('@/components/table/groupingsTable/g
   loading: () => <GroupingsTableSkeleton />
 });
 
-const Admin = async () => {
-    /*const groupingRes = await getAllGroupings();
-    const groupingPaths = groupingRes.groupingPaths;
-    const adminRes = await groupingAdmins();
-    const members = adminRes.members;*/
+const AdminTable = dynamic(() => import('@/components/table/adminTable/admin-table'), {
+  ssr: false,
+  loading: () => <AdminTableSkeleton />
+});
 
-    /*const { groupingPaths } = await getAllGroupings();*/
-    const { groupingPaths } = await ownerGroupings();
+const Admin = async () => {
+
+    const { groupingPaths } = await getAllGroupings();
+    const { members } = await groupingAdmins();
 
     return (
         <main>
@@ -51,7 +51,7 @@ const Admin = async () => {
                     <TabsContent value="manage-admins">
                         <div className="bg-white">
                             <div className="container">
-                                {/*<AdminTable data={members}/>*/}
+                                <AdminTable members ={members}/>
                                 {/*<AddAdmin/>*/}
                             </div>
                         </div>

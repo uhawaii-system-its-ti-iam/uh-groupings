@@ -38,48 +38,23 @@ const AdminTable = ({ members } : { members: MemberResult[] }) => {
         enableMultiSort: true
     });
 
-    const columnCount = table.getHeaderGroups()[0].headers.length;
-
     return (
-        <div className="px-2">
+        <>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
-                <h1 className="text-[2rem] font-medium text-text-color text-center pt-3">Manage Admins</h1>
-                <div className="flex items-center space-x-2">
+                <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Admins</h1>
+                <div className="flex items-center space-x-2 md:w-60 lg:w-72">
                     <GlobalFilter placeholder={'Filter Admins...'} filter={globalFilter} setFilter={setGlobalFilter}/>
                 </div>
             </div>
-            <Table className="relative overflow-x-auto">
+            <Table className = "relative overflow-x-auto">
                 <TableHeader>
-                    { /*{table.getHeaderGroups().map(headerGroup => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header, index) => (
-                                <TableHead
-                                    key={header.id}
-                                    onClick={header.column.getToggleSortingHandler()}
-                                    className={`font-semibold text-uh-black
-                                    border-solid border-t-[1px] border-b-[2px] py-3 size-[0.1rem] ${
-                                        columnCount === 2 && index === 1 ? 'w-2/3' : 'w-1/3'
-                                    } ${header.column.id !== 'GROUPING NAME' ? 'hidden sm:table-cell' : ''}`}
-                                >
-                                    <div className="flex items-center text-[0.8rem] font-bold">
-                                        {flexRender(header.column.columnDef.header, header.getContext())}
-                                        {header.column.getIsSorted() && (
-                                            <SortArrow direction={header.column.getIsSorted()}/>
-                                        )}
-                                    </div>
-                                </TableHead>
-                            ))}
-                        </TableRow>
-                    ))}*/ }
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header, index) => (
+                            {headerGroup.headers.map((header) => (
                                 <TableHead
                                     key={header.id}
                                     onClick={header.column.getToggleSortingHandler()}
-                                    className={`
-                                              ${columnCount === 2 && index === 1 ? 'w-2/3' : 'w-1/3'} 
-                                              ${header.column.id !== 'name' ? 'hidden sm:table-cell' : ''}`}
+                                    className={`w-1/3`}
                                 >
                                     <div className="flex items-center">
                                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -91,16 +66,17 @@ const AdminTable = ({ members } : { members: MemberResult[] }) => {
                     ))}
                 </TableHeader>
                 <TableBody>
-                    {table.getRowModel().rows.map((row, index) => (
-                        <TableRow key={row.id} className={index % 2 === 0 ? 'bg-light-grey' : ''}>
+                    {table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id}>
                             {row.getVisibleCells().map(cell => (
                                 <TableCell
                                   key={cell.id}
-                                  className={`p-0`}
                                   width={cell.column.columnDef.size}
                                 >
                                     <div className="flex items-center px-2 overflow-hidden whitespace-nowrap">
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        <div className="m-2">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </div>
                                         {cell.column.id === 'REMOVE' && (
                                             <RemoveAdminsDialog
                                                 uid={row.getValue('uid')}
@@ -114,57 +90,6 @@ const AdminTable = ({ members } : { members: MemberResult[] }) => {
                         </TableRow>
                     ))}
                 </TableBody>
-
-{/*
-                Below is GroupingsTable's example
-*/}
-
-                {/*{table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={`${cell.column.id !== 'name' ? 'hidden sm:table-cell' : ''}`}
-                        width={cell.column.columnDef.size}
-                      >
-                        <div className="flex items-center px-2 overflow-hidden whitespace-nowrap">
-                          <div className={`m-2 ${cell.column.id === 'name' ? 'w-full' : ''}`}>
-                            {cell.column.id === 'name' && (
-                              <Link href={`/groupings/${cell.row.getValue('path')}`}>
-                                <div className="flex">
-                                  <SquarePen
-                                    size="1.25em"
-                                    className="text-text-primary"
-                                    data-testid={'square-pen-icon'}
-                                  />
-                                  <div className="pl-2">
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                  </div>
-                                </div>
-                              </Link>
-                            )}
-                          </div>
-                          {cell.column.id === 'description' && (
-                            <TooltipOnTruncate value={String(cell.getValue() as string)}>
-                              <div
-                                className={`${
-                                  columnCount === 3
-                                    ? 'truncate sm:max-w-[calc(6ch+1em)] md:max-w-[calc(40ch+1em)]'
-                                    : 'truncate'
-                                }`}
-                              >
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              </div>
-                            </TooltipOnTruncate>
-                          )}
-                          {cell.column.id === 'path' && (
-                            <GroupingPathCell path={cell.row.getValue('path')} />
-                          )}
-                        </div>
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}*/}
             </Table>
             <div className="grid grid-cols-2 items-center">
                 <div>
@@ -175,7 +100,7 @@ const AdminTable = ({ members } : { members: MemberResult[] }) => {
                     <PaginationBar table={table}/>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

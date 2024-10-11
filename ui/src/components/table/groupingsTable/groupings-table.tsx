@@ -62,7 +62,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                     </div>
                 </div>
             </div>
-            <Table className="table-fixed">
+            <Table className="relative overflow-x-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>

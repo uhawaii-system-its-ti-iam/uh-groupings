@@ -13,7 +13,6 @@ const AdminTableColumns = [
   },
   {
     header: 'REMOVE',
-    accessorKey: 'remove'
   }
 ];
 
