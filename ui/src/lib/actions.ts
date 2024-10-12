@@ -232,7 +232,7 @@ export const removeAdmin = async (uhIdentifier: string): Promise<GroupingRemoveR
  *
  * @returns The promise of the member attribute results or ApiError type
  */
-export const memberAttributeResults = async (uhIdentifiers: string[]): Promise<MemberAttributeResults & ApiError> => {
+export const memberAttributeResults = async (uhIdentifiers: string[]): Promise<MemberAttributeResults> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/members`;
     return postRequest<MemberAttributeResults>(endpoint, currentUser.uid, uhIdentifiers);

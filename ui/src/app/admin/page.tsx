@@ -6,6 +6,23 @@ import Link from 'next/link';
 
 const Admin = ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
     const tab = searchParams.tab || 'groupings';
+    // const observer = new PerformanceObserver((list) => {
+    //     list.getEntries().forEach((entry) => {
+    //         if (entry.type === 'reload') {
+    //             console.log(`${entry.name} was reloaded!`);
+    //             console.log(entry);
+    //         }
+    //     });
+    // });
+    //
+    // observer.observe({ type: 'navigation', buffered: true });
+    // const entries = performance.getEntriesByType('navigation');
+    // entries.forEach((entry) => {
+    //     if (entry.type === 'reload') {
+    //         console.log(`${entry.name} was reloaded!`);
+    //         console.log(entry);
+    //     }
+    // });
     return (
         <Tabs className="bg-seafoam" defaultValue={`manage-${tab}`}>
             <div className="container">

@@ -20,7 +20,7 @@ const SearchInput = () => {
     };
     return (
         <label>
-            <div className="flex flex-col md:flex-row items-center">
+            <div className="flex flex-col md:flex-row md:w-72 lg-84 items-center">
                 <Input
                     type="search"
                     className="rounded-[-0.25rem] rounded-l-[0.25rem]"

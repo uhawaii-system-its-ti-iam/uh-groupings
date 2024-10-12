@@ -7,19 +7,19 @@ const PersonTableColumns = [
     },
     {
         header: 'Owner?',
-        accessorKey: 'owner'
+        accessorKey: 'inOwner'
     },
     {
         header: 'Basis?',
-        accessorKey: 'basis'
+        accessorKey: 'inBasisAndInclude'
     },
     {
         header: 'Include?',
-        accessorKey: 'include'
+        accessorKey: 'inInclude'
     },
     {
         header: 'Exclude?',
-        accessorKey: 'exclude'
+        accessorKey: 'inExclude'
     },
     {
         header: 'Remove',
