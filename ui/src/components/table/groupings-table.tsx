@@ -1,5 +1,4 @@
 'use client';
-
 import {
     useReactTable,
     flexRender,
@@ -12,17 +11,14 @@ import {
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import ColumnSettings from '@/components/table/table-element/column-settings';
-import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
+
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 import { useState } from 'react';
-import { SquarePen } from 'lucide-react';
-import GroupingPathCell from '@/components/table/table-element/grouping-path-cell';
-import Link from 'next/link';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
-import TooltipOnTruncate from '@/components/table/table-element/tooltip-on-truncate';
+import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -49,8 +45,6 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
         enableMultiSort: true
     });
 
-    const columnCount = table.getHeaderGroups()[0].headers.length;
-
     return (
         <>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
@@ -66,13 +60,14 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header, index) => (
+                            {headerGroup.headers.map((header) => (
                                 <TableHead
                                     key={header.id}
                                     onClick={header.column.getToggleSortingHandler()}
                                     className={`
-                                    ${columnCount === 2 && index === 1 ? 'w-2/3' : 'w-1/3'} 
-                                    ${header.column.id !== 'name' ? 'hidden sm:table-cell' : ''}`}
+                                      ${!table.getIsAllColumnsVisible() && header.column.getIndex() > 0 ? 'w-2/3' : ''}
+                                      ${header.column.getIndex() > 0 ? 'hidden sm:table-cell' : 'w-2/5 md:w-1/3'}
+                                    `}
                                 >
                                     <div className="flex items-center">
                                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -90,41 +85,9 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                                 <TableCell
                                     key={cell.id}
                                     className={`${cell.column.id !== 'name' ? 'hidden sm:table-cell' : ''}`}
-                                    width={cell.column.columnDef.size}
                                 >
                                     <div className="flex items-center px-2 overflow-hidden whitespace-nowrap">
-                                        <div className={`m-2 ${cell.column.id === 'name' ? 'w-full' : ''}`}>
-                                            {cell.column.id === 'name' && (
-                                                <Link href={`/groupings/${cell.row.getValue('path')}`}>
-                                                    <div className="flex">
-                                                        <SquarePen
-                                                            size="1.25em"
-                                                            className="text-text-primary"
-                                                            data-testid={'square-pen-icon'}
-                                                        />
-                                                        <div className="pl-2">
-                                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            )}
-                                        </div>
-                                        {cell.column.id === 'description' && (
-                                            <TooltipOnTruncate value={String(cell.getValue() as string)}>
-                                                <div
-                                                    className={`${
-                                                        columnCount === 3
-                                                            ? 'truncate sm:max-w-[calc(6ch+1em)] md:max-w-[calc(40ch+1em)]'
-                                                            : 'truncate'
-                                                    }`}
-                                                >
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </div>
-                                            </TooltipOnTruncate>
-                                        )}
-                                        {cell.column.id === 'path' && (
-                                            <GroupingPathCell path={cell.row.getValue('path')} />
-                                        )}
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </div>
                                 </TableCell>
                             ))}
