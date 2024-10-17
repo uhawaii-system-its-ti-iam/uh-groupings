@@ -96,7 +96,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                                     <div className="flex items-center px-2 overflow-hidden whitespace-nowrap">
                                         <div className={`m-2 ${cell.column.id === 'name' ? 'w-full' : ''}`}>
                                             {cell.column.id === 'name' && (
-                                                <Link href={`/groupings/${cell.row.getValue('path')}`}>
+                                                <Link href={`/groupings/${cell.row.getValue('path')}/all`}>
                                                     <div className="flex">
                                                         <FontAwesomeIcon className="text-text-primary" data-testid={'edit-icon'} icon={faEdit} />
                                                         <div className="pl-2">
