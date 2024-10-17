@@ -1,8 +1,9 @@
-import { ClipboardIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useState } from 'react';
 import TooltipOnTruncate from '@/components/table/table-element/tooltip-on-truncate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClipboard } from '@fortawesome/free-regular-svg-icons';
 
 const GroupingPathCell = ({ path }: { path: string }) => {
     const [tooltipContent, setTooltipContent] = useState('copy');
@@ -42,10 +43,7 @@ const GroupingPathCell = ({ path }: { path: string }) => {
                              justify-center hover:bg-green-blue h-6 p-2 transition ease-in-out duration-150"
                             data-testid="clipboard-button"
                         >
-                            <ClipboardIcon
-                                className="group-hover:text-white h-4 w-4 text-gray-600"
-                                data-testid="clipboard-icon"
-                            />
+                            <FontAwesomeIcon className="group-hover:text-white h-4 w-4 text-gray-600" data-testid="clipboard-icon" icon={faClipboard} />
                         </button>
                     </TooltipTrigger>
                     <TooltipContent>
