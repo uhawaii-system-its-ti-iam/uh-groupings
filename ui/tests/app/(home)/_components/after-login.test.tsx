@@ -30,7 +30,7 @@ describe('AfterLogin', () => {
     };
 
     const expectWelcome = (User: User, role: string) => {
-        expect(screen.getByAltText('user-solid')).toHaveAttribute('src', '/uhgroupings/user-solid.svg');
+        expect(screen.getByLabelText('user')).toBeInTheDocument();
         expect(screen.getByLabelText('key-round')).toBeInTheDocument();
         expect(screen.getByTestId('welcome-message')).toHaveTextContent(`Welcome, ${User.firstName}!`);
         expect(screen.getByTestId('role')).toHaveTextContent(`Role: ${role}`);
@@ -38,7 +38,7 @@ describe('AfterLogin', () => {
 
     const expectAdministration = (isAdmin: boolean) => {
         if (isAdmin) {
-            expect(screen.getByRole('img', { name: 'key-solid' })).toHaveAttribute('src', '/uhgroupings/key-solid.svg');
+            expect(screen.getByLabelText('key')).toBeInTheDocument();
             expect(screen.getByRole('heading', { name: 'Admin' })).toBeInTheDocument();
             expect(
                 screen.getByText(
@@ -49,7 +49,7 @@ describe('AfterLogin', () => {
             expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
             expect(screen.getByRole('button', { name: 'Admin' })).toBeInTheDocument();
         } else {
-            expect(screen.queryByRole('img', { name: 'key-solid' })).not.toBeInTheDocument();
+            expect(screen.queryByLabelText('key')).not.toBeInTheDocument();
             expect(screen.queryByRole('heading', { name: 'Admin' })).not.toBeInTheDocument();
             expect(
                 screen.queryByText(
@@ -63,7 +63,7 @@ describe('AfterLogin', () => {
     };
 
     const expectMemberships = () => {
-        expect(screen.getByRole('img', { name: 'id-card' })).toHaveAttribute('src', '/uhgroupings/id-card-solid.svg');
+        expect(screen.getByLabelText('id-card')).toBeInTheDocument();
         expect(screen.getByText(numberOfMemberships)).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Memberships' })).toBeInTheDocument();
         expect(
@@ -75,10 +75,7 @@ describe('AfterLogin', () => {
 
     const expectGroupings = (isAdmin: boolean, isOwner: boolean) => {
         if (isAdmin || isOwner) {
-            expect(screen.getByRole('img', { name: 'wrench-solid' })).toHaveAttribute(
-                'src',
-                '/uhgroupings/wrench-solid.svg'
-            );
+            expect(screen.getByLabelText('wrench')).toBeInTheDocument();
             expect(screen.getByText(numberOfGroupings)).toBeInTheDocument();
             expect(screen.getByRole('heading', { name: 'Groupings' })).toBeInTheDocument();
             expect(
@@ -89,7 +86,7 @@ describe('AfterLogin', () => {
             expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
             expect(screen.getByRole('button', { name: 'Groupings' })).toBeInTheDocument();
         } else {
-            expect(screen.queryByRole('img', { name: 'wrench-solid' })).not.toBeInTheDocument();
+            expect(screen.queryByLabelText('wrench')).not.toBeInTheDocument();
             expect(screen.queryByText(numberOfGroupings)).not.toBeInTheDocument();
             expect(screen.queryByRole('heading', { name: 'Groupings' })).not.toBeInTheDocument();
             expect(

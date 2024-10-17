@@ -11,7 +11,7 @@ import {
     DropdownMenuItem
 } from '@/components/ui/dropdown-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSliders } from '@fortawesome/free-solid-svg-icons';
+import { faSlidersH } from '@fortawesome/free-solid-svg-icons';
 import { Table } from '@tanstack/table-core';
 import { GroupingPath } from '@/lib/types';
 
@@ -25,7 +25,7 @@ const ColumnSettings = ({ table }: { table: Table<GroupingPath> }) => {
                         className="border border-gray-300 hover:bg-transparent"
                         aria-label="column-settings-button"
                     >
-                        <FontAwesomeIcon icon={faSliders} className="w-5 h-5 text-text-color" />
+                        <FontAwesomeIcon icon={faSlidersH} className="w-5 h-5 text-text-color" />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="hidden sm:block">

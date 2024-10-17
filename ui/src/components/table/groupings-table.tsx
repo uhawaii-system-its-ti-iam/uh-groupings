@@ -17,12 +17,13 @@ import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 import { useState } from 'react';
-import { SquarePen } from 'lucide-react';
 import GroupingPathCell from '@/components/table/table-element/grouping-path-cell';
 import Link from 'next/link';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
 import TooltipOnTruncate from '@/components/table/table-element/tooltip-on-truncate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-regular-svg-icons';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -97,11 +98,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                                             {cell.column.id === 'name' && (
                                                 <Link href={`/groupings/${cell.row.getValue('path')}`}>
                                                     <div className="flex">
-                                                        <SquarePen
-                                                            size="1.25em"
-                                                            className="text-text-primary"
-                                                            data-testid={'square-pen-icon'}
-                                                        />
+                                                        <FontAwesomeIcon className="text-text-primary" data-testid={'edit-icon'} icon={faEdit} />
                                                         <div className="pl-2">
                                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                         </div>
