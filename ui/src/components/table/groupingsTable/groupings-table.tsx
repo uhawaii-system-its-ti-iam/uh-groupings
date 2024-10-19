@@ -16,8 +16,8 @@ import GroupingsTableColumns from '@/components/table/groupingsTable/table-eleme
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
+import GroupingPathCell from '@/components/table/groupingsTable/table-element/grouping-path-cell';
 import { useState } from 'react';
-import GroupingPathCell from '@/components/table/table-element/grouping-path-cell';
 import Link from 'next/link';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
