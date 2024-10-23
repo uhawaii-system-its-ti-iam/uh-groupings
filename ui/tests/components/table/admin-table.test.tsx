@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import AdminTable from '@/components/table/adminTable/admin-table';
+import AdminTable from '@/components/table/admin-table/admin-table';
 import userEvent from '@testing-library/user-event';
+
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -31,16 +32,16 @@ describe('AdminTable', () => {
 
         // not working
 
-        // expect(screen.getAllByRole('row').length).toBeLessThanOrEqual(mockData.length);
-        //
-        // const firstPageAdmins = mockData.slice(0, pageSize);
-        // firstPageAdmins.forEach((admin) => {
-        //     // expect(screen.getAllByTestId('square-pen-icon')[0]).toBeInTheDocument();
-        //     expect(screen.getByText(admin.name)).toBeInTheDocument();
-        //     expect(screen.getByText(admin.uhUuid)).toBeInTheDocument();
-        //     expect(screen.getByText(admin.uid)).toBeInTheDocument();
-        //     // expect(screen.queryByDisplayValue(group.path)).not.toBeInTheDocument();
-        // });
+        expect(screen.getAllByRole('row').length).toBeLessThanOrEqual(mockData.length);
+
+        const firstPageAdmins = mockData.slice(0, pageSize);
+        firstPageAdmins.forEach((admin) => {
+            // expect(screen.getAllByTestId('square-pen-icon')[0]).toBeInTheDocument();
+            expect(screen.getByText(admin.name)).toBeInTheDocument();
+            expect(screen.getByText(admin.uhUuid)).toBeInTheDocument();
+            expect(screen.getByText(admin.uid)).toBeInTheDocument();
+            // expect(screen.queryByDisplayValue(group.path)).not.toBeInTheDocument();
+        });
 
         // Check for pagination (works)
         expect(screen.getByText('First')).toBeInTheDocument();
