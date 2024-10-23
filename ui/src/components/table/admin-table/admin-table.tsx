@@ -9,11 +9,11 @@ import {
     getSortedRowModel
 } from '@tanstack/react-table';
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
-import AdminTableColumns from '@/components/table/adminTable/table-element/admin-table-columns';
+import AdminTableColumns from '@/components/table/admin-table/table-element/admin-table-columns';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
-import RemoveAdminsDialog from '@/components/table/adminTable/table-element/remove-admins-dialog';
+import RemoveAdminsDialog from '@/components/table/admin-table/table-element/remove-admins-dialog';
 import {useState} from 'react';
 //import AddAdminsDialog from '@/components/table/adminTable/table-element/add-admins-dialog';
 import {MemberResult} from '@/lib/types';

@@ -1,17 +1,17 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { getAllGroupings } from '@/lib/fetchers';
 import { groupingAdmins } from '@/lib/fetchers';
-import GroupingsTableSkeleton from '@/components/table/groupingsTable/groupings-table-skeleton';
-import AdminTableSkeleton from '@/components/table/adminTable/admin-table-skeleton';
+import GroupingsTableSkeleton from '@/components/table/groupings-table/groupings-table-skeleton';
+import AdminTableSkeleton from '@/components/table/admin-table/admin-table-skeleton';
 import dynamic from 'next/dynamic';
 
 // Require dynamic import for localStorage
-const GroupingsTable = dynamic(() => import('@/components/table/groupingsTable/groupings-table'), {
+const GroupingsTable = dynamic(() => import('@/components/table/groupings-table/groupings-table'), {
   ssr: false,
   loading: () => <GroupingsTableSkeleton />
 });
 
-const AdminTable = dynamic(() => import('@/components/table/adminTable/admin-table'), {
+const AdminTable = dynamic(() => import('@/components/table/admin-table/admin-table'), {
   ssr: false,
   loading: () => <AdminTableSkeleton />
 });

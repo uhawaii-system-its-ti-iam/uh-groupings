@@ -1,3 +1,5 @@
+'use client';
+
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useState } from 'react';
@@ -23,7 +25,7 @@ const GroupingPathCell = ({ path }: { path: string }) => {
     };
 
     return (
-        <div className="flex items-center w-full outline outline-1 rounded h-6 m-1">
+        <div className="flex items-center w-full outline outline-1 rounded h-6 m-1 ml-4">
             <TooltipOnTruncate value={path}>
                 <Input
                     id="dataInput"
