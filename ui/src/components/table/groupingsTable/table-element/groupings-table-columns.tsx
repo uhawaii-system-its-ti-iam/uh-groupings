@@ -1,18 +1,30 @@
-const GroupingsTableColumns = [
+import { ColumnDef } from '@tanstack/react-table';
+import { GroupingPath } from '@/lib/types';
+import GroupingPathCell from '@/components/table/table-element/grouping-path-cell';
+import GroupingDescriptionCell from '@/components/table/table-element/ grouping-description-cell';
+import GroupingNameCell from '@/components/table/table-element/ grouping-name-cell';
+
+const GroupingsTableColumns: ColumnDef<GroupingPath>[] = [
     {
         header: 'Grouping Name',
         accessorKey: 'name',
         enableHiding: false,
-        sortDescFirst: true
+        sortDescFirst: true,
+        cell: ({ row }) => (
+            <GroupingNameCell path={row.getValue('path')} name={row.getValue('name')}></GroupingNameCell>
+        )
     },
     {
         header: 'Description',
-        accessorKey: 'description'
+        accessorKey: 'description',
+        cell: ({ row }) => (
+            <GroupingDescriptionCell description={row.getValue('description')}></GroupingDescriptionCell>
+        )
     },
     {
         header: 'Grouping Path',
-        accessorKey: 'path'
+        accessorKey: 'path',
+        cell: ({ row }) => <GroupingPathCell path={row.getValue('path')} />
     }
 ];
-
 export default GroupingsTableColumns;

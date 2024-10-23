@@ -1,6 +1,7 @@
 import GroupingsTableColumns from '@/components/table/groupingsTable/table-element/groupings-table-columns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
 
 const GroupingsTableSkeleton = () => {
     const pageSize = 7; // Average number of rows
@@ -21,9 +22,9 @@ const GroupingsTableSkeleton = () => {
                     <TableRow>
                         {GroupingsTableColumns.map((column) => (
                             <TableHead
-                                key={column.accessorKey}
+                                key={column.id}
                                 className={`pl-[0.5rem]
-                                ${column.accessorKey !== 'name' ? 'hidden sm:table-cell' : ''}`}
+                                ${column.id !== 'name' ? 'hidden sm:table-cell' : ''}`}
                             >
                                 <Skeleton className="h-5 w-36 rounded-[0.25rem]" />
                             </TableHead>
@@ -33,11 +34,11 @@ const GroupingsTableSkeleton = () => {
                 <TableBody>
                     {Array.from(Array(pageSize), (_, index) => (
                         <TableRow key={index}>
-                            {GroupingsTableColumns.map((column) => (
+                            {GroupingsTableColumns.map((column, index) => (
                                 <TableCell
-                                    key={column.accessorKey}
+                                    key={column.id}
                                     className={`p-[0.5rem]
-                                    ${column.accessorKey !== 'name' ? 'hidden sm:table-cell' : ''}`}
+                                    ${index > 0 ? 'hidden sm:table-cell' : ''}`}
                                 >
                                     <Skeleton className="h-5 w-72 rounded-[0.25rem]" />
                                 </TableCell>
