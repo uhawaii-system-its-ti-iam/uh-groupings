@@ -1,8 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GroupingPath } from '@/lib/types';
-import GroupingPathCell from '@/components/table/table-element/grouping-path-cell';
-import GroupingDescriptionCell from '@/components/table/table-element/ grouping-description-cell';
-import GroupingNameCell from '@/components/table/table-element/ grouping-name-cell';
+import GroupingPathCell from '@/components/table/groupings-table/table-element/grouping-path-cell';
+import GroupingDescriptionCell from '@/components/table/groupings-table/table-element/grouping-description-cell';
+import GroupingNameCell from '@/components/table/groupings-table/table-element/grouping-name-cell';
 
 const GroupingsTableColumns: ColumnDef<GroupingPath>[] = [
     {
