@@ -260,10 +260,11 @@ export const deleteRequestAsync = async <T>(
  *
  * @returns The res.json()
  */
-const handleFetch = (res: Response, httpMethod: HTTPMethod) => {
+const handleFetch = async (res: Response, httpMethod: HTTPMethod) => {
     if (!res.ok) {
         const error = Error(`${res.status} error from ${httpMethod} ${res.url}`);
-        sendStackTrace(error.stack as string);
+        await sendStackTrace(error.stack as string);
+        throw error;
     }
     return res.json();
 };

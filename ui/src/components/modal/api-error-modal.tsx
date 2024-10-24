@@ -13,7 +13,7 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 
-const ApiErrorModal = ({ open }: { open: boolean }) => {
+const ApiErrorModal = ({ open, onClose }: { open: boolean }) => {
     const [openApiErrorModal, setOpenApiErrorModal] = useState(open);
 
     /**
@@ -21,7 +21,9 @@ const ApiErrorModal = ({ open }: { open: boolean }) => {
      */
     const close = () => {
         setOpenApiErrorModal(false);
+        onClose();
     };
+    
     return (
         <AlertDialog open={openApiErrorModal}>
             <AlertDialogContent>

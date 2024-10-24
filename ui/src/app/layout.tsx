@@ -25,13 +25,13 @@ const RootLayout = ({
 }: Readonly<{
     children?: React.ReactNode;
 }>) => (
-    <html lang="en">
-        <body className={sourceSans3.variable}>
-            <Navbar />
-            <main className="h-full 2xl:min-h-[72.3vh]">{children}</main>
-            <Footer />
-        </body>
-    </html>
+        <html lang="en">
+            <body className={sourceSans3.variable}>
+                <Navbar />
+                <main className="h-full 2xl:min-h-[72.3vh]">{children}</main>
+                <Footer />
+            </body>
+        </html>
 );
 
 export default RootLayout;
