@@ -151,7 +151,8 @@ describe('fetchers', () => {
             fetchMock.mockResponse(JSON.stringify(mockError), { status: 500 });
             let res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
             await jest.advanceTimersByTimeAsync(5000);
-            expect(await res).toEqual(mockError);
+            expect(await res).toBeInstanceOf(Error);
+            expect((await res).message).toMatch(/500 error from POST/);
 
             fetchMock.mockReject(() => Promise.reject(mockError));
             res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
