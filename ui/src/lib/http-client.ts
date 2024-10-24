@@ -58,7 +58,7 @@ const poll = async <T>(jobId: number): Promise<T & ApiError> => {
 export const getRequest = async <T>(endpoint: string, currentUserKey: string = ''): Promise<T & ApiError> =>
     await fetch(endpoint, { headers: { current_user: currentUserKey } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
-        .catch((err) => err);
+        /*.catch((err) => err);*/
 
 /**
  * Perform a POST request to the specified URL.

@@ -31,7 +31,7 @@
         "eslint-plugin-tsdoc"
     ],
     "rules": {
-        "@stylistic/max-len": ["warn", { "code": 120 }],
+        /*"@stylistic/max-len": ["warn", { "code": 120 }],
         "@stylistic/eol-last": ["error", "always"],
         "@stylistic/quotes": [
             "error",
@@ -49,6 +49,6 @@
         "no-plusplus": "off",
         "no-restricted-syntax": "off",
         "no-return-assign": "off",
-        "prefer-arrow-callback": "off"
+        "prefer-arrow-callback": "off"*/
     }
 }
