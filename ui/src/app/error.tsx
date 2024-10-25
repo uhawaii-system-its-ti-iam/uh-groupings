@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import ApiErrorModal from '@/components/modal/api-error-modal';
 
-export default function GlobalError({
+export default function Error({
     error
 }: {
     error: Error & { digest?: string } | null;
@@ -15,7 +15,7 @@ export default function GlobalError({
         }
     }, [error]);
 
-    console.log("GlobalError component is being rendered");
+    console.log("Error component is being rendered");
     console.log("Modal open state:", isModalOpen);
 
     return (

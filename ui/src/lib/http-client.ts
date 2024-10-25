@@ -264,7 +264,7 @@ export const deleteRequestAsync = async <T>(
 const handleFetch = (res: Response, httpMethod: HTTPMethod) => {
     if (!res.ok) {
         const error = Error(`${res.status} error from ${httpMethod} ${res.url}`);
-        sendStackTrace(error.stack as string);
+        /*sendStackTrace(error.stack as string);*/
     }
     return res.json();
 };

@@ -1,6 +1,6 @@
 'use client';
 import React, { Component, ReactNode } from 'react';
-import GlobalError from "@/app/error/global-error"; // Adjust the import path as necessary
+import Error from "@/app/error"; // Adjust the import path as necessary
 
 interface ErrorBoundaryProps {
     children: ReactNode;
@@ -25,7 +25,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     render() {
         if (this.state.hasError) {
             console.log('ErrorBoundary component is being rendered');
-            return <GlobalError error={this.state.error} />;
+            return <Error error={this.state.error} />;
         }
         return this.props.children; // Render children if no error
     }
