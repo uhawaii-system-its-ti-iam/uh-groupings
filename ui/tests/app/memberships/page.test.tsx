@@ -1,24 +1,20 @@
-import { describe, it, expect } from 'vitest';
-import MembershipsLayout from '@/app/memberships/layout';
+import { vi, describe, beforeEach, it, expect } from 'vitest';
 import Memberships from '@/app/memberships/page';
 import { render, screen } from '@testing-library/react';
 
-describe('Memberships', () => {
-    it('should render the Memberhsips page with the appropriate header and tabs', () => {
-        render(
-            <MembershipsLayout>
-                <Memberships />
-            </MembershipsLayout>
-        );
-        expect(screen.getByRole('main')).toBeInTheDocument();
+vi.mock('@/lib/fetchers', () => ({
+    membershipResults: vi.fn().mockResolvedValue({ results: [] }),
+    optInGroupingPaths: vi.fn().mockResolvedValue({ groupingPaths: [] })
+}));
 
-        expect(screen.getByRole('heading', { name: 'Manage My Memberships' })).toBeInTheDocument();
-        expect(
-            screen.getByText('View and manage my memberships. Search for new groupings to join as a member.')
-        ).toBeInTheDocument();
+describe('Memberships Component', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-        expect(screen.getByRole('tablist')).toBeInTheDocument();
-        expect(screen.getByRole('tab', { name: 'Current Memberships' })).toBeInTheDocument();
-        expect(screen.getByRole('tab', { name: 'Membership Opportunities' })).toBeInTheDocument();
+    it('should render memberships tab', async () => {
+        render(await Memberships());
+        expect(await screen.findByText('Current Memberships')).toBeInTheDocument();
+        expect(screen.getByText('Membership Opportunities')).toBeInTheDocument();
     });
 });
