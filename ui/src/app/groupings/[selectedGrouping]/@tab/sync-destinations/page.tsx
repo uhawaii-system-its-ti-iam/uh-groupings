@@ -1,4 +1,3 @@
-
 import { getGroupingSyncDestinations } from '@/actions/groupings-api';
 import SyncDestination from './sync-destination'; // Client component
 
