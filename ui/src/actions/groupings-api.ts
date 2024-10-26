@@ -1,13 +1,13 @@
 'use server';
 
 import { getCurrentUser } from '@/access/authentication';
-import { 
+import {
     Announcements,
-    ApiError, 
-    GroupingAddResult, 
-    GroupingAddResults, 
-    GroupingDescription, 
-    GroupingGroupMembers, 
+    ApiError,
+    GroupingAddResult,
+    GroupingAddResults,
+    GroupingDescription,
+    GroupingGroupMembers,
     GroupingGroupsMembers,
     GroupingMoveMemberResult,
     GroupingMoveMembersResult,
@@ -15,10 +15,12 @@ import {
     GroupingPaths,
     GroupingRemoveResult,
     GroupingRemoveResults,
-    GroupingSyncDestinations, 
+    GroupingSyncDestinations,
     GroupingUpdateDescriptionResult,
+    GroupingUpdateSyncDestinationResult,
     MemberAttributeResults,
     MembershipResults
+
 } from '@/models/groupings-api-results';
 import { 
     deleteRequest,
@@ -105,6 +107,26 @@ export const getGroupingSyncDestinations = async (
     const endpoint = `${baseUrl}/groupings/${groupingPath}/groupings-sync-destinations`;
     return getRequest<GroupingSyncDestinations>(endpoint, currentUser.uid);
 }
+
+/**
+ * Set the sync destination for a grouping.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param syncDestId - The ID of the sync destination
+ * @param enable - A boolean value to enable or disable the sync destination
+ *
+ * @returns The promise of the updated grouping sync destination result or ApiError type
+ */
+export const setSyncDest = async (
+    groupingPath: string,
+    syncDestId: string,
+    enable: boolean
+): Promise<GroupingUpdateSyncDestinationResult> => {
+    const currentUser = await getCurrentUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/sync-destination/${syncDestId}/${enable}`;
+    return putRequest<GroupingUpdateSyncDestinationResult>(endpoint, currentUser.uid);
+}
+
 
 /**
  * Get the opt attributes of a grouping.
@@ -565,3 +587,7 @@ export const isSoleOwner = async (
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`;
     return getRequest<boolean>(endpoint, currentUser.uid);
 }
+
+
+
+

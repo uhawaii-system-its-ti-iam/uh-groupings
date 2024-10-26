@@ -5,6 +5,8 @@ import SyncDestination from './sync-destination'; // Client component
 const SyncDestinationsTab = async ({ params }: { params: { selectedGrouping: string } }) => {
     // Fetch the data
     const syncDestinations = await getGroupingSyncDestinations(params.selectedGrouping);
+
+
     // Extract the array from data.
     const syncDestArray = Array.isArray(syncDestinations.syncDestinations) ? syncDestinations.syncDestinations : [];
     // Process the data

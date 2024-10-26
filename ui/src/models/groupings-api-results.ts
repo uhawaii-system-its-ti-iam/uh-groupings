@@ -104,6 +104,13 @@ export type GroupingUpdateDescriptionResult = {
     updatedDescription: string
 } & GroupingResult;
 
+export type GroupingUpdateSyncDestinationResult = {
+    syncDestId: string,
+    currentStatus: boolean,
+    updatedStatus: boolean
+} & GroupingResult;
+
+
 export type GroupingAddResult = GroupingResult | MemberResult;
 
 export type GroupingAddResults = {
