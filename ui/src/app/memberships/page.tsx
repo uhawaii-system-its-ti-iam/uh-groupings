@@ -1,6 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { membershipResults } from '@/lib/fetchers';
+import MembershipsTable from '@/app/memberships/_components/memberships-table';
 
-const Memberships = () => {
+const Memberships = async () => {
+    const { results } = await membershipResults();
     return (
         <Tabs className="bg-seafoam" defaultValue="current-memberships">
             <div className="container">
@@ -15,7 +18,9 @@ const Memberships = () => {
             </div>
             <TabsContent value="current-memberships">
                 <div className="bg-white">
-                    <div className="container">{/* MembershipsTable goes here */}</div>
+                    <div className="container">
+                        <MembershipsTable results={results} />
+                    </div>
                 </div>
             </TabsContent>
             <TabsContent value="membership-opportunities">
