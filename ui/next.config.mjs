@@ -18,6 +18,10 @@ const nextConfig = {
             {
                 source: '/groupings/:groupingPath',
                 destination: '/groupings/:groupingPath/all-members'
+            },
+            {
+                source: '/memberships',
+                destination: '/memberships/current'
             }
         ];
     }
