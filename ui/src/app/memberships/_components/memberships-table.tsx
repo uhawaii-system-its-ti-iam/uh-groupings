@@ -17,12 +17,12 @@ import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 import {useState} from 'react';
 import {useLocalStorage} from 'usehooks-ts';
-import {Membership} from '@/lib/types';
+import {GroupingPath, Membership} from '@/lib/types';
 import MembershipsTableColumns from '@/app/memberships/_components/memberships-table-columns';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
-const MembershipsTable = ({results}: { results: Membership[] }) => {
+const MembershipsTable = ({results, isOptOut}: { results: Membership[] | GroupingPath[]; isOptOut: boolean }) => {
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useLocalStorage<VisibilityState>('columnVisibility', {
@@ -31,7 +31,7 @@ const MembershipsTable = ({results}: { results: Membership[] }) => {
     });
 
     const table = useReactTable({
-        columns: MembershipsTableColumns,
+        columns: MembershipsTableColumns(isOptOut),
         data: results,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -52,14 +52,20 @@ const MembershipsTable = ({results}: { results: Membership[] }) => {
         <>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
                 <div className="pb-2">
-                    <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Memberships</h1>
-                    <p>Some memberships are optional, and some are required.</p>
+                    <h1 className="text-[2rem] font-medium text-text-color pt-3">
+                        {isOptOut ? 'Manage Memberships' : 'Available Memberships'}
+                    </h1>
+                    <p>
+                        {isOptOut
+                            ? 'Some memberships are optional, and some are required.'
+                            : 'You may opt in to any of these groupings to become a member.'}
+                    </p>
                 </div>
 
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
-                    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+                    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
                     <div className="hidden sm:block">
-                        <ColumnSettings table={table}/>
+                        <ColumnSettings table={table} />
                     </div>
                 </div>
             </div>
@@ -82,7 +88,7 @@ const MembershipsTable = ({results}: { results: Membership[] }) => {
                                     >
                                         <div className={`flex items-center ${isLastVisible ? 'justify-end' : ''}`}>
                                             {flexRender(header.column.columnDef.header, header.getContext())}
-                                            <SortArrow direction={header.column.getIsSorted()}/>
+                                            <SortArrow direction={header.column.getIsSorted()} />
                                         </div>
                                     </TableHead>
                                 );
@@ -94,24 +100,22 @@ const MembershipsTable = ({results}: { results: Membership[] }) => {
                 <TableBody>
                     {table.getRowModel().rows.map((row) => (
                         <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) =>
-                                (
-                                    <TableCell
-                                        key={cell.id}
-                                        className={`${cell.column.getIndex() > 0 ? 'hidden sm:table-cell' : ''} 
+                            {row.getVisibleCells().map((cell) => (
+                                <TableCell
+                                    key={cell.id}
+                                    className={`${cell.column.getIndex() > 0 ? 'hidden sm:table-cell' : ''} 
                                                 `}
-                                    >
-                                        <div className={`flex items-center px-2 py-1 overflow-hidden whitespace-nowrap`}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </div>
-                                    </TableCell>
-                                )
-                                )}
+                                >
+                                    <div className={`flex items-center px-2 py-1 overflow-hidden whitespace-nowrap`}>
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                    </div>
+                                </TableCell>
+                            ))}
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-            <PaginationBar table={table}/>
+            <PaginationBar table={table} />
         </>
     );
 };
