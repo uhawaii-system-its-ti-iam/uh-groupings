@@ -21,6 +21,9 @@ export const setRoles = async (user: User): Promise<void> => {
     if (await isAdmin(user.uhUuid)) {
         user.roles.push(Role.ADMIN);
     }
+    if (isDepartmental(user)) {
+        user.roles.push(Role.DEPARTMENTAL);
+    }
 };
 
 /**
@@ -57,4 +60,8 @@ const isAdmin = async (uhIdentifier: string): Promise<boolean> =>
 const isValidUhUuid = (uhUuid: string): boolean => {
     const uhUuidPattern = new RegExp(/^[0-9]{8}$/);
     return uhUuidPattern.test(uhUuid);
+};
+
+const isDepartmental = (user: User): boolean => {
+    return user.uid === user.uhUuid || !user.uhUuid;
 };
