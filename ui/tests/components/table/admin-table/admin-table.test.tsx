@@ -8,7 +8,9 @@ const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 const mockData = Array.from({ length: 200 }, (_, i) => ({
     name: `name-example-${i}`,
     uhUuid: `uhUuid-example-${i}`,
-    uid: `uid-example-${i}`
+    uid: `uid-example-${i}`,
+    firstName: `firstName-example-${i}`,
+    lastName: `lastName-example-${i}`
 }));
 
 describe('AdminTable', () => {

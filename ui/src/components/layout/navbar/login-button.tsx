@@ -25,7 +25,8 @@ const LoginButton = ({
                 variant="outline" 
                 onClick={() => logout()}>
                 Logout&nbsp;
-                <span className="sm:inline hidden">({currentUser.uid})</span> <FontAwesomeIcon className="ml-1" icon={faSignOutAlt} />
+                <span className="sm:inline hidden">({currentUser.uid})</span> 
+                <FontAwesomeIcon className="ml-1" icon={faSignOutAlt} />
             </Button>
         )}
     </> 

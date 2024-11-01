@@ -86,7 +86,9 @@ const AddAdminsDialog = ({input, setInput} : InputProps, {uid, name, uhUuid} : M
                       </div>
                   </div>
                   <AlertDialogDescription>
-                      Are you sure you want to add <span className="font-bold text-text-color">{name}</span> to the admins list?
+                      Are you sure you want to add 
+                      <span className="font-bold text-text-color">{name}</span> 
+                      to the admins list?
                   </AlertDialogDescription>
                   <div className="px-3">
                       <Alert className="bg-yellow-100 border border-yellow-200 mb-2">

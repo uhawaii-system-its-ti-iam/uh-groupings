@@ -35,8 +35,7 @@ const AdminTableSkeleton = () => {
               {AdminTableColumns.map((column) => (
                 <TableCell
                   key={column.accessorKey}
-                  className={/*`p-[0.5rem]
-                                    ${column.accessorKey !== 'name' ? 'hidden sm:table-cell' : ''}`*/ `p-[0.5rem]`}
+                  className={`p-[0.5rem]`}
                 >
                   <Skeleton className="h-5 w-72 rounded-[0.25rem]" />
                 </TableCell>

@@ -50,7 +50,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
                 <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Groupings</h1>
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
-                    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
+                    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} placeholder="Search..." />
                     <div className="hidden sm:block">
                         <ColumnSettings table={table} />
                     </div>
