@@ -98,9 +98,9 @@ const AfterLogin = async () => {
                         <div key={index} className="flex flex-col justify-between">
                             <div>
                                 <div className="flex items-center mb-1">
-                                    <FontAwesomeIcon icon={pageInfoItem.icon} style={{ width: `${pageInfoItem.width}px`, height: `${pageInfoItem.height}px` }} className="mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto" aria-label={pageInfoItem.ariaLabel} />
+                                    <FontAwesomeIcon icon={pageInfoItem.icon} style={{ width: `${pageInfoItem.width}px`, height: `${pageInfoItem.height}px` }} className="mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto text-text-primary" aria-label={pageInfoItem.ariaLabel} />
                                     {pageInfoItem.number !== null && (
-                                        <span className="text-[2.5rem] text-text-color">{pageInfoItem.number}</span>
+                                        <span className="text-[2.5rem] text-text-color ">{pageInfoItem.number}</span>
                                     )}
                                 </div>
                                 <h2 className="text-2xl text-text-color font-medium mb-2">{pageInfoItem.title}</h2>

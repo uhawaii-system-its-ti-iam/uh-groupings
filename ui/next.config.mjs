@@ -11,6 +11,15 @@ const nextConfig = {
     basePath: '/uhgroupings',
     experimental: {
         serverComponentsExternalPackages: ['camaro']
+    },
+
+    rewrites: async () => {
+        return [
+            {
+                source: '/groupings/:groupingPath',
+                destination: '/groupings/:groupingPath/all-members'
+            }
+        ];
     }
 };
 
