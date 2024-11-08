@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AdminTable from '@/components/table/admin-table/admin-table';
+jest.mock('@/lib/fetchers');
 // import userEvent from '@testing-library/user-event';
 
 
