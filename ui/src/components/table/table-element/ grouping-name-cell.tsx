@@ -5,7 +5,7 @@ import { faEdit } from '@fortawesome/free-regular-svg-icons';
 const GroupingNameCell = ({ path, name }: { path: string; name: string }) => {
     return (
         <div className="m-2 w-full'">
-            <Link href={`/groupings/${path}`}>
+            <Link href={`/groupings/${path}/all-members`}>
                 <div className="flex">
                     <FontAwesomeIcon className="text-text-primary" data-testid={'edit-icon'} icon={faEdit} />
                     <div className="pl-2">{name}</div>

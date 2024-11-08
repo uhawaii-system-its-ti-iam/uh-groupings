@@ -60,7 +60,7 @@ export const ownedGrouping = async (
  *
  * @returns The promise of the grouping description or ApiError type
  */
-export const groupingDescription = async (groupingPath: string): Promise<GroupingDescription & ApiError> => {
+export const groupingDescription = async (groupingPath: string): Promise<GroupingDescription> => {
     const currentUser = await getCurrentUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/description`;
     return getRequest<GroupingDescription>(endpoint, currentUser.uid);

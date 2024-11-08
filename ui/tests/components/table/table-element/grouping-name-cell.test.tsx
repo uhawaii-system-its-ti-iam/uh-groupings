@@ -8,6 +8,6 @@ describe('GroupingNameCell', () => {
         render(<GroupingNameCell path={path} name={name} />);
         expect(screen.getByText(name)).toBeInTheDocument();
         expect(screen.getByTestId('edit-icon')).toBeInTheDocument();
-        expect(screen.getByRole('link')).toHaveAttribute('href', `/groupings/${path}`)
+        expect(screen.getByRole('link')).toHaveAttribute('href', `/groupings/${path}/all-members`)
     });
 });

@@ -29,7 +29,8 @@ const config = {
                 'blue-background': '#00a6b2',
                 'light-grey': '#f2f2f2',
                 'light-green': '#c7e7e0',
-                'input-text-grey': '#495057'
+                'input-text-grey': '#495057',
+                'teal-tint': '#c7e7e0'
             },
             fontFamily: {
                 'source-sans-3': ['var(--font-source-sans-3)', 'Helvetica', 'Arial', 'sans-serif']

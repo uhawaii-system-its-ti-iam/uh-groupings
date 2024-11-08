@@ -109,7 +109,7 @@ const AfterLogin = async () => {
                                         aria-label={pageInfoItem.ariaLabel}
                                     />
                                     {pageInfoItem.number !== null && (
-                                        <span className="text-[2.5rem] text-text-color">{pageInfoItem.number}</span>
+                                        <span className="text-[2.5rem] text-text-color ">{pageInfoItem.number}</span>
                                     )}
                                 </div>
                                 <h2 className="text-2xl text-text-color font-medium mb-2">{pageInfoItem.title}</h2>
