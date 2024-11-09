@@ -6,57 +6,47 @@ import {
     getCoreRowModel,
     getPaginationRowModel,
     getFilteredRowModel,
-    getSortedRowModel,
-    SortingState,
-    VisibilityState
+    getSortedRowModel
 } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import ColumnSettings from '@/components/table/table-element/column-settings';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
+import AdminTableColumns from '@/components/table/admin-table/table-element/admin-table-columns';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
-import { useState } from 'react';
-import { useLocalStorage } from 'usehooks-ts';
-import { GroupingPath } from '@/lib/types';
-import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
-
+import RemoveAdminsDialog from '@/components/table/admin-table/table-element/remove-admins-dialog';
+import {useState} from 'react';
+//import AddAdminsDialog from '@/components/table/adminTable/table-element/add-admins-dialog';
+import {MemberResult} from '@/lib/types';
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
-const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) => {
+const AdminTable = ({ members } : { members: MemberResult[] }) => {
     const [globalFilter, setGlobalFilter] = useState('');
-    const [sorting, setSorting] = useState<SortingState>([]);
-    const [columnVisibility, setColumnVisibility] = useLocalStorage<VisibilityState>('columnVisibility', {
-        description: true,
-        path: false
-    });
+    //const [adminInput, setAdminInput] = useState('');
+    const [sorting, setSorting] = useState([]);
 
     const table = useReactTable({
-        columns: GroupingsTableColumns,
-        data: groupingPaths,
+        columns: AdminTableColumns,
+        data: members,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        state: { globalFilter, sorting, columnVisibility },
+        state: { globalFilter, sorting },
         initialState: { pagination: { pageSize } },
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: setSorting,
-        onColumnVisibilityChange: setColumnVisibility,
         enableMultiSort: true
     });
 
     return (
         <>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
-                <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Groupings</h1>
+                <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Admins</h1>
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
-                    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} placeholder="Filter Groupings..." />
-                    <div className="hidden sm:block">
-                        <ColumnSettings table={table} />
-                    </div>
+                    <GlobalFilter placeholder={'Filter Admins...'} filter={globalFilter} setFilter={setGlobalFilter}/>
                 </div>
             </div>
-            <Table className="table-fixed">
+            <Table className = "relative overflow-x-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -64,10 +54,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                                 <TableHead
                                     key={header.id}
                                     onClick={header.column.getToggleSortingHandler()}
-                                    className={`
-                                      ${!table.getIsAllColumnsVisible() && header.column.getIndex() > 0 ? 'w-2/3' : ''}
-                                      ${header.column.getIndex() > 0 ? 'hidden sm:table-cell' : 'w-2/5 md:w-1/3'}
-                                    `}
+                                    className={`w-1/3`}
                                 >
                                     <div className="flex items-center">
                                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -81,13 +68,22 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                 <TableBody>
                     {table.getRowModel().rows.map((row) => (
                         <TableRow key={row.id}>
-                            {row.getVisibleCells().map((cell) => (
+                            {row.getVisibleCells().map(cell => (
                                 <TableCell
-                                    key={cell.id}
-                                    className={`${cell.column.getIndex() > 0 ? 'hidden sm:table-cell' : ''}`}
+                                  key={cell.id}
+                                  width={cell.column.columnDef.size}
                                 >
                                     <div className="flex items-center px-2 overflow-hidden whitespace-nowrap">
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        <div className="m-2">
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </div>
+                                        {cell.column.id === 'REMOVE' && (
+                                            <RemoveAdminsDialog
+                                                uid={row.getValue('uid')}
+                                                name={row.getValue('name')}
+                                                uhUuid={row.getValue('uhUuid')}
+                                            />
+                                        )}
                                     </div>
                                 </TableCell>
                             ))}
@@ -95,9 +91,17 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
                     ))}
                 </TableBody>
             </Table>
-            <PaginationBar table={table} />
+            <div className="grid grid-cols-2 items-center">
+                <div>
+                    {/*comment this out <AddAdmin input={adminInput} setInput={setAdminInput}/>
+                    <AddAdminsDialog input={adminInput} setInput={setAdminInput}/>*/}
+                </div>
+                <div className="flex justify-end">
+                    <PaginationBar table={table}/>
+                </div>
+            </div>
         </>
     );
 };
 
-export default GroupingsTable;
+export default AdminTable;

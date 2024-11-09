@@ -57,6 +57,7 @@ const PaginationLink = ({
     {...props}
   />
 )
+
 PaginationLink.displayName = 'PaginationLink'
 
 const PaginationPrevious = ({
@@ -89,11 +90,13 @@ const PaginationNext = ({
     <ChevronRight className="h-4 w-4" />
   </PaginationLink>
 )
+
 PaginationNext.displayName = 'PaginationNext'
 
 const PaginationEllipsis = ({
   className,
   ...props
+
 }: React.ComponentProps<'span'>) => (
   <span
     aria-hidden
@@ -104,6 +107,7 @@ const PaginationEllipsis = ({
     <span className="sr-only">More pages</span>
   </span>
 )
+
 PaginationEllipsis.displayName = 'PaginationEllipsis'
 
 export {

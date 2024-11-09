@@ -12,13 +12,13 @@ import {
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import ColumnSettings from '@/components/table/table-element/column-settings';
+import GroupingsTableColumns from '@/components/table/groupings-table/table-element/groupings-table-columns';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 import { useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
-import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -50,13 +50,17 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
                 <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Groupings</h1>
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
-                    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} placeholder="Filter Groupings..." />
+                    <GlobalFilter
+                        placeholder={'Filter Groupings...'}
+                        filter={globalFilter}
+                        setFilter={setGlobalFilter}
+                    />
                     <div className="hidden sm:block">
                         <ColumnSettings table={table} />
                     </div>
                 </div>
             </div>
-            <Table className="table-fixed">
+            <Table className="relative overflow-x-auto">
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>

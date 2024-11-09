@@ -1,38 +1,72 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { getAllGroupings } from '@/lib/fetchers';
+import { groupingAdmins } from '@/lib/fetchers';
+import GroupingsTableSkeleton from '@/components/table/groupings-table/groupings-table-skeleton';
+import AdminTableSkeleton from '@/components/table/admin-table/admin-table-skeleton';
+import dynamic from 'next/dynamic';
 
-const Admin = () => {
+// Require dynamic import for localStorage
+const GroupingsTable = dynamic(() => import('@/components/table/groupings-table/groupings-table'), {
+  ssr: false,
+  loading: () => <GroupingsTableSkeleton />
+});
+
+const AdminTable = dynamic(() => import('@/components/table/admin-table/admin-table'), {
+  ssr: false,
+  loading: () => <AdminTableSkeleton />
+});
+
+const Admin = async () => {
+
+    const { groupingPaths } = await getAllGroupings();
+    const { members } = await groupingAdmins();
+
     return (
-        <Tabs className="bg-seafoam" defaultValue="manage-groupings">
-            <div className="container">
-                <TabsList variant="outline">
-                    <TabsTrigger value="manage-groupings" variant="outline">
-                        Manage Groupings
-                    </TabsTrigger>
-                    <TabsTrigger value="manage-admins" variant="outline">
-                        Manage Admins
-                    </TabsTrigger>
-                    <TabsTrigger value="manage-person" variant="outline">
-                        Manage Person
-                    </TabsTrigger>
-                </TabsList>
+        <main>
+            <div className="bg-seafoam pt-3">
+                <Tabs defaultValue="manage-groupings">
+                    <div className="container">
+                        <TabsList variant="outline">
+                            <TabsTrigger
+                                value="manage-groupings" variant="outline" >
+                                Manage Groupings
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="manage-admins" variant="outline" >
+                                Manage Admins
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="manage-person" variant="outline" >
+                                Manage Person
+                            </TabsTrigger>
+                        </TabsList>
+                    </div>
+                    <TabsContent value="manage-groupings">
+                        <div className="bg-white">
+                            <div className="container">
+                                <GroupingsTable groupingPaths = {groupingPaths}/>
+                            </div>
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="manage-admins">
+                        <div className="bg-white">
+                            <div className="container">
+                                <AdminTable members ={members}/>
+                                {/*<AddAdmin/>*/}
+                            </div>
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="manage-person">
+                        <div className="bg-white">
+                            <div className="container">
+                                {/* PersonTable goes here */}
+                            </div>
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
-            <TabsContent value="manage-groupings">
-                <div className="bg-white">
-                    <div className="container">{/* GroupingsTable goes here */}</div>
-                </div>
-            </TabsContent>
-            <TabsContent value="manage-admins">
-                <div className="bg-white">
-                    <div className="container">{/* AdminTable goes here */}</div>
-                </div>
-            </TabsContent>
-            <TabsContent value="manage-person">
-                <div className="bg-white">
-                    <div className="container">{/* PersonTable goes here */}</div>
-                </div>
-            </TabsContent>
-        </Tabs>
+        </main>
     );
-};
+}
 
 export default Admin;
