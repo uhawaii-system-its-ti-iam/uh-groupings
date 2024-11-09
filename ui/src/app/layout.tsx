@@ -4,6 +4,11 @@ import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer';
 import type { Metadata } from 'next';
 
+// FontAwesome configuration.
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+config.autoAddCss = false;
+
 const sourceSans3 = Source_Sans_3({
     subsets: ['latin'],
     weight: ['400', '600', '700', '900'],

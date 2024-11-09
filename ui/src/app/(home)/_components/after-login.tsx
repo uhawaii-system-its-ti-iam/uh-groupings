@@ -27,8 +27,6 @@ const AfterLogin = async () => {
                 ' Search for and manage any grouping on behalf of the owner.',
             href: '/admin',
             icon: faKey,
-            width: 48,
-            height: 48,
             role: Role.ADMIN,
             ariaLabel: 'key'
         },
@@ -37,8 +35,6 @@ const AfterLogin = async () => {
             description: 'View and manage my memberships. Search for new groupings to join as a member.',
             href: '/memberships',
             icon: faIdCard,
-            width: 54,
-            height: 48,
             number: numberOfMemberships,
             role: Role.UH,
             ariaLabel: 'id-card'
@@ -49,8 +45,6 @@ const AfterLogin = async () => {
                 'Review members, manage Include and Exclude lists, ' + 'configure preferences, and export members.',
             href: '/groupings',
             icon: faWrench,
-            width: 48,
-            height: 48,
             number: numberOfGroupings,
             role: Role.OWNER,
             ariaLabel: 'wrench'
@@ -67,7 +61,7 @@ const AfterLogin = async () => {
                                 className="flex justify-center items-center rounded-full
                             h-[100px] w-[100px] bg-white mx-auto relative lg:ml-0"
                             >
-                                <FontAwesomeIcon className="w-14 h-16" aria-label="user" icon={faUser} />
+                                <FontAwesomeIcon className="fa-4x" aria-label="user" icon={faUser} />
                                 <div
                                     className="bg-blue-background rounded-full flex justify-center
                                     items-center h-[30px] w-[30px] absolute left-3 bottom-0 ml-16"
@@ -104,8 +98,7 @@ const AfterLogin = async () => {
                                 <div className="flex items-center mb-1">
                                     <FontAwesomeIcon
                                         icon={pageInfoItem.icon}
-                                        style={{ width: `${pageInfoItem.width}px`, height: `${pageInfoItem.height}px` }}
-                                        className="mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto text-text-primary"
+                                        className="mr-5 mb-4 fa-3x h-auto text-text-primary"
                                         aria-label={pageInfoItem.ariaLabel}
                                     />
                                     {pageInfoItem.number !== null && (

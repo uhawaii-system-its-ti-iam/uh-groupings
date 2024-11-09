@@ -47,7 +47,7 @@ const SideNav = ({ groupingPath }: { groupingPath: string }) => {
                                             <FontAwesomeIcon
                                                 aria-hidden="true"
                                                 icon={icon}
-                                                className="w-5 h-5 text-text-primary"
+                                                className="text-text-primary"
                                             />
                                         </Link>
                                     </TooltipTrigger>
