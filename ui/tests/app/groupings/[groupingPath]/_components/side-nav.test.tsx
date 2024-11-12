@@ -2,6 +2,8 @@ import { render, screen } from '@testing-library/react';
 import SideNav from '@/app/groupings/[groupingPath]/_components/side-nav';
 import { usePathname } from 'next/navigation';
 
+jest.mock('next/navigation');
+
 describe('SideNav Component', () => {
     const groupingPath = 'test-grouping';
 

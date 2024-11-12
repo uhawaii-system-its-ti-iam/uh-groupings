@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import Role from '@/access/role';
-import { getCurrentUser } from '@/access/authentication';
 import { NavbarLinks } from './navbar-links';
 import LoginButton from './login-button';
 import NavbarMenu from './navbar-menu';
 import TimeoutModal from '@/components/modal/timeout-modal';
+import { getUser } from '@/lib/access/user';
+import Role from '@/lib/access/role';
 
 const Navbar = async () => {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getUser();
     return (
         <>
             <TimeoutModal currentUser={currentUser} />

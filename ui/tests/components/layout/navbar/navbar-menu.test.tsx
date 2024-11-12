@@ -1,5 +1,5 @@
-import Role from '@/access/role';
-import User, { AnonymousUser } from '@/access/user';
+import Role from '@/lib/access/role';
+import User, { AnonymousUser } from '@/lib/access/user';
 import NavbarMenu from '@/components/layout/navbar/navbar-menu';
 import { fireEvent, render, screen } from '@testing-library/react';
 

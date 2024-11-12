@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { GroupingDescription } from '@/lib/types';
 import GroupingHeader from '@/app/groupings/[groupingPath]/_components/grouping-header';
 
+jest.mock('next/navigation');
 jest.mock('@/lib/fetchers');
 jest.mock('@/app/groupings/[groupingPath]/_components/grouping-header');
 

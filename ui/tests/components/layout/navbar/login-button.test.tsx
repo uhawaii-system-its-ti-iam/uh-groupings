@@ -1,28 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Login from '@/components/layout/navbar/login-button';
-import { redirect } from 'next/navigation';
-import User, { AnonymousUser } from '@/access/user';
-import Role from '@/access/role';
+import User, { AnonymousUser } from '@/lib/access/user';
+import Role from '@/lib/access/role';
+import * as NextCasClient from 'next-cas-client';
 
-const casUrl = process.env.NEXT_PUBLIC_CAS_URL as string;
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
+
+jest.mock('next-cas-client');
 
 describe('Login', () => {
     describe('User is not logged in', () => {
         it('should render a Login button', () => {
             render(<Login currentUser={AnonymousUser} />);
 
-            expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument;
+            expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
         });
 
         it('should visit the CAS login url on click', async () => {
             render(<Login currentUser={AnonymousUser} />);
 
-            const casLoginUrl = `${casUrl}/login?service=${encodeURIComponent(`${baseUrl}/api/cas/login`)}`;
             await userEvent.click(screen.getByRole('button', { name: 'Login' }));
-            expect(redirect).toHaveBeenCalledWith(casLoginUrl);
+            expect(NextCasClient.login).toHaveBeenCalled();
         });
     });
 
@@ -40,9 +39,8 @@ describe('Login', () => {
         it('should visit the CAS logout url on click', async () => {
             render(<Login currentUser={testUser} />);
 
-            const casLogoutUrl = `${casUrl}/logout?service=${encodeURIComponent(`${baseUrl}/api/cas/logout`)}`;
             await userEvent.click(screen.getByRole('button', { name: `Logout (${testUser.uid})` }));
-            expect(redirect).toHaveBeenCalledWith(casLogoutUrl);
+            expect(NextCasClient.logout).toHaveBeenCalled();
         });
     });
 });

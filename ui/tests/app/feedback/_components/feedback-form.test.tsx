@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as Actions from '@/lib/actions';
-import User from '@/access/user';
+import User from '@/lib/access/user';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
 
 jest.mock('@/lib/actions');

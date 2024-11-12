@@ -1,14 +1,14 @@
-import Role from '@/access/role';
+import Role from '@/lib/access/role';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faKey, faIdCard, faWrench, faUser} from '@fortawesome/free-solid-svg-icons';
+import { faKey, faIdCard, faWrench, faUser } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getNumberOfGroupings, getNumberOfMemberships } from '@/lib/fetchers';
-import { getCurrentUser } from '@/access/authentication';
+import { getUser } from '@/lib/access/user';
 
 const AfterLogin = async () => {
     const [currentUser, numberOfGroupings, numberOfMemberships] = await Promise.all([
-        getCurrentUser(),
+        getUser(),
         getNumberOfGroupings(),
         getNumberOfMemberships()
     ]);
@@ -72,7 +72,11 @@ const AfterLogin = async () => {
                                     className="bg-blue-background rounded-full flex justify-center
                                     items-center h-[30px] w-[30px] absolute left-3 bottom-0 ml-16"
                                 >
-                                    <FontAwesomeIcon className="text-white stroke-none p-0.5" aria-label="key-round" icon={faKey} />
+                                    <FontAwesomeIcon
+                                        className="text-white stroke-none p-0.5"
+                                        aria-label="key-round"
+                                        icon={faKey}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -98,7 +102,12 @@ const AfterLogin = async () => {
                         <div key={index} className="flex flex-col justify-between">
                             <div>
                                 <div className="flex items-center mb-1">
-                                    <FontAwesomeIcon icon={pageInfoItem.icon} style={{ width: `${pageInfoItem.width}px`, height: `${pageInfoItem.height}px` }} className="mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto text-text-primary" aria-label={pageInfoItem.ariaLabel} />
+                                    <FontAwesomeIcon
+                                        icon={pageInfoItem.icon}
+                                        style={{ width: `${pageInfoItem.width}px`, height: `${pageInfoItem.height}px` }}
+                                        className="mr-5 mb-4 max-w-${pageInfoItem.icon.width} h-auto text-text-primary"
+                                        aria-label={pageInfoItem.ariaLabel}
+                                    />
                                     {pageInfoItem.number !== null && (
                                         <span className="text-[2.5rem] text-text-color ">{pageInfoItem.number}</span>
                                     )}

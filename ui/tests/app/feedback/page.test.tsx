@@ -1,15 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import Feedback from '@/app/feedback/page';
-import * as Authentication from '@/access/authentication';
-import User from '@/access/user';
+import * as NextCasClient from 'next-cas-client/app';
+import User from '@/lib/access/user';
 
-jest.mock('@/access/authentication');
+jest.mock('next-cas-client/app');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
 describe('Feedback', () => {
     it('should render the Feedback form', async () => {
-        jest.spyOn(Authentication, 'getCurrentUser').mockResolvedValue(testUser);
+        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
 
         render(await Feedback());
 

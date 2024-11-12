@@ -1,6 +1,6 @@
 import { ApiError } from './types';
-import { getCurrentUser } from '@/access/authentication';
 import { sendStackTrace } from './actions';
+import { getUser } from '@/lib/access/user';
 
 const maxRetries = 3;
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
@@ -34,7 +34,7 @@ const delay = async (ms = 5000) => new Promise((res) => setTimeout(res, ms));
  * @returns The promise of type T or ApiError type
  */
 const poll = async <T>(jobId: number): Promise<T & ApiError> => {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getUser();
     return await fetch(`${baseUrl}/jobs/${jobId}`, { headers: { current_user: currentUser.uid } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
         .then(async (res) => {

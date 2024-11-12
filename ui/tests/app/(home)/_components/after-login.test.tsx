@@ -1,12 +1,12 @@
-import Role from '@/access/role';
+import Role from '@/lib/access/role';
 import { render, screen } from '@testing-library/react';
-import User from '@/access/user';
+import User from '@/lib/access/user';
 import * as Fetchers from '@/lib/fetchers';
-import * as Authentication from '@/access/authentication';
+import * as NextCasClient from 'next-cas-client/app';
 import afterLogin from '@/app/(home)/_components/after-login';
 
 jest.mock('@/lib/fetchers');
-jest.mock('@/access/authentication');
+jest.mock('next-cas-client/app');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -105,7 +105,7 @@ describe('AfterLogin', () => {
     });
 
     it('Should render correctly when logged in as an admin', async () => {
-        jest.spyOn(Authentication, 'getCurrentUser').mockResolvedValue(admin);
+        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(admin);
         render(await afterLogin());
         expectWelcome(admin, 'Admin');
         expectAdministration(true);
@@ -114,7 +114,7 @@ describe('AfterLogin', () => {
     });
 
     it('Should render correctly when logged in as Owner', async () => {
-        jest.spyOn(Authentication, 'getCurrentUser').mockResolvedValue(owner);
+        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(owner);
         render(await afterLogin());
         expectWelcome(owner, 'Owner');
         expectAdministration(false);
@@ -123,7 +123,7 @@ describe('AfterLogin', () => {
     });
 
     it('Should render correctly when logged in as a user with a UH account', async () => {
-        jest.spyOn(Authentication, 'getCurrentUser').mockResolvedValue(uhUser);
+        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(uhUser);
         render(await afterLogin());
         expectWelcome(uhUser, 'Member');
         expectAdministration(false);

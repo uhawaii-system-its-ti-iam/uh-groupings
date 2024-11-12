@@ -22,14 +22,14 @@ import {
     sendStackTrace,
     updateDescription
 } from '@/lib/actions';
-import * as Authentication from '@/access/authentication';
-import User from '@/access/user';
+import * as NextCasClient from 'next-cas-client/app';
+import User from '@/lib/access/user';
 import { Feedback } from '@/lib/types';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('@/access/authentication');
+jest.mock('next-cas-client/app');
 
 describe('actions', () => {
     const currentUser = testUser;
@@ -61,7 +61,7 @@ describe('actions', () => {
     };
 
     beforeAll(() => {
-        jest.spyOn(Authentication, 'getCurrentUser').mockResolvedValue(testUser);
+        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
     });
 
     describe('updateDescription', () => {
