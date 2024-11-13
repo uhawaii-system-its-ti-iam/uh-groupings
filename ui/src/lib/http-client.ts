@@ -1,4 +1,3 @@
-import { ApiError } from './types';
 import { sendStackTrace } from './actions';
 import { getUser } from '@/lib/access/user';
 
@@ -31,9 +30,9 @@ const delay = async (ms = 5000) => new Promise((res) => setTimeout(res, ms));
  *
  * @param jobId - the jobId returned from the response of an async endpoint
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
-const poll = async <T>(jobId: number): Promise<T & ApiError> => {
+const poll = async <T>(jobId: number): Promise<T> => {
     const currentUser = await getUser();
     return await fetch(`${baseUrl}/jobs/${jobId}`, { headers: { current_user: currentUser.uid } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
@@ -53,9 +52,9 @@ const poll = async <T>(jobId: number): Promise<T & ApiError> => {
  * @param endpoint - the URL to perform the request on
  * @param currentUserKey - the uhIdentifier of the current user
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
-export const getRequest = async <T>(endpoint: string, currentUserKey: string = ''): Promise<T & ApiError> =>
+export const getRequest = async <T>(endpoint: string, currentUserKey: string = ''): Promise<T> =>
     await fetch(endpoint, { headers: { current_user: currentUserKey } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
         .catch((err) => err);
@@ -67,14 +66,14 @@ export const getRequest = async <T>(endpoint: string, currentUserKey: string = '
  * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
 export const postRequest = async <T>(
     endpoint: string,
     currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T & ApiError> =>
+): Promise<T> =>
     await fetch(endpoint, {
         method: HTTPMethod.POST,
         headers: {
@@ -93,14 +92,14 @@ export const postRequest = async <T>(
  * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
 export const postRequestAsync = async <T>(
     endpoint: string,
     currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T & ApiError> =>
+): Promise<T> =>
     await fetch(endpoint, {
         method: HTTPMethod.POST,
         headers: {
@@ -120,7 +119,7 @@ export const postRequestAsync = async <T>(
  * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
 export const postRequestRetry = async <T>(
     endpoint: string,
@@ -128,7 +127,7 @@ export const postRequestRetry = async <T>(
     body?: object | string | string[],
     contentType = 'application/json',
     retries: number = maxRetries
-): Promise<T & ApiError> =>
+): Promise<T> =>
     await fetch(endpoint, {
         method: HTTPMethod.POST,
         headers: {
@@ -153,14 +152,14 @@ export const postRequestRetry = async <T>(
  * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
 export const putRequest = async <T>(
     endpoint: string,
     currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T & ApiError> =>
+): Promise<T> =>
     await fetch(endpoint, {
         method: HTTPMethod.PUT,
         headers: {
@@ -179,14 +178,14 @@ export const putRequest = async <T>(
  * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
 export const putRequestAsync = async <T>(
     endpoint: string,
     currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T & ApiError> =>
+): Promise<T> =>
     await fetch(endpoint, {
         method: HTTPMethod.PUT,
         headers: {
@@ -206,14 +205,14 @@ export const putRequestAsync = async <T>(
  * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
 export const deleteRequest = async <T>(
     endpoint: string,
     currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T & ApiError> =>
+): Promise<T> =>
     await fetch(endpoint, {
         method: HTTPMethod.DELETE,
         headers: {
@@ -232,14 +231,14 @@ export const deleteRequest = async <T>(
  * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
- * @returns The promise of type T or ApiError type
+ * @returns The promise of type T
  */
 export const deleteRequestAsync = async <T>(
     endpoint: string,
     currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T & ApiError> =>
+): Promise<T> =>
     await fetch(endpoint, {
         method: HTTPMethod.DELETE,
         headers: {
