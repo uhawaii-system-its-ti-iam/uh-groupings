@@ -53,6 +53,29 @@ export const ownedGrouping = async (
 };
 
 /**
+ * Get all the members of an owned grouping through paginated calls.
+ *
+ * @param groupPaths - The paths to the groups
+ * @param sortString - String to sort by column name
+ * @param isAscending - On true the data returns in ascending order
+ *
+ * @returns The promise of members of an owned grouping
+ */
+export const allGroupingMembers = async (
+    groupPaths: string[],
+    sortString: string,
+    isAscending: boolean
+): Promise<GroupingGroupsMembers> => {
+    const currentUser = await getUser();
+    const params = new URLSearchParams({
+        sortString,
+        isAscending: isAscending.toString()
+    });
+    const endpoint = `${baseUrl}/groupings/all-grouping-members?${params.toString()}`;
+    return postRequestRetry<GroupingGroupsMembers>(endpoint, currentUser.uid, groupPaths);
+};
+
+/**
  * Get the description of a grouping.
  *
  * @param groupingPath - The path of the grouping
