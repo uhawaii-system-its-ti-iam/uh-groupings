@@ -14,19 +14,19 @@ import { useState } from 'react';
 import ErrorAlert from './error-alert';
 import SuccessAlert from './success-alert';
 
+export const feedbackFormSchema = z.object({
+    type: z.string(),
+    name: z.optional(z.string()),
+    email: z.string().email(),
+    message: z.string().min(15)
+});
+
 const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
     const [showSuccessAlert, isShowSuccessAlert] = useState(false);
     const [showErrorAlert, isShowErrorAlert] = useState(false);
 
-    const formSchema = z.object({
-        type: z.string(),
-        name: z.optional(z.string()),
-        email: z.string().email(),
-        message: z.string().min(15)
-    });
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof feedbackFormSchema>>({
+        resolver: zodResolver(feedbackFormSchema),
         defaultValues: {
             type: 'General',
             email: `${currentUser.uid}@hawaii.edu`,
@@ -34,7 +34,7 @@ const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
         }
     });
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof feedbackFormSchema>) => {
         isShowSuccessAlert(false);
         isShowErrorAlert(false);
 

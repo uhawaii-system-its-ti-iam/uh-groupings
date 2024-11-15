@@ -649,9 +649,9 @@ describe('actions', () => {
     describe('sendFeedback', () => {
         const feedback: Feedback = {
             name: 'name',
-            email: 'email',
+            email: 'email@example.com',
             type: 'type',
-            message: 'message'
+            message: 'Message that is long enough.'
         };
 
         it('should make a POST request at the correct endpoint', async () => {
