@@ -10,9 +10,9 @@ const GroupingsTableSkeleton = () => {
             <div className="h-full flex flex-col md:flex-row md:justify-between pt-5 mb-4">
                 <h1 className="text-[2rem] font-medium text-text-color text-center pt-3">Manage Groupings</h1>
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
-                    <Skeleton className="h-10 w-96 rounded-[0.25rem]" />
+                    <Skeleton className="h-10 w-96 rounded" />
                     <div className="hidden sm:block">
-                        <Skeleton className="h-10 w-10 rounded-[0.25rem]" />
+                        <Skeleton className="h-10 w-10 rounded" />
                     </div>
                 </div>
             </div>
@@ -25,7 +25,7 @@ const GroupingsTableSkeleton = () => {
                                 className={`pl-[0.5rem]
                                 ${column.id !== 'name' ? 'hidden sm:table-cell' : ''}`}
                             >
-                                <Skeleton className="h-5 w-36 rounded-[0.25rem]" />
+                                <Skeleton className="h-5 w-36 rounded" />
                             </TableHead>
                         ))}
                     </TableRow>
@@ -39,7 +39,7 @@ const GroupingsTableSkeleton = () => {
                                     className={`p-[0.5rem]
                                     ${index > 0 ? 'hidden sm:table-cell' : ''}`}
                                 >
-                                    <Skeleton className="h-5 w-72 rounded-[0.25rem]" />
+                                    <Skeleton className="h-5 w-72 rounded" />
                                 </TableCell>
                             ))}
                         </TableRow>
@@ -47,7 +47,7 @@ const GroupingsTableSkeleton = () => {
                 </TableBody>
             </Table>
             <div className="float-end">
-                <Skeleton className="h-10 w-80 rounded-[0.25rem]" />
+                <Skeleton className="h-10 w-80 rounded" />
             </div>
         </div>
     );

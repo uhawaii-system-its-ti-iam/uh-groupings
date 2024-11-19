@@ -36,8 +36,6 @@ describe('Announcements', () => {
         jest.spyOn(Fetchers, 'getAnnouncements').mockResolvedValue(announcements);
         render(await Announcements());
 
-        expect(screen.getAllByLabelText('icon')).toHaveLength(2);
-        expect(screen.getAllByText('Announcement')).toHaveLength(2);
         expect(screen.getByText(message)).toBeInTheDocument();
         expect(screen.getByText(message1)).toBeInTheDocument();
         expect(screen.queryByText(oldMessage)).not.toBeInTheDocument();

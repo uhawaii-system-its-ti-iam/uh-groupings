@@ -36,13 +36,14 @@ const SideNav = ({ groupingPath }: { groupingPath: string }) => {
                     const isSelected = currentPath === href;
 
                     return (
-                        <li key={href} className="pr-0 pl-0 mt-1 mx-auto pt-0">
+                        <li key={href} className="mt-1 mx-auto">
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger>
                                         <Link
                                             href={`/groupings/${decodeURIComponent(groupingPath)}/${href}`}
-                                            className={`flex items-center justify-center w-11 h-11 rounded-full border-none ${isSelected ? 'bg-white' : 'bg-transparent'}`}
+                                            className={`flex items-center justify-center w-11 h-11 rounded-full 
+                                                border-none ${isSelected ? 'bg-white' : 'bg-transparent'}`}
                                         >
                                             <FontAwesomeIcon
                                                 aria-hidden="true"
@@ -51,11 +52,26 @@ const SideNav = ({ groupingPath }: { groupingPath: string }) => {
                                             />
                                         </Link>
                                     </TooltipTrigger>
-                                    <TooltipContent className="bg-black text-white max-w-48 text-center" side="right">
+
+                                    <TooltipContent className="max-w-48 text-center" side="right">
                                         {label}
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
+                            {isSelected && (
+                                <>
+                                    <span
+                                        className="absolute invisible md:visible mt-2.5 xl:ml-3.5 lg:ml-2 sm:ml-7
+                                        w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] 
+                                        border-b-transparent border-r-[10px] border-r-white"
+                                    />
+                                    <span
+                                        className="absolute visible md:invisible mt-[3.2rem] -ml-8 w-0 h-0 
+                                        border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent
+                                        border-b-[10px] border-b-white"
+                                    />
+                                </>
+                            )}
                         </li>
                     );
                 })}

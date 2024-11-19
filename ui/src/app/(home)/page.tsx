@@ -11,7 +11,7 @@ const Home = async () => {
 
     return (
         <main>
-            <div className="container mt-5 mb-5">
+            <div className="container my-5">
                 <Announcements />
                 <div className="flex flex-row py-8 px-0.5 justify-between">
                     <div className="md:w-7/12 flex items-center">

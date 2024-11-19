@@ -79,7 +79,7 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                                 <FontAwesomeIcon icon={faEdit} className="w-5 h-4" />
                             </button>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-black text-white max-w-48 text-center border-none">
+                        <TooltipContent className="max-w-48 text-center border-none">
                             Edit this grouping&apos;s description
                         </TooltipContent>
                     </Tooltip>
@@ -110,7 +110,7 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                                             />
                                         </button>
                                     </TooltipTrigger>
-                                    <TooltipContent className="bg-black text-white max-w-48 text-center border-none">
+                                    <TooltipContent className="max-w-48 text-center border-none">
                                         Save description
                                     </TooltipContent>
                                 </Tooltip>
@@ -132,7 +132,7 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                                             />
                                         </button>
                                     </TooltipTrigger>
-                                    <TooltipContent className="bg-black text-white max-w-48 text-center border-none">
+                                    <TooltipContent className="max-w-48 text-center border-none">
                                         Cancel changes
                                     </TooltipContent>
                                 </Tooltip>
@@ -141,7 +141,7 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                         {currentDescription.length >= 98 && (
                             <Alert
                                 data-testid="description-alert"
-                                className="bg-red-100 text-[rgb(114,28,36)] lg:w-max lg:h-[50px] md:w-max md:h-[50px] sm:h-1/2 pt-2 pl-2 pr-2 mb-1 mt-1 border"
+                                className="bg-rose-100 text-rose-900 lg:w-max lg:h-[50px] md:w-max md:h-[50px] sm:h-1/2 pt-2.5 pl-2 pr-2 mb-1 mt-1 border"
                             >
                                 <strong>Maximum length reached. </strong>A grouping&apos;s description cannot exceed 98
                                 characters.
