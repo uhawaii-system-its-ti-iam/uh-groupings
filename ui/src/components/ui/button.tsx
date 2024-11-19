@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-    `inline-flex items-center justify-center whitespace-nowrap rounded-[0.25rem] text-base font-normal ring-offset-white
+    `inline-flex items-center justify-center whitespace-nowrap rounded text-base font-normal ring-offset-white
     transition-colors focus-visible:border-blue-300 focus-visible:outline-none focus-visible:ring-[3px] 
     focus-visible:ring-blue-200 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950
     dark:focus-visible:ring-slate-300 focus:border-blue-300 focus:outline-none focus:ring-[2.5px] focus:ring-blue-200
@@ -15,7 +15,7 @@ const buttonVariants = cva(
             variant: {
                 default: `relative bg-gradient-to-b from-[#7db1c4] to-[#5a9cb4] z-10
                 before:absolute before:bg-[#004e59] before:inset-0 before:opacity-0 before:transition-opacity
-                before:-z-10 before:hover:opacity-100 before:focus:opacity-100 before:rounded-[0.25rem]
+                before:-z-10 before:hover:opacity-100 before:focus:opacity-100 before:rounded
                 text-white border border-transparent text-slate-50 [text-shadow:_0_1px_1px_#444]
                 border-x-black/[.1] border-t-black/[.1] border-b-black/[.25]`,
                 destructive: `bg-red-500 text-slate-50 hover:bg-red-500/90 dark:bg-red-900 dark:text-slate-50
