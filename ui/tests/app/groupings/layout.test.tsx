@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import GroupingsLayout from '@/app/groupings/layout';
+import { withNuqsTestingAdapter } from 'nuqs/adapters/testing';
 
 describe('GroupingsLayout', () => {
     it('renders the heading with correct props and children correctly', () => {
         const children = <div>Child Content</div>;
-        render(<GroupingsLayout>{children}</GroupingsLayout>);
+        render(<GroupingsLayout>{children}</GroupingsLayout>, { wrapper: withNuqsTestingAdapter() });
 
         expect(screen.getByText('Manage My Groupings')).toBeInTheDocument();
         expect(

@@ -5,6 +5,7 @@ import {
     Feedback,
     GroupingAddResult,
     GroupingAddResults,
+    GroupingMembers,
     GroupingMoveMemberResult,
     GroupingMoveMembersResult,
     GroupingRemoveResult,
@@ -15,6 +16,7 @@ import {
 import {
     deleteRequest,
     deleteRequestAsync,
+    getRequest,
     postRequest,
     postRequestAsync,
     putRequest,
@@ -345,9 +347,9 @@ export const resetExcludeGroupAsync = async (groupingPath: string): Promise<Grou
 /**
  * Sends feedback to Groupings API to send email.
  *
- * @param feedback - the feedback
+ * @param feedback - The feedback
  *
- * @returns The EmailResult
+ * @returns The promise of the EmailResult
  */
 export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => {
     feedbackFormSchema.parse(feedback);
@@ -359,13 +361,63 @@ export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => 
 /**
  * Sends feedback to Groupings API to send stack trace email.
  *
- * @param stackTrace - the stack trace
+ * @param stackTrace - The stack trace
  *
- * @returns The EmailResult
+ * @returns The promise of the EmailResult
  */
 export const sendStackTrace = async (stackTrace: string): Promise<EmailResult> => {
     z.string().parse(stackTrace);
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/email/send/stack-trace`;
     return postRequest<EmailResult>(endpoint, currentUser.uid, stackTrace, 'text/plain');
+};
+
+/**
+ * Get number of grouping members.
+ *
+ * @param groupingPath - The path of the grouping
+ *
+ * @returns The promise of the number of grouping members
+ */
+export const getNumberOfGroupingMembers = async (groupingPath: string): Promise<number> => {
+    z.string().parse(groupingPath);
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/count`;
+    return getRequest<number>(endpoint, currentUser.uid);
+};
+
+/**
+ * Get is basis information for members of a grouping path.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param uhIdentifiers - The list of uhIdentifiers
+ *
+ * @returns The promise of grouping members
+ */
+export const getGroupingMembersIsBasis = async (
+    groupingPath: string,
+    uhIdentifiers: string[]
+): Promise<GroupingMembers> => {
+    z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/is-basis`;
+    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
+};
+
+/**
+ * Get where listed information for members of a grouping path.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param uhIdentifiers - The list of uhIdentifiers
+ *
+ * @returns The promise of grouping members
+ */
+export const getGroupingMembersWhereListed = async (
+    groupingPath: string,
+    uhIdentifiers: string[]
+): Promise<GroupingMembers> => {
+    z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/where-listed`;
+    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
 };

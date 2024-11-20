@@ -14,7 +14,7 @@ const LoginButton = ({ currentUser }: { currentUser: User }) => (
                 Login <FontAwesomeIcon className="ml-1" icon={faSignInAlt} />
             </Button>
         ) : (
-            <Button variant="outline" onClick={() => logout()}>
+            <Button variant="outline" onClick={() => logout({ enableSLO: true })}>
                 Logout&nbsp;
                 <span className="sm:inline hidden">({currentUser.uid})</span>{' '}
                 <FontAwesomeIcon className="ml-1" icon={faSignOutAlt} />

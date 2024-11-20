@@ -44,7 +44,8 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: setSorting,
         onColumnVisibilityChange: setColumnVisibility,
-        enableMultiSort: true
+        enableMultiSort: true,
+        enableSortingRemoval: false
     });
 
     return (
