@@ -20,7 +20,7 @@ export const setRoles = async (user: User): Promise<void> => {
     if (await isAdmin(user.uhUuid)) {
         user.roles.push(Role.ADMIN);
     }
-    if (isDepartmental(user)) {
+    if (isDepartmental(user.uid, user.uhUuid)) {
         user.roles.push(Role.DEPARTMENTAL);
     }
 };
@@ -37,6 +37,14 @@ const isValidUhUuid = (uhUuid: string): boolean => {
     return uhUuidPattern.test(uhUuid);
 };
 
-const isDepartmental = (user: User): boolean => {
-    return user.uid === user.uhUuid || !user.uhUuid;
+/**
+ * Checks if user is a Departmental account.
+ *
+ * @param uid - The username
+ * @param uhUuid - 8 digit unique user indentifier
+ *
+ * @returns True if user is a departmental account
+ */
+export const isDepartmental = (uid: string, uhUuid: string): boolean => {
+    return uid === uhUuid || !uhUuid;
 };
