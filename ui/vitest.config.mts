@@ -5,9 +5,14 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
     plugins: [tsconfigPaths(), react()],
     test: {
+        server: {
+            deps: {
+                inline: ['nuqs', 'nuqs/server']
+            }
+        },
         environment: 'jsdom',
         globals: true,
-        setupFiles: './tests/vitest.setup.ts',
+        setupFiles: './tests/vitest.setup.tsx',
         coverage: {
             provider: 'istanbul',
             enabled: true,

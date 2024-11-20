@@ -6,6 +6,9 @@ import {
     addIncludeMembers,
     addIncludeMembersAsync,
     addOwners,
+    getGroupingMembersIsBasis,
+    getGroupingMembersWhereListed,
+    getNumberOfGroupingMembers,
     memberAttributeResults,
     memberAttributeResultsAsync,
     optIn,
@@ -27,6 +30,7 @@ import {
 import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
 import { Feedback } from '@/lib/types';
+import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
@@ -688,15 +692,15 @@ describe('actions', () => {
     describe('getGroupingMembers', () => {
         const page = 1;
         const size = 20;
-        const sortString = 'name';
+        const sortBy = SortBy.NAME;
         const isAscending = true;
 
         it('should make a POST request at the correct endpoint', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
-            await getGroupingMembers(groupingPath, sortString, isAscending, page, size);
+            await getGroupingMembers(groupingPath, { sortBy, isAscending, page, size });
             expect(fetch).toHaveBeenCalledWith(
                 `${baseUrl}/groupings/${groupingPath}?` +
-                    `page=${page}&size=${size}&sortString=${sortString}&isAscending=${isAscending}`,
+                    `page=${page}&size=${size}&sortBy=${sortBy}&isAscending=${isAscending}`,
                 {
                     headers: {
                         current_user: currentUser.uid
@@ -707,13 +711,79 @@ describe('actions', () => {
 
         it('should handle the successful response', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
-            expect(await getGroupingMembers(groupingPath, sortString, isAscending, page, size)).toEqual(mockResponse);
+            expect(await getGroupingMembers(groupingPath, { sortBy, isAscending, page, size })).toEqual(mockResponse);
         });
 
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
-            const res = getGroupingMembers(groupingPath, sortString, isAscending, page, size);
-            expect(await res).toEqual(mockError);
+            expect(await getGroupingMembers(groupingPath, { sortBy, isAscending, page, size })).toEqual(mockError);
+        });
+    });
+
+    describe('getNumberOfGroupingMembers', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await getNumberOfGroupingMembers(groupingPath);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/count`, {
+                headers: { current_user: currentUser.uid }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await getNumberOfGroupingMembers(groupingPath)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await getNumberOfGroupingMembers(groupingPath)).toEqual(mockError);
+        });
+    });
+
+    describe('getGroupingMembersIsBasis', () => {
+        it('should make a POST request at the correct endpoint', async () => {
+            await getGroupingMembersIsBasis(groupingPath, uhIdentifiers);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/is-basis`, {
+                body: JSON.stringify(uhIdentifiers),
+                headers: {
+                    'Content-Type': 'application/json',
+                    current_user: currentUser.uid
+                },
+                method: 'POST'
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await getGroupingMembersIsBasis(groupingPath, uhIdentifiers)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await getGroupingMembersIsBasis(groupingPath, uhIdentifiers)).toEqual(mockError);
+        });
+    });
+
+    describe('getGroupingMembersWhereListed', () => {
+        it('should make a POST request at the correct endpoint', async () => {
+            await getGroupingMembersWhereListed(groupingPath, uhIdentifiers);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/where-listed`, {
+                body: JSON.stringify(uhIdentifiers),
+                headers: {
+                    'Content-Type': 'application/json',
+                    current_user: currentUser.uid
+                },
+                method: 'POST'
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await getGroupingMembersWhereListed(groupingPath, uhIdentifiers)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockRejectOnce(() => Promise.reject(mockError));
+            expect(await getGroupingMembersWhereListed(groupingPath, uhIdentifiers)).toEqual(mockError);
         });
     });
 });

@@ -44,13 +44,16 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: setSorting,
         onColumnVisibilityChange: setColumnVisibility,
-        enableMultiSort: true
+        enableMultiSort: true,
+        enableSortingRemoval: false
     });
 
     return (
         <>
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
-                <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Groupings</h1>
+                <h1 className="text-[2rem] font-medium text-text-color pt-3 text-center md:text-left">
+                    Manage Groupings
+                </h1>
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
                     <GlobalFilter
                         placeholder={'Filter Groupings...'}

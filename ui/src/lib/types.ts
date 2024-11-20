@@ -64,17 +64,7 @@ export type GroupingGroupMember = {
 
 export type GroupingGroupMembers = {
     members: GroupingGroupMember[];
-} & GroupingResult;
-
-export type GroupingGroupsMembers = {
-    groupsMembersList: GroupingGroupMembers[];
-    isBasis: boolean;
-    isInclude: boolean;
-    isExclude: boolean;
-    isOwners: boolean;
-    paginationComplete: boolean;
-    allMembers: GroupingMembers;
-    pageNumber: number;
+    size: number;
 } & GroupingResult;
 
 export type GroupingDescription = {
@@ -165,3 +155,7 @@ export type EmailResult = {
     subject: string;
     text: string;
 };
+
+export type Group = 'basis' | 'include' | 'exclude' | 'owners';
+
+export type WhereListed = 'Basis' | 'Include' | 'Basis & Include';
