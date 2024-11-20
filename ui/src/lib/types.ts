@@ -1,3 +1,10 @@
+export enum GroupType {
+    BASIS = 'basis',
+    INCLUDE = 'include',
+    EXCLUDE = 'exclude',
+    OWNERS = 'owners'
+}
+
 export type Announcement = {
     message: string;
     start: string;
@@ -59,6 +66,7 @@ export type GroupingMembers = {
 };
 
 export type GroupingGroupMember = {
+    inBasis: boolean;
     resultCode: string;
 } & MemberResult;
 
@@ -67,11 +75,14 @@ export type GroupingGroupMembers = {
 } & GroupingResult;
 
 export type GroupingGroupsMembers = {
-    groupsMembersList: GroupingGroupMembers[];
-    isBasis: boolean;
-    isInclude: boolean;
-    isExclude: boolean;
-    isOwners: boolean;
+    groupingBasis: GroupingGroupMembers;
+    groupingInclude: GroupingGroupMembers;
+    groupingExclude: GroupingGroupMembers;
+    groupingOwners: GroupingGroupMembers;
+    basis: boolean;
+    include: boolean;
+    exclude: boolean;
+    owners: boolean;
     paginationComplete: boolean;
     allMembers: GroupingMembers;
     pageNumber: number;
@@ -164,4 +175,11 @@ export type EmailResult = {
     from: string;
     subject: string;
     text: string;
+};
+
+export type GroupingMembersTableSearchParams = {
+    page: string;
+    sortBy: string;
+    isAscending: string;
+    search?: string;
 };

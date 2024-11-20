@@ -41,9 +41,8 @@ const SideNav = ({ groupingPath }: { groupingPath: string }) => {
                                 <Tooltip>
                                     <TooltipTrigger>
                                         <Link
-                                            href={`/groupings/${decodeURIComponent(groupingPath)}/${href}`}
-                                            className={`flex items-center justify-center w-11 h-11 rounded-full 
-                                                border-none ${isSelected ? 'bg-white' : 'bg-transparent'}`}
+                                            href={`/groupings/${decodeURIComponent(groupingPath)}/${href}?page=1&sortBy=name&isAscending=true`}
+                                            className={`flex items-center justify-center w-11 h-11 rounded-full border-none ${isSelected ? 'bg-white' : 'bg-transparent'}`}
                                         >
                                             <FontAwesomeIcon
                                                 aria-hidden="true"

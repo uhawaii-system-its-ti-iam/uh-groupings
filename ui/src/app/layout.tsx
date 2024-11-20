@@ -2,11 +2,13 @@ import './globals.css';
 import { Source_Sans_3 } from 'next/font/google';
 import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer';
+import Providers from '@/components/providers';
 import type { Metadata } from 'next';
 
 // FontAwesome configuration.
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
+
 config.autoAddCss = false;
 
 const sourceSans3 = Source_Sans_3({
@@ -27,9 +29,11 @@ const RootLayout = ({
 }>) => (
     <html lang="en">
         <body className={`${sourceSans3.variable} min-h-screen flex flex-col`}>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
+            <Providers>
+                <Navbar />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+            </Providers>
         </body>
     </html>
 );

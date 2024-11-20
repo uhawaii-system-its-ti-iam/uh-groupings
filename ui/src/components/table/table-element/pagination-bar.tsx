@@ -8,11 +8,9 @@ import {
 } from '@/components/ui/pagination';
 import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-
 import { Table } from '@tanstack/table-core';
-import { GroupingPath } from '@/lib/types';
 
-const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
+const PaginationBar = <T,>({ table }: { table: Table<T> }) => {
     const [activePage, setActivePage] = useState(0);
     const pageRange = 2;
     const startPage = Math.max(0, activePage - pageRange);
@@ -57,7 +55,7 @@ const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
                                 table.setPageIndex(i);
                                 setActivePage(i);
                             }}
-                            className={`rounded-none border-transparent ${
+                            className={`rounded-none border-transparent cursor-pointer ${
                                 i === activePage ? 'bg-light-green text-black cursor-default' : 'hover:bg-light-grey'
                             }`}
                         >
@@ -85,7 +83,9 @@ const PaginationBar = ({ table }: { table: Table<GroupingPath> }) => {
                             }
                         }}
                         className={`${
-                            !table.getCanNextPage() ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                            !table.getCanNextPage() || table.getRowCount() === Infinity
+                                ? 'cursor-not-allowed opacity-50'
+                                : 'cursor-pointer'
                         } hover:bg-light-grey`}
                     >
                         <span className="pr-1">Last</span>

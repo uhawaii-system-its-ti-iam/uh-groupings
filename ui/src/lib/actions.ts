@@ -5,6 +5,7 @@ import {
     Feedback,
     GroupingAddResult,
     GroupingAddResults,
+    GroupingGroupsMembers,
     GroupingMoveMemberResult,
     GroupingMoveMembersResult,
     GroupingRemoveResult,
@@ -15,6 +16,7 @@ import {
 import {
     deleteRequest,
     deleteRequestAsync,
+    getRequest,
     postRequest,
     postRequestAsync,
     putRequest,
@@ -29,6 +31,36 @@ const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 // TODO:
 // The setOptIn, setOptOut, setSyncDest service functions will be up to the person who works on
 // implementing Opt Attributes and Sync Desinations into our React UI.
+
+/**
+ * Get all the members of an owned grouping through paginated calls.
+ *
+ * @param groupPaths - The paths to the groups
+ * @param page - The page number
+ * @param size - The size of the page
+ * @param sortString - String to sort by column name
+ * @param isAscending - On true the data returns in ascending order
+ *
+ * @returns The promise of members of an owned grouping
+ */
+export const ownedGrouping = async (
+    groupPaths: string[],
+    page?: string,
+    size?: string,
+    sortString?: string,
+    isAscending?: string
+): Promise<GroupingGroupsMembers> => {
+    const currentUser = await getUser();
+    const params = new URLSearchParams();
+
+    if (page) params.append('page', page);
+    if (size) params.append('size', size);
+    if (sortString) params.append('sortString', sortString);
+    if (isAscending) params.append('isAscending', isAscending);
+
+    const endpoint = `${baseUrl}/groupings/group?${params.toString()}`;
+    return postRequest<GroupingGroupsMembers>(endpoint, currentUser.uid, groupPaths);
+};
 
 /**
  * Update the description of grouping at path.
@@ -368,4 +400,10 @@ export const sendStackTrace = async (stackTrace: string): Promise<EmailResult> =
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/email/send/stack-trace`;
     return postRequest<EmailResult>(endpoint, currentUser.uid, stackTrace, 'text/plain');
+};
+
+export const getNumberOfGroupingMembers = async (groupingPath: string): Promise<number> => {
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/count`;
+    return getRequest<number>(endpoint, currentUser.uid);
 };
