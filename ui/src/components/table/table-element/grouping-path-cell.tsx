@@ -45,10 +45,14 @@ const GroupingPathCell = ({ path }: { path: string }) => {
                              justify-center hover:bg-green-blue h-6 p-2 transition ease-in-out duration-150"
                             data-testid="clipboard-button"
                         >
-                            <FontAwesomeIcon className="group-hover:text-white h-4 w-4 text-gray-600" data-testid="clipboard-icon" icon={faClipboard} />
+                            <FontAwesomeIcon
+                                className="group-hover:text-white h-4 w-4 text-gray-600"
+                                data-testid="clipboard-icon"
+                                icon={faClipboard}
+                            />
                         </button>
                     </TooltipTrigger>
-                    <TooltipContent>
+                    <TooltipContent className="bg-white text-slate-950">
                         <p data-testid="tooltip">{tooltipContent}</p>
                     </TooltipContent>
                 </Tooltip>

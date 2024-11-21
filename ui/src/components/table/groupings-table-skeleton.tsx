@@ -19,11 +19,11 @@ const GroupingsTableSkeleton = () => {
             <Table className="mb-4">
                 <TableHeader>
                     <TableRow>
-                        {GroupingsTableColumns.map((column) => (
+                        {GroupingsTableColumns.map((column, index) => (
                             <TableHead
-                                key={column.id}
+                                key={`header-${column}-${index}`}
                                 className={`pl-[0.5rem]
-                                ${column.id !== 'name' ? 'hidden sm:table-cell' : ''}`}
+                                ${index > 0 ? 'hidden sm:table-cell' : ''}`}
                             >
                                 <Skeleton className="h-5 w-36 rounded" />
                             </TableHead>
@@ -32,10 +32,10 @@ const GroupingsTableSkeleton = () => {
                 </TableHeader>
                 <TableBody>
                     {Array.from(Array(pageSize), (_, index) => (
-                        <TableRow key={index}>
+                        <TableRow key={`row-${index}`}>
                             {GroupingsTableColumns.map((column, index) => (
                                 <TableCell
-                                    key={column.id}
+                                    key={`cell-${column}-${index}`}
                                     className={`p-[0.5rem]
                                     ${index > 0 ? 'hidden sm:table-cell' : ''}`}
                                 >

@@ -1,12 +1,5 @@
 import { ownerGroupings } from '@/lib/fetchers';
-import dynamic from 'next/dynamic';
-import GroupingsTableSkeleton from '@/components/table/groupings-table-skeleton';
-
-// Require dynamic import for localStorage
-const GroupingsTable = dynamic(() => import('@/components/table/groupings-table'), {
-    ssr: false,
-    loading: () => <GroupingsTableSkeleton />
-});
+import GroupingsTable from '@/components/table/groupings-table';
 
 const Groupings = async () => {
     const { groupingPaths } = await ownerGroupings();

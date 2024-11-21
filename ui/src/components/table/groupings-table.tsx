@@ -19,6 +19,8 @@ import { useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
 import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
+import dynamic from 'next/dynamic';
+import GroupingsTableSkeleton from './groupings-table-skeleton';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -100,4 +102,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
     );
 };
 
-export default GroupingsTable;
+export default dynamic(() => Promise.resolve(GroupingsTable), {
+    ssr: false, // Disable SSR for localStorage
+    loading: () => <GroupingsTableSkeleton />
+});
