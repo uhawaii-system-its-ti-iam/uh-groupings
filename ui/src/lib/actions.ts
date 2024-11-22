@@ -5,6 +5,7 @@ import {
     Feedback,
     GroupingAddResult,
     GroupingAddResults,
+    GroupingGroupMembers,
     GroupingMoveMemberResult,
     GroupingMoveMembersResult,
     GroupingRemoveResult,
@@ -15,6 +16,7 @@ import {
 import {
     deleteRequest,
     deleteRequestAsync,
+    getRequest,
     postRequest,
     postRequestAsync,
     putRequest,
@@ -118,6 +120,19 @@ export const addExcludeMembersAsync = async (
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members/async`;
     return putRequestAsync<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
+};
+
+/**
+ * Get a list of owners in the current path.
+ *
+ * @param groupingPath - The path of the grouping
+ *
+ * @returns The promise of the grouping group members or ApiError type
+ */
+export const groupingOwners = async (groupingPath: string): Promise<GroupingGroupMembers> => {
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/grouping/${groupingPath}/owners`;
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
 };
 
 /**

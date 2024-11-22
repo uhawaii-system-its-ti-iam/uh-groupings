@@ -160,19 +160,6 @@ export const optInGroupingPaths = async (): Promise<GroupingPaths> => {
 };
 
 /**
- * Get a list of owners in the current path.
- *
- * @param groupingPath - The path of the grouping
- *
- * @returns The promise of the grouping group members
- */
-export const groupingOwners = async (groupingPath: string): Promise<GroupingGroupMembers> => {
-    const currentUser = await getUser();
-    const endpoint = `${baseUrl}/grouping/${groupingPath}/owners`;
-    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
-};
-
-/**
  * Get the groupings the current user owns.
  *
  * @returns The promise of the grouping paths
