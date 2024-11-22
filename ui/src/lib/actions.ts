@@ -181,6 +181,19 @@ export const addExcludeMembersAsync = async (
 };
 
 /**
+ * Get a list of owners in the current path.
+ *
+ * @param groupingPath - The path of the grouping
+ *
+ * @returns The promise of the grouping group members or ApiError type
+ */
+export const groupingOwners = async (groupingPath: string): Promise<GroupingGroupMembers> => {
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/grouping/${groupingPath}/owners`;
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
+};
+
+/**
  * Add an owner to the owners group of a grouping.
  *
  * @param uhIdentifiers - The uhIdentifiers to add to owners

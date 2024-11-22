@@ -1,6 +1,7 @@
 export const message = {
     Preferences: {
-        INFO: `Changes made may not take effect immediately. Usually, 3–5 minutes should be anticipated. In extreme cases, a request may take several hours to be fully processed, depending on the number of members and the synchronization destination.`,
+        INFO: `Changes made may not take effect immediately. Usually, 3–5 minutes should be anticipated. In extreme cases, a request may take several hours to be fully 
+        processed, depending on the number of members and the synchronization destination.`,
         TITLE: 'Preferences',
         SECTION_TITLE: 'User Options',
         OPT_IN_LABEL: 'Allow people to add themselves to this group',
@@ -22,7 +23,8 @@ export const message = {
         MODAL_TITLE: 'Synchronization Destination Confirmation',
         MODAL_INFO_TITLE: 'Sync Destinations Information',
         MODAL_WARNING:
-            'Please be thoughtful about any changes here as some changes are operationally very expensive. Avoid rapidly enabling and disabling a synchronization destination.',
+            'Please be thoughtful about any changes here as some changes are operationally very expensive. Avoid rapidly enabling and disabling a synchronization ' +
+            'destination.',
         MODAL_BODY: (synced: boolean, description: string) =>
             `Are you sure you want to ${synced ? 'disable' : 'enable'} the synchronization destination: ${description}?`,
         MODAL_CONFIRM: 'Yes',
