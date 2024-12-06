@@ -1,7 +1,7 @@
 'use client';
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { User } from 'next-cas-client';
+import User from '@/lib/access/user';
 import Link from 'next/link';
 import { NavbarLinks } from './navbar-links';
 import { useState } from 'react';

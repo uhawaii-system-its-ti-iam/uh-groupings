@@ -6,9 +6,11 @@ import NavbarMenu from './navbar-menu';
 import TimeoutModal from '@/components/modal/timeout-modal';
 import { getUser } from '@/lib/access/user';
 import Role from '@/lib/access/role';
+import DeptAccountIcon from '@/components/layout/navbar/dept-account-icon';
 
 const Navbar = async () => {
     const currentUser = await getUser();
+
     return (
         <>
             <TimeoutModal currentUser={currentUser} />
@@ -34,6 +36,7 @@ const Navbar = async () => {
                                 />
                             </Link>
                         </div>
+                        <DeptAccountIcon currentUser={currentUser} />
                         <div className="text-lg text-uh-black my-auto lg:space-x-5">
                             {NavbarLinks.filter(
                                 (navbarLink) =>

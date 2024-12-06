@@ -9,41 +9,34 @@ import {
     AlertDialogFooter,
     AlertDialogCancel
 } from '@/components/ui/alert-dialog';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 
 const DynamicModal = ({
     open,
     title,
     body,
-    buttons
+    buttons,
+    onClose
 }: {
     open: boolean;
     title: string;
     body: string;
     buttons?: ReactNode[];
+    onClose: () => void;
 }) => {
-    const [openDynamicModal, setOpenDynamicModal] = useState(open);
-
-    /**
-     * Closes the modal.
-     */
-    const close = () => {
-        setOpenDynamicModal(false);
-    };
-
     return (
-        <AlertDialog open={openDynamicModal}>
+        <AlertDialog open={open}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                     <AlertDialogDescription>{body}</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => close()}>OK</AlertDialogCancel>
+                    <AlertDialogCancel onClick={onClose}>OK</AlertDialogCancel>
                     {/*Any buttons that should lead the user to a different page.*/}
                     {buttons?.map((button, index) => (
-                        <Button key={index} onClick={() => close()}>
+                        <Button key={index} onClick={onClose}>
                             {button}
                         </Button>
                     ))}
