@@ -52,7 +52,7 @@ describe('fetchers', () => {
     describe('getAllGroupings', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getAllGroupings();
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/all-groupings`, {
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings`, {
                 headers: { current_user: currentUser.uid }
             });
         });
@@ -220,7 +220,7 @@ describe('fetchers', () => {
     describe('groupingAdmins', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingAdmins();
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping-admins`, {
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/admins`, {
                 headers: { current_user: currentUser.uid }
             });
         });
