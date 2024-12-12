@@ -90,5 +90,24 @@ describe('Navbar', () => {
             expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
             expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
+
+        it('should render the departmental icon for a Departmental Account without Admin or Groupings links', async () => {
+            testUser.roles.push(Role.DEPARTMENTAL, Role.UH);
+            jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+            render(await Navbar());
+
+            expect(screen.getByRole('navigation')).toBeInTheDocument();
+            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0]).toHaveAttribute(
+                'src',
+                '/uhgroupings/uh-groupings-logo.svg'
+            );
+
+            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
+            expect(screen.getByLabelText('Departmental Account Icon')).toBeInTheDocument();
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
+        });
     });
 });
