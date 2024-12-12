@@ -1,10 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import DynamicModal from '@/components/modal/dynamic-modal';
 import Link from 'next/link';
+import { useState } from 'react';
 
 describe('DynamicModal', () => {
     it('should open an informational modal with test contents and no extra buttons', () => {
-        render(<DynamicModal open={true} title="A Dynamic Title" body="Some dynamic message here." />);
+        const onClose = jest.fn();
+        render(
+            <DynamicModal open={true} title="A Dynamic Title" onClose={onClose} body="Some dynamic message here." />
+        );
         fireEvent.focus(document);
 
         expect(screen.getByRole('alertdialog', { name: 'A Dynamic Title' })).toBeInTheDocument();
@@ -14,11 +18,13 @@ describe('DynamicModal', () => {
     });
 
     it('should open an informational modal with test contents and extra buttons', () => {
+        const onClose = jest.fn();
         render(
             <DynamicModal
                 open={true}
                 title="A Dynamic Title"
                 body="Some dynamic message here."
+                onClose={onClose}
                 buttons={[<>Button1</>, <>Button2</>]}
             />
         );
@@ -33,7 +39,16 @@ describe('DynamicModal', () => {
     });
 
     it('should close the modal upon clicking the OK button', () => {
-        render(<DynamicModal open={true} title="A Dynamic Title" body="Some dynamic message here." buttons={[]} />);
+        const onClose = jest.fn();
+        render(
+            <DynamicModal
+                open={true}
+                title="A Dynamic Title"
+                body="Some dynamic message here."
+                onClose={onClose}
+                buttons={[]}
+            />
+        );
         fireEvent.focus(document);
 
         expect(screen.getByRole('alertdialog', { name: 'A Dynamic Title' })).toBeInTheDocument();
@@ -43,15 +58,18 @@ describe('DynamicModal', () => {
         expect(screen.getByRole('button', { name: 'OK' })).toBeInTheDocument();
 
         fireEvent.click(screen.getByRole('button', { name: 'OK' }));
-        expect(screen.queryByRole('alertdialog', { name: 'A Dynamic Title' })).not.toBeInTheDocument();
+        // Cannot use useState in the test environment so expect the onClose function to be called once.
+        expect(onClose).toHaveBeenCalledTimes(1); // Assumes the onClose function toggles a useState variable.
     });
 
     it('should close the modal and route to the provided link (Feedback)', () => {
+        const onClose = jest.fn();
         render(
             <DynamicModal
                 open={true}
                 title="A Modal to the Feedback Page"
                 body="Click Feedback to go to the Feedback Page."
+                onClose={onClose}
                 buttons={[
                     <Link key={'feedbackButton'} href={'/feedback'}>
                         Feedback
@@ -69,6 +87,7 @@ describe('DynamicModal', () => {
         expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
 
         fireEvent.click(screen.getByRole('button', { name: 'Feedback' }));
-        expect(screen.queryByRole('alertdialog', { name: 'A Modal to the Feedback Page' })).not.toBeInTheDocument();
+        // Cannot use useState in the test environment so expect the onClose function to be called once.
+        expect(onClose).toHaveBeenCalledTimes(1); // Assumes the onClose function toggles a useState variable.
     });
 });
