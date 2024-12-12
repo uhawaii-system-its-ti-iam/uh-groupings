@@ -2,6 +2,7 @@ import { describe, it, vi, expect } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import DynamicModal from '@/components/modal/dynamic-modal';
 import Link from 'next/link';
+import { useState } from 'react';
 
 describe('DynamicModal', () => {
     it('should open an informational modal with test contents and no extra buttons', () => {
