@@ -33,7 +33,7 @@ const DeptAccountIcon = ({ currentUser }: { currentUser: User }) => {
                                 <FontAwesomeIcon aria-label="user" icon={faUser} width={14} height={16} />
                                 <div
                                     className="bg-blue-background rounded-full flex justify-center
-                                    items-center h-[20px] w-[25px] absolute left-7 bottom-0"
+                                    items-center h-6 w-6 absolute left-7 bottom-0"
                                 >
                                     <FontAwesomeIcon
                                         icon={faSchool}
