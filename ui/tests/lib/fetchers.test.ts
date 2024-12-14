@@ -14,6 +14,7 @@ import {
     membershipResults,
     optInGroupingPaths,
     ownedGrouping,
+    allGroupingMembers,
     ownerGroupings
 } from '@/lib/fetchers';
 import * as NextCasClient from 'next-cas-client/app';
@@ -155,6 +156,77 @@ describe('fetchers', () => {
 
             fetchMock.mockReject(() => Promise.reject(mockError));
             res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
+            await jest.advanceTimersByTimeAsync(5000);
+            expect(await res).toEqual(mockError);
+        });
+    });
+
+    describe('allGroupingMembers', () => {
+        const sortString = 'name';
+        const isAscending = true;
+
+        beforeEach(() => {
+            jest.useFakeTimers();
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        it('should make a POST request at the correct endpoint', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            await allGroupingMembers(groupPaths, sortString, isAscending);
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/all-grouping-members?` +
+                `sortString=${sortString}&isAscending=${isAscending}`,
+                {
+                    body: JSON.stringify(groupPaths),
+                    headers: {
+                        current_user: currentUser.uid,
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST'
+                }
+            );
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await allGroupingMembers(groupPaths, sortString, isAscending)).toEqual(mockResponse);
+
+            fetchMock
+                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
+                .mockResponseOnce(JSON.stringify(mockResponse));
+            let res = allGroupingMembers(groupPaths, sortString, isAscending);
+            await jest.advanceTimersByTimeAsync(5000);
+            expect(await res).toEqual(mockResponse);
+
+            fetchMock
+                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
+                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
+                .mockResponseOnce(JSON.stringify(mockResponse));
+            res = allGroupingMembers(groupPaths, sortString, isAscending);
+            await jest.advanceTimersByTimeAsync(5000);
+            expect(await res).toEqual(mockResponse);
+
+            fetchMock
+                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
+                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
+                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
+                .mockResponseOnce(JSON.stringify(mockResponse));
+            res = allGroupingMembers(groupPaths, sortString, isAscending);
+            await jest.advanceTimersByTimeAsync(5000);
+            expect(await res).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockError), { status: 500 });
+            let res = allGroupingMembers(groupPaths, sortString, isAscending);
+            await jest.advanceTimersByTimeAsync(5000);
+            expect(await res).toEqual(mockError);
+
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            res = allGroupingMembers(groupPaths, sortString, isAscending);
             await jest.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
         });
