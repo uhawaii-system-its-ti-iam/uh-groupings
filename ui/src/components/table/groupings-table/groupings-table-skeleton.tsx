@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import GroupingsTableColumns from '@/components/table/table-element/groupings-table-columns';
+import GroupingsTableColumns from '@/components/table/groupings-table/table-element/groupings-table-columns';
 
 const GroupingsTableSkeleton = () => {
     const pageSize = 7; // Average number of rows

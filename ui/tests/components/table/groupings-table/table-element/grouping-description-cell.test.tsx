@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import GroupingDescriptionCell from '@/components/table/table-element/ grouping-description-cell';
+import GroupingDescriptionCell from '@/components/table/groupings-table/table-element/grouping-description-cell';
 
 describe('GroupingDescriptionCell', () => {
     it('renders the description inside TooltipOnTruncate', () => {
