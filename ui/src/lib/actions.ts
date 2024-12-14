@@ -10,8 +10,6 @@ import {
     GroupingRemoveResult,
     GroupingRemoveResults,
     GroupingUpdateDescriptionResult,
-    GroupingGroupMembers,
-    GroupingPaths,
     MemberAttributeResults
 } from './types';
 import {
@@ -20,7 +18,6 @@ import {
     postRequest,
     postRequestAsync,
     putRequest,
-    getRequest,
     putRequestAsync
 } from './http-client';
 import { getUser } from '@/lib/access/user';

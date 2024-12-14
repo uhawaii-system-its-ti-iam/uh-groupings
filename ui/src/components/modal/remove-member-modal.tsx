@@ -79,8 +79,14 @@ const RemoveMemberModal = ({
                     </div>
                 </div>
                 <AlertDialogDescription>
-                    Are you sure you want to remove <span className="font-bold text-text-color">{name}</span> from the{' '}
-                    <span>{list}</span> list?
+                    Are you sure you want to remove{' '}
+                    <span
+                        className="font-bold
+                        text-text-color"
+                    >
+                        {name}
+                    </span>{' '}
+                    from the <span>{list}</span> list?
                 </AlertDialogDescription>
                 <div className="px-3">
                     <Alert className="bg-yellow-100 border border-yellow-200 mb-2">
