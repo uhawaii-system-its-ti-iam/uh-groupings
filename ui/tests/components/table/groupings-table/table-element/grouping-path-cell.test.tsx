@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import GroupingPathCell from '@/components/table/table-element/grouping-path-cell';
+import GroupingPathCell from '@/components/table/groupings-table/table-element/grouping-path-cell';
 import userEvent from '@testing-library/user-event';
 
 describe('GroupingPathCell', () => {

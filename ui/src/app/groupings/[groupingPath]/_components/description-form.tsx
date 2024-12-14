@@ -88,7 +88,10 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                     <div className="relative">
                         <form className="max-w-full flex rounded bg-white" onSubmit={handleSubmit(onSubmit)}>
                             <input
-                                className="rounded-r-none float-left border-0 block w-full h-[calc(1.5em+0.75rem+2px)] p-[0.375rem_0.75rem] text-base font-normal leading-6 text-gray-700 bg-white border border-gray-300 rounded transition duration-150 ease-in-out focus:border-blue-500 focus:outline-none"
+                                className="rounded-r-none float-left border-0 block w-full
+                                h-[calc(1.5em+0.75rem+2px)] p-[0.375rem_0.75rem] text-base font-normal
+                                leading-6 text-gray-700 bg-white border-gray-300 rounded transition duration-150
+                                ease-in-out focus:border-blue-500 focus:outline-none"
                                 {...register('description')}
                                 placeholder="Brief description for this grouping..."
                                 maxLength={98}
@@ -97,7 +100,8 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <button
-                                            className="text-primary border-none bg-white text-text-color px-1 py-0.5 my-0 mx-0.5 h-9"
+                                            className="text-primary border-none bg-white
+                                            text-text-color px-1 py-0.5 my-0 mx-0.5 h-9"
                                             disabled={isSubmitting}
                                             type="submit"
                                             aria-label="circle-check"
@@ -121,7 +125,8 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                                         <button
                                             type="button"
                                             onClick={closeForm}
-                                            className="text-primary border-none bg-white text-text-color px-1 py-0.5 my-0 mx-0.5 h-9"
+                                            className="text-primary border-none bg-white
+                                            text-text-color px-1 py-0.5 my-0 mx-0.5 h-9"
                                             aria-label="times-circle"
                                         >
                                             <FontAwesomeIcon
@@ -141,7 +146,8 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
                         {currentDescription.length >= 98 && (
                             <Alert
                                 data-testid="description-alert"
-                                className="bg-rose-100 text-rose-900 lg:w-max lg:h-[50px] md:w-max md:h-[50px] sm:h-1/2 pt-2.5 pl-2 pr-2 mb-1 mt-1 border"
+                                className="bg-rose-100 text-rose-900 lg:w-max lg:h-[50px]
+                                md:w-max md:h-[50px] sm:h-1/2 pt-2.5 pl-2 pr-2 mb-1 mt-1 border"
                             >
                                 <strong>Maximum length reached. </strong>A grouping&apos;s description cannot exceed 98
                                 characters.
