@@ -6,7 +6,8 @@ import {
     GroupingOptAttributes,
     GroupingGroupMembers,
     GroupingPaths,
-    MembershipResults
+    MembershipResults,
+    ApiError
 } from './types';
 import { getUser } from '@/lib/access/user';
 
@@ -66,7 +67,7 @@ export const groupingOptAttributes = async (groupingPath: string): Promise<Group
  *
  * @returns The promise of the grouping admins
  */
-export const groupingAdmins = async (): Promise<GroupingGroupMembers> => {
+export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError> => {
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/admins`;
     return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
@@ -77,7 +78,7 @@ export const groupingAdmins = async (): Promise<GroupingGroupMembers> => {
  *
  * @returns The promise of all the grouping paths
  */
-export const getAllGroupings = async (): Promise<GroupingPaths> => {
+export const getAllGroupings = async (): Promise<GroupingPaths /* & ApiError*/> => {
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings`;
     return getRequest<GroupingPaths>(endpoint, currentUser.uid);
