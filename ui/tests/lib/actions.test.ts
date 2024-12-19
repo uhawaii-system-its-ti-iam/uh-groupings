@@ -1,3 +1,4 @@
+import { vi, describe, beforeAll, it, expect, beforeEach, afterEach } from 'vitest';
 import {
     addAdmin,
     addExcludeMembers,
@@ -29,7 +30,7 @@ import { Feedback } from '@/lib/types';
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('next-cas-client/app');
+vi.mock('next-cas-client/app');
 
 describe('actions', () => {
     const currentUser = testUser;
@@ -61,7 +62,7 @@ describe('actions', () => {
     };
 
     beforeAll(() => {
-        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
     });
 
     describe('updateDescription', () => {
@@ -116,11 +117,11 @@ describe('actions', () => {
 
     describe('addIncludeMembersAsync', () => {
         beforeEach(() => {
-            jest.useFakeTimers();
+            vi.useFakeTimers();
         });
 
         afterEach(() => {
-            jest.useRealTimers();
+            vi.useRealTimers();
         });
 
         it('should make a PUT request at the correct endpoint', async () => {
@@ -142,7 +143,7 @@ describe('actions', () => {
                 .mockResponseOnce(JSON.stringify(mockAsyncCompletedResponse));
 
             const res = addIncludeMembersAsync(uhIdentifiers, groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
 
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
@@ -154,7 +155,7 @@ describe('actions', () => {
 
             fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = addIncludeMembersAsync(uhIdentifiers, groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
         });
     });
@@ -185,11 +186,11 @@ describe('actions', () => {
 
     describe('addExcludeMembersAsync', () => {
         beforeEach(() => {
-            jest.useFakeTimers();
+            vi.useFakeTimers();
         });
 
         afterEach(() => {
-            jest.useRealTimers();
+            vi.useRealTimers();
         });
 
         it('should make a PUT request at the correct endpoint', async () => {
@@ -211,7 +212,7 @@ describe('actions', () => {
                 .mockResponseOnce(JSON.stringify(mockAsyncCompletedResponse));
 
             const res = addExcludeMembersAsync(uhIdentifiers, groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
 
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
@@ -223,7 +224,7 @@ describe('actions', () => {
 
             fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = addExcludeMembersAsync(uhIdentifiers, groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
         });
     });
@@ -417,11 +418,11 @@ describe('actions', () => {
 
     describe('memberAttributeResultsAsync', () => {
         beforeEach(() => {
-            jest.useFakeTimers();
+            vi.useFakeTimers();
         });
 
         afterEach(() => {
-            jest.useRealTimers();
+            vi.useRealTimers();
         });
 
         it('should make a POST request at the correct endpoint', async () => {
@@ -443,7 +444,7 @@ describe('actions', () => {
                 .mockResponseOnce(JSON.stringify(mockAsyncCompletedResponse));
 
             const res = memberAttributeResultsAsync(uhIdentifiers);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
 
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
@@ -455,7 +456,7 @@ describe('actions', () => {
 
             fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = memberAttributeResultsAsync(uhIdentifiers);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
         });
     });
@@ -537,11 +538,11 @@ describe('actions', () => {
 
     describe('resetIncludeGroupAsync', () => {
         beforeEach(() => {
-            jest.useFakeTimers();
+            vi.useFakeTimers();
         });
 
         afterEach(() => {
-            jest.useRealTimers();
+            vi.useRealTimers();
         });
 
         it('should make a DELETE request at the correct endpoint', async () => {
@@ -562,7 +563,7 @@ describe('actions', () => {
                 .mockResponseOnce(JSON.stringify(mockAsyncCompletedResponse));
 
             const res = resetIncludeGroupAsync(groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
 
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
@@ -574,7 +575,7 @@ describe('actions', () => {
 
             fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = resetIncludeGroupAsync(groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
         });
     });
@@ -604,11 +605,11 @@ describe('actions', () => {
 
     describe('resetExcludeGroupAsync', () => {
         beforeEach(() => {
-            jest.useFakeTimers();
+            vi.useFakeTimers();
         });
 
         afterEach(() => {
-            jest.useRealTimers();
+            vi.useRealTimers();
         });
 
         it('should make a DELETE request at the correct endpoint', async () => {
@@ -629,7 +630,7 @@ describe('actions', () => {
                 .mockResponseOnce(JSON.stringify(mockAsyncCompletedResponse));
 
             const res = resetExcludeGroupAsync(groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
 
             expect(await res).toEqual(mockAsyncCompletedResponse.result);
         });
@@ -641,7 +642,7 @@ describe('actions', () => {
 
             fetchMock.mockResponseOnce(JSON.stringify(0)).mockRejectOnce(() => Promise.reject(mockError));
             res = resetExcludeGroupAsync(groupingPath);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
         });
     });

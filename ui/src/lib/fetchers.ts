@@ -7,8 +7,7 @@ import {
     GroupingGroupMembers,
     GroupingPaths,
     MembershipResults,
-    GroupingGroupsMembers,
-    ApiError
+    GroupingGroupsMembers
 } from './types';
 import { getUser } from '@/lib/access/user';
 
@@ -97,7 +96,7 @@ export const groupingOptAttributes = async (groupingPath: string): Promise<Group
  *
  * @returns The promise of the grouping admins
  */
-export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError> => {
+export const groupingAdmins = async (): Promise<GroupingGroupMembers> => {
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/admins`;
     return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
@@ -108,7 +107,7 @@ export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError>
  *
  * @returns The promise of all the grouping paths
  */
-export const getAllGroupings = async (): Promise<GroupingPaths /* & ApiError*/> => {
+export const getAllGroupings = async (): Promise<GroupingPaths> => {
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings`;
     return getRequest<GroupingPaths>(endpoint, currentUser.uid);
@@ -207,4 +206,28 @@ export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): P
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`;
     return getRequest<boolean>(endpoint, currentUser.uid);
+};
+
+/**
+ * Check if the uhIdentifier is an owner.
+ *
+ * @param uhIdentifier - The uid or uhUuid
+ *
+ * @returns True if the uhIdentifier is an owner of a grouping
+ */
+export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
+    const endpoint = `${baseUrl}/owners`;
+    return getRequest<boolean>(endpoint, uhIdentifier);
+};
+
+/**
+ * Check if the uhIdentifier is an admin.
+ *
+ * @param uhIdentifier - The uid or uhUuid
+ *
+ * @returns True if the uhIdentifier is an admin
+ */
+export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
+    const endpoint = `${baseUrl}/admins`;
+    return getRequest<boolean>(endpoint, uhIdentifier);
 };

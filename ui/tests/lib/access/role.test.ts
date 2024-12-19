@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import Role from '@/lib/access/role';
 
 describe('role', () => {

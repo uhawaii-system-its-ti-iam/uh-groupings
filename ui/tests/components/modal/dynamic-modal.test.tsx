@@ -1,11 +1,11 @@
+import { describe, it, vi, expect } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import DynamicModal from '@/components/modal/dynamic-modal';
 import Link from 'next/link';
-import { useState } from 'react';
 
 describe('DynamicModal', () => {
     it('should open an informational modal with test contents and no extra buttons', () => {
-        const onClose = jest.fn();
+        const onClose = vi.fn();
         render(
             <DynamicModal open={true} title="A Dynamic Title" onClose={onClose} body="Some dynamic message here." />
         );
@@ -18,7 +18,7 @@ describe('DynamicModal', () => {
     });
 
     it('should open an informational modal with test contents and extra buttons', () => {
-        const onClose = jest.fn();
+        const onClose = vi.fn();
         render(
             <DynamicModal
                 open={true}
@@ -39,7 +39,7 @@ describe('DynamicModal', () => {
     });
 
     it('should close the modal upon clicking the OK button', () => {
-        const onClose = jest.fn();
+        const onClose = vi.fn();
         render(
             <DynamicModal
                 open={true}
@@ -63,7 +63,7 @@ describe('DynamicModal', () => {
     });
 
     it('should close the modal and route to the provided link (Feedback)', () => {
-        const onClose = jest.fn();
+        const onClose = vi.fn();
         render(
             <DynamicModal
                 open={true}
