@@ -10,8 +10,8 @@ Instead, we created this branch to automatically update the status of badges wit
 Below are working examples of the Jest status badges:
 
 ### Example Status Badges
-![Branches](./badges/coverage-branches.svg)
-![Functions](./badges/coverage-functions.svg)
-![Lines](./badges/coverage-lines.svg)
-![Statements](./badges/coverage-statements.svg)
-![Jest coverage](./badges/coverage-jest%20coverage.svg)
+![Branches](./badges/ui/coverage-branches.svg)
+![Functions](./badges/ui/coverage-functions.svg)
+![Lines](./badges/ui/coverage-lines.svg)
+![Statements](./badges/ui/coverage-statements.svg)
+![Jest coverage](./badges/ui/coverage-total.svg)
