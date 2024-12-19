@@ -1,3 +1,4 @@
+import { vi, describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import GroupingPathCell from '@/components/table/groupings-table/table-element/grouping-path-cell';
 import userEvent from '@testing-library/user-event';
@@ -28,11 +29,11 @@ describe('GroupingPathCell', () => {
     it('shows tooltip correctly when copying to clipboard', async () => {
         Object.defineProperty(navigator, 'clipboard', {
             value: {
-                writeText: jest.fn(() => Promise.resolve())
+                writeText: vi.fn(() => Promise.resolve())
             },
             writable: true
         });
-        jest.spyOn(navigator.clipboard, 'writeText').mockImplementation(() => Promise.resolve());
+        vi.spyOn(navigator.clipboard, 'writeText').mockImplementation(() => Promise.resolve());
 
         render(<GroupingPathCell path={path} />);
         const clipboardButton = screen.getByRole('button');

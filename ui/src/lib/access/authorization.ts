@@ -1,7 +1,6 @@
+import { isOwner, isAdmin } from '../fetchers';
 import Role from './role';
 import User from './user';
-
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
 /**
  * Sets the appropriate roles for a user.
@@ -25,30 +24,6 @@ export const setRoles = async (user: User): Promise<void> => {
         user.roles.push(Role.DEPARTMENTAL);
     }
 };
-
-/**
- * Calls UH Groupings API to check if the uhIdentifier is an owner.
- *
- * @param uhIdentifier - The uid or uhUuid
- *
- * @returns True if the uhIdentifier is an owner of a grouping
- */
-const isOwner = async (uhIdentifier: string): Promise<boolean> =>
-    await fetch(`${apiBaseUrl}/owners`, { headers: { current_user: uhIdentifier } })
-        .then((res) => res.json())
-        .catch(() => false);
-
-/**
- * Calls UH Groupings API to check if the uhIdentifier is an admin.
- *
- * @param uhIdentifier - The uid or uhUuid
- *
- * @returns True if the uhIdentifier is an admin
- */
-const isAdmin = async (uhIdentifier: string): Promise<boolean> =>
-    await fetch(`${apiBaseUrl}/admins`, { headers: { current_user: uhIdentifier } })
-        .then((res) => res.json())
-        .catch(() => false);
 
 /**
  * Checks if uhUuid is valid using Regex.

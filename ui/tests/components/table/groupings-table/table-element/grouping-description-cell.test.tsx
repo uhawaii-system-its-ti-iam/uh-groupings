@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import GroupingDescriptionCell from '@/components/table/groupings-table/table-element/grouping-description-cell';

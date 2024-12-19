@@ -1,3 +1,4 @@
+import { vi, beforeEach, describe, it, expect, Mock } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import GroupingPathLayout from '@/app/groupings/[groupingPath]/layout';
 import { groupingDescription } from '@/lib/fetchers';
@@ -5,9 +6,9 @@ import { usePathname } from 'next/navigation';
 import { GroupingDescription } from '@/lib/types';
 import GroupingHeader from '@/app/groupings/[groupingPath]/_components/grouping-header';
 
-jest.mock('next/navigation');
-jest.mock('@/lib/fetchers');
-jest.mock('@/app/groupings/[groupingPath]/_components/grouping-header');
+vi.mock('next/navigation');
+vi.mock('@/lib/fetchers');
+vi.mock('@/app/groupings/[groupingPath]/_components/grouping-header');
 
 const mockData: GroupingDescription = {
     groupPath: 'Test-path:Test-name',
@@ -16,8 +17,8 @@ const mockData: GroupingDescription = {
 };
 
 beforeEach(() => {
-    (groupingDescription as jest.Mock).mockResolvedValue(mockData);
-    (usePathname as jest.Mock).mockReturnValue('/groupings/Test-Path/Test-name');
+    (groupingDescription as Mock).mockResolvedValue(mockData);
+    (usePathname as Mock).mockReturnValue('/groupings/Test-Path/Test-name');
 });
 
 describe('GroupingPathLayout', () => {

@@ -1,14 +1,15 @@
+import { vi, describe, beforeEach, it, expect, Mock } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import SideNav from '@/app/groupings/[groupingPath]/_components/side-nav';
 import { usePathname } from 'next/navigation';
 
-jest.mock('next/navigation');
+vi.mock('next/navigation');
 
 describe('SideNav Component', () => {
     const groupingPath = 'test-grouping';
 
     beforeEach(() => {
-        (usePathname as jest.Mock).mockReturnValue(`/groupings/${groupingPath}/all-members`);
+        (usePathname as Mock).mockReturnValue(`/groupings/${groupingPath}/all-members`);
     });
 
     it('renders link', () => {

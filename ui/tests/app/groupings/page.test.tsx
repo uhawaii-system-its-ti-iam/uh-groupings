@@ -2,8 +2,9 @@ import { render, screen, waitFor } from '@testing-library/react';
 import Groupings from '@/app/groupings/page';
 import * as Fetchers from '@/lib/fetchers';
 import { GroupingPaths } from '@/lib/types';
+import { vi, beforeEach, describe, it, expect } from 'vitest';
 
-jest.mock('@/lib/fetchers');
+vi.mock('@/lib/fetchers');
 
 const mockData: GroupingPaths = {
     resultCode: 'SUCCESS',
@@ -15,7 +16,7 @@ const mockData: GroupingPaths = {
 };
 
 beforeEach(() => {
-    jest.spyOn(Fetchers, 'ownerGroupings').mockResolvedValue(mockData);
+    vi.spyOn(Fetchers, 'ownerGroupings').mockResolvedValue(mockData);
 });
 
 describe('Groupings', () => {

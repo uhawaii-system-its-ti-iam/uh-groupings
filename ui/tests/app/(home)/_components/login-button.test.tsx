@@ -1,3 +1,4 @@
+import { vi, describe, it, expect, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import User, { AnonymousUser } from '@/lib/access/user';
@@ -7,7 +8,7 @@ import * as NextCasClient from 'next-cas-client';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('next-cas-client');
+vi.mock('next-cas-client');
 
 describe('LoginButton', () => {
     describe('User is not logged in', () => {

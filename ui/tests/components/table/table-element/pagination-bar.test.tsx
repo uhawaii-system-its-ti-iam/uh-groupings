@@ -1,16 +1,17 @@
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Table } from '@tanstack/table-core';
 import { GroupingPath } from '@/lib/types';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 
-const mockGetPageCount = jest.fn();
-const mockGetCanPreviousPage = jest.fn();
-const mockGetCanNextPage = jest.fn();
-const mockFirstPage = jest.fn();
-const mockPreviousPage = jest.fn();
-const mockSetPageIndex = jest.fn();
-const mockNextPage = jest.fn();
-const mockLastPage = jest.fn();
+const mockGetPageCount = vi.fn();
+const mockGetCanPreviousPage = vi.fn();
+const mockGetCanNextPage = vi.fn();
+const mockFirstPage = vi.fn();
+const mockPreviousPage = vi.fn();
+const mockSetPageIndex = vi.fn();
+const mockNextPage = vi.fn();
+const mockLastPage = vi.fn();
 
 const mockTable = {
     getPageCount: mockGetPageCount,
@@ -24,6 +25,10 @@ const mockTable = {
 } as unknown as Table<GroupingPath>;
 
 describe('Pagination', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it('renders pagination Bar correctly', () => {
         mockGetPageCount.mockReturnValue(6);
         mockGetCanPreviousPage.mockReturnValue(true);

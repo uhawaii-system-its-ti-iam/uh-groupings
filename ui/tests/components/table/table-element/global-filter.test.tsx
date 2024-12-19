@@ -1,8 +1,9 @@
+import { vi, describe, it, expect } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 
 describe('GlobalFilter', () => {
-    const mockSetFilter = jest.fn();
+    const mockSetFilter = vi.fn();
 
     it('renders the input with correct placeholder and value', () => {
         render(<GlobalFilter placeholder={'Filter Groupings...'} filter={'test'} setFilter={mockSetFilter} />);

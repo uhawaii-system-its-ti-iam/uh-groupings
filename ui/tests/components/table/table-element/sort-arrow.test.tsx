@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 
