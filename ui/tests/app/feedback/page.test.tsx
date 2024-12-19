@@ -1,15 +1,16 @@
+import { vi, describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Feedback from '@/app/feedback/page';
 import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
 
-jest.mock('next-cas-client/app');
+vi.mock('next-cas-client/app');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
 describe('Feedback', () => {
     it('should render the Feedback form', async () => {
-        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
 
         render(await Feedback());
 
