@@ -67,7 +67,7 @@ export const groupingOptAttributes = async (groupingPath: string): Promise<Group
  *
  * @returns The promise of the grouping admins
  */
-export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError> => {
+export const groupingAdmins = async (): Promise<GroupingGroupMembers> => {
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/admins`;
     return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
@@ -78,7 +78,7 @@ export const groupingAdmins = async (): Promise<GroupingGroupMembers & ApiError>
  *
  * @returns The promise of all the grouping paths
  */
-export const getAllGroupings = async (): Promise<GroupingPaths /* & ApiError*/> => {
+export const getAllGroupings = async (): Promise<GroupingPaths> => {
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings`;
     return getRequest<GroupingPaths>(endpoint, currentUser.uid);
