@@ -2,13 +2,14 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import DescriptionForm from '@/app/groupings/[groupingPath]/_components/description-form';
 import { updateDescription } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
+import { vi, describe, beforeEach, it, expect, Mock } from 'vitest';
 
-jest.mock('@/lib/actions', () => ({
-    updateDescription: jest.fn()
+vi.mock('@/lib/actions', () => ({
+    updateDescription: vi.fn()
 }));
 
-jest.mock('next/navigation', () => ({
-    useRouter: jest.fn()
+vi.mock('next/navigation', () => ({
+    useRouter: vi.fn()
 }));
 
 describe('DescriptionForm', () => {
@@ -16,8 +17,8 @@ describe('DescriptionForm', () => {
     const groupPath = 'test path';
 
     beforeEach(() => {
-        const router = { refresh: jest.fn() };
-        (useRouter as jest.Mock).mockReturnValue(router);
+        const router = { refresh: vi.fn() };
+        (useRouter as Mock).mockReturnValue(router);
     });
 
     it('should render description', () => {

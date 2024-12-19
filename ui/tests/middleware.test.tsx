@@ -1,3 +1,4 @@
+import { vi, describe, it, expect, afterEach } from 'vitest';
 import { config, middleware } from '@/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import User from '@/lib/access/user';
@@ -7,7 +8,7 @@ import * as NextCasClient from 'next-cas-client/app';
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('next-cas-client/app');
+vi.mock('next-cas-client/app');
 
 describe('middleware', () => {
     it('should define the config with a list of matching paths', () => {
@@ -17,13 +18,13 @@ describe('middleware', () => {
 
     describe('User is logged-out', () => {
         it('should redirect the user', async () => {
-            const redirectSpy = jest.spyOn(NextResponse, 'redirect');
+            const redirectSpy = vi.spyOn(NextResponse, 'redirect');
 
             for (const matcher of config.matcher) {
                 const url = baseUrl + matcher;
                 const req = new NextRequest(new Request(url));
 
-                jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(null);
+                vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(null);
                 await middleware(req);
                 expect(redirectSpy).toHaveBeenCalledWith(new URL(baseUrl));
 
@@ -39,13 +40,13 @@ describe('middleware', () => {
 
         it('should redirect the average user at /admin and /groupings', async () => {
             testUser.roles.push(Role.UH);
-            const redirectSpy = jest.spyOn(NextResponse, 'redirect');
+            const redirectSpy = vi.spyOn(NextResponse, 'redirect');
 
             for (const matcher of config.matcher) {
                 const url = baseUrl + matcher;
                 const req = new NextRequest(new Request(url));
 
-                jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+                vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
                 await middleware(req);
 
                 if (matcher === '/admin' || matcher === '/groupings') {
@@ -60,13 +61,13 @@ describe('middleware', () => {
 
         it('should redirect an owner of a grouping at /admin', async () => {
             testUser.roles.push(Role.OWNER, Role.UH);
-            const redirectSpy = jest.spyOn(NextResponse, 'redirect');
+            const redirectSpy = vi.spyOn(NextResponse, 'redirect');
 
             for (const matcher of config.matcher) {
                 const url = baseUrl + matcher;
                 const req = new NextRequest(new Request(url));
 
-                jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+                vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
                 await middleware(req);
 
                 if (matcher === '/admin') {
@@ -81,13 +82,13 @@ describe('middleware', () => {
 
         it('should not redirect an admin', async () => {
             testUser.roles.push(Role.ADMIN);
-            const redirectSpy = jest.spyOn(NextResponse, 'redirect');
+            const redirectSpy = vi.spyOn(NextResponse, 'redirect');
 
             for (const matcher of config.matcher) {
                 const url = baseUrl + matcher;
                 const req = new NextRequest(new Request(url));
 
-                jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+                vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
                 await middleware(req);
 
                 expect(redirectSpy).not.toHaveBeenCalled();

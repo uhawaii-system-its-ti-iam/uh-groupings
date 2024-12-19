@@ -2,7 +2,7 @@ const TechnicalInfoSection = () => {
     const technicalInfoItems = [
         { name: 'React.js', url: 'https://react.dev/learn', description: '(Quickstart)' },
         { name: 'shadcn/ui', url: 'https://ui.shadcn.com/docs', description: '(Guide)' },
-        { name: 'Jest', url: 'https://jestjs.io/docs/getting-started', description: '(Introduction)' },
+        { name: 'Vitest', url: 'https://vitest.dev/guide/', description: '(Introduction)' },
         { name: 'Next.js', url: 'https://nextjs.org/docs', description: '(Introduction)' },
         {
             name: 'Tanstack Table',
