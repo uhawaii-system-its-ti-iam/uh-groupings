@@ -9,6 +9,8 @@ import {
     groupingOptAttributes,
     groupingOwners,
     groupingSyncDest,
+    isAdmin,
+    isOwner,
     isSoleOwner,
     managePersonResults,
     membershipResults,
@@ -18,12 +20,13 @@ import {
 } from '@/lib/fetchers';
 import * as NextCasClient from 'next-cas-client/app';
 import * as Actions from '@/lib/actions';
+import { vi, describe, beforeAll, it, expect, beforeEach, afterEach } from 'vitest';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('next-cas-client/app');
-jest.mock('@/lib/actions');
+vi.mock('next-cas-client/app');
+vi.mock('@/lib/actions');
 
 describe('fetchers', () => {
     const currentUser = testUser;
@@ -45,8 +48,8 @@ describe('fetchers', () => {
     };
 
     beforeAll(() => {
-        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
-        jest.spyOn(Actions, 'sendStackTrace');
+        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+        vi.spyOn(Actions, 'sendStackTrace');
     });
 
     describe('getAllGroupings', () => {
@@ -94,11 +97,11 @@ describe('fetchers', () => {
         const isAscending = true;
 
         beforeEach(() => {
-            jest.useFakeTimers();
+            vi.useFakeTimers();
         });
 
         afterEach(() => {
-            jest.useRealTimers();
+            vi.useRealTimers();
         });
 
         it('should make a POST request at the correct endpoint', async () => {
@@ -126,7 +129,7 @@ describe('fetchers', () => {
                 .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
                 .mockResponseOnce(JSON.stringify(mockResponse));
             let res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockResponse);
 
             fetchMock
@@ -134,7 +137,7 @@ describe('fetchers', () => {
                 .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
                 .mockResponseOnce(JSON.stringify(mockResponse));
             res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockResponse);
 
             fetchMock
@@ -143,19 +146,19 @@ describe('fetchers', () => {
                 .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
                 .mockResponseOnce(JSON.stringify(mockResponse));
             res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockResponse);
         });
 
         it('should handle the error response', async () => {
             fetchMock.mockResponse(JSON.stringify(mockError), { status: 500 });
             let res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
 
             fetchMock.mockReject(() => Promise.reject(mockError));
             res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await jest.advanceTimersByTimeAsync(5000);
+            await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
         });
     });
@@ -385,6 +388,44 @@ describe('fetchers', () => {
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
             expect(await isSoleOwner(uhIdentifier, groupingPath)).toEqual(mockError);
+        });
+    });
+
+    describe('isOwner', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await isOwner(uhIdentifier);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/owners`, {
+                headers: { current_user: currentUser.uid }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await isOwner(uhIdentifier)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await isOwner(uhIdentifier)).toEqual(mockError);
+        });
+    });
+
+    describe('isAdmin', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await isAdmin(uhIdentifier);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins`, {
+                headers: { current_user: currentUser.uid }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await isAdmin(uhIdentifier)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await isAdmin(uhIdentifier)).toEqual(mockError);
         });
     });
 });

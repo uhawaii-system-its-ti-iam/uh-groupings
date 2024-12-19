@@ -1,3 +1,4 @@
+import { vi, describe, beforeEach, it, expect } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ColumnSettings from '@/components/table/table-element/column-settings';
@@ -15,7 +16,7 @@ const mockColumns = [
         getCanHide: () => true,
         getIsVisible: () => mockColumnVisibility['description'],
         columnDef: { header: 'description' },
-        toggleVisibility: jest.fn((isVisible: boolean) => {
+        toggleVisibility: vi.fn((isVisible: boolean) => {
             mockColumnVisibility['description'] = isVisible;
         })
     },
@@ -24,13 +25,13 @@ const mockColumns = [
         getCanHide: () => true,
         getIsVisible: () => mockColumnVisibility['path'],
         columnDef: { header: 'path' },
-        toggleVisibility: jest.fn((isVisible: boolean) => {
+        toggleVisibility: vi.fn((isVisible: boolean) => {
             mockColumnVisibility['path'] = isVisible;
         })
     }
 ];
 
-const mockGetAllColumns = jest.fn().mockReturnValue(mockColumns);
+const mockGetAllColumns = vi.fn().mockReturnValue(mockColumns);
 
 const mockTable = {
     getAllColumns: mockGetAllColumns
@@ -38,7 +39,7 @@ const mockTable = {
 
 describe('ColumnSettings', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         mockColumnVisibility.description = true;
         mockColumnVisibility.path = false;
     });

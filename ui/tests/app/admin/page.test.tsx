@@ -1,11 +1,12 @@
 //TODO: import AdminLayout from '@/app/admin/layout';
+import { vi, beforeEach, describe, it, expect } from 'vitest';
 import Admin from '@/app/admin/page';
 import { render, screen, waitFor } from '@testing-library/react';
 import * as Fetchers from '@/lib/fetchers';
 import { MemberResult, GroupingPaths } from '@/lib/types';
 import Groupings from '@/app/groupings/page';
 
-jest.mock('@/lib/fetchers');
+vi.mock('@/lib/fetchers');
 
 const mockGroupingsData: GroupingPaths = {
     resultCode: 'SUCCESS',
@@ -26,8 +27,8 @@ const mockAdminsData: MemberResult = {
 };
 
 beforeEach(() => {
-    jest.spyOn(Fetchers, 'ownerGroupings').mockResolvedValue(mockGroupingsData);
-    jest.spyOn(Fetchers, 'groupingAdmins').mockResolvedValue(mockAdminsData);
+    vi.spyOn(Fetchers, 'ownerGroupings').mockResolvedValue(mockGroupingsData);
+    vi.spyOn(Fetchers, 'groupingAdmins').mockResolvedValue(mockAdminsData);
 });
 
 describe('Groupings', () => {

@@ -1,3 +1,4 @@
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import Role from '@/lib/access/role';
 import { render, screen } from '@testing-library/react';
 import User from '@/lib/access/user';
@@ -5,8 +6,8 @@ import * as Fetchers from '@/lib/fetchers';
 import * as NextCasClient from 'next-cas-client/app';
 import afterLogin from '@/app/(home)/_components/after-login';
 
-jest.mock('@/lib/fetchers');
-jest.mock('next-cas-client/app');
+vi.mock('@/lib/fetchers');
+vi.mock('next-cas-client/app');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -30,8 +31,8 @@ describe('AfterLogin', () => {
     };
 
     const expectWelcome = (User: User, role: string) => {
-        expect(screen.getByLabelText('user')).toBeInTheDocument();
-        expect(screen.getByLabelText('key-round')).toBeInTheDocument();
+        expect(screen.getAllByLabelText('user')[0]).toBeInTheDocument();
+        expect(screen.getAllByLabelText('key-round')[0]).toBeInTheDocument();
         expect(screen.getByTestId('welcome-message')).toHaveTextContent(`Welcome, ${User.firstName}!`);
         expect(screen.getByTestId('role')).toHaveTextContent(`Role: ${role}`);
     };
@@ -100,12 +101,12 @@ describe('AfterLogin', () => {
     };
 
     beforeEach(() => {
-        jest.spyOn(Fetchers, 'getNumberOfGroupings').mockResolvedValue(numberOfGroupings);
-        jest.spyOn(Fetchers, 'getNumberOfMemberships').mockResolvedValue(numberOfMemberships);
+        vi.spyOn(Fetchers, 'getNumberOfGroupings').mockResolvedValue(numberOfGroupings);
+        vi.spyOn(Fetchers, 'getNumberOfMemberships').mockResolvedValue(numberOfMemberships);
     });
 
     it('Should render correctly when logged in as an admin', async () => {
-        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(admin);
+        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(admin);
         render(await afterLogin());
         expectWelcome(admin, 'Admin');
         expectAdministration(true);
@@ -114,7 +115,7 @@ describe('AfterLogin', () => {
     });
 
     it('Should render correctly when logged in as Owner', async () => {
-        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(owner);
+        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(owner);
         render(await afterLogin());
         expectWelcome(owner, 'Owner');
         expectAdministration(false);
@@ -123,7 +124,7 @@ describe('AfterLogin', () => {
     });
 
     it('Should render correctly when logged in as a user with a UH account', async () => {
-        jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(uhUser);
+        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(uhUser);
         render(await afterLogin());
         expectWelcome(uhUser, 'Member');
         expectAdministration(false);

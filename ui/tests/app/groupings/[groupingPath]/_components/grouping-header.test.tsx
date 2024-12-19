@@ -1,8 +1,9 @@
+import { vi, describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import GroupingHeader from '@/app/groupings/[groupingPath]/_components/grouping-header';
 import DescriptionForm from '@/app/groupings/[groupingPath]/_components/description-form';
 
-jest.mock('@/app/groupings/[groupingPath]/_components/description-form');
+vi.mock('@/app/groupings/[groupingPath]/_components/description-form');
 
 describe('GroupingHeader Component', () => {
     const GroupName = 'Test Group';
