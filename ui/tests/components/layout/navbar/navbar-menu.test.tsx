@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import Role from '@/lib/access/role';
 import User, { AnonymousUser } from '@/lib/access/user';
 import NavbarMenu from '@/components/layout/navbar/navbar-menu';

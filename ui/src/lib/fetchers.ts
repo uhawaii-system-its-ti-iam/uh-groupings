@@ -219,3 +219,27 @@ export const searchGroupingMembers = async (groupingPath: string, search: string
     const endpoint = `${baseUrl}/groupings/${groupingPath}/search/${search}`;
     return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
 };
+
+/*
+ * Check if the uhIdentifier is an owner.
+ *
+ * @param uhIdentifier - The uid or uhUuid
+ *
+ * @returns True if the uhIdentifier is an owner of a grouping
+ */
+export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
+    const endpoint = `${baseUrl}/owners`;
+    return getRequest<boolean>(endpoint, uhIdentifier);
+};
+
+/**
+ * Check if the uhIdentifier is an admin.
+ *
+ * @param uhIdentifier - The uid or uhUuid
+ *
+ * @returns True if the uhIdentifier is an admin
+ */
+export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
+    const endpoint = `${baseUrl}/admins`;
+    return getRequest<boolean>(endpoint, uhIdentifier);
+};

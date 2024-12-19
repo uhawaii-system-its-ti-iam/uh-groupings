@@ -1,10 +1,13 @@
+import { vi, describe, it, expect } from 'vitest';
 import Role from '@/lib/access/role';
 import User, { AnonymousUser, getUser, loadUser } from '@/lib/access/user';
 import * as NextCasClient from 'next-cas-client/app';
+import * as Fetchers from '@/lib/fetchers';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-jest.mock('next-cas-client/app');
+vi.mock('next-cas-client/app');
+vi.mock('@/lib/fetchers');
 
 describe('user', () => {
     describe('loadUser', () => {
@@ -21,9 +24,8 @@ describe('user', () => {
         };
 
         it('should return a User', async () => {
-            fetchMock
-                .mockResponseOnce(JSON.stringify(false)) // isOwner
-                .mockResponseOnce(JSON.stringify(false)); // isAdmin
+            vi.spyOn(Fetchers, 'isOwner').mockResolvedValue(false);
+            vi.spyOn(Fetchers, 'isAdmin').mockResolvedValue(false);
 
             expect(await loadUser(casUser)).toEqual(testUser);
         });
@@ -31,14 +33,14 @@ describe('user', () => {
 
     describe('getUser', () => {
         it('should call getCurrentUser', async () => {
-            jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
 
             expect(await getUser()).toEqual(testUser);
             expect(NextCasClient.getCurrentUser).toHaveBeenCalled();
         });
 
         it('should return an AnonymousUser if getCurrentUser is null', async () => {
-            jest.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(null);
+            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(null);
 
             expect(await getUser()).toEqual(AnonymousUser);
             expect(NextCasClient.getCurrentUser).toHaveBeenCalled();

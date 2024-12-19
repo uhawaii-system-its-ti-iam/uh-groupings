@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import Heading from '@/components/layout/heading';
 import { render, screen } from '@testing-library/react';
 

@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event';
 import * as Actions from '@/lib/actions';
 import User from '@/lib/access/user';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
+import { vi, describe, it, expect } from 'vitest';
 
-jest.mock('@/lib/actions');
+vi.mock('@/lib/actions');
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -21,7 +22,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Actions, 'sendFeedback').mockResolvedValue({
+        vi.spyOn(Actions, 'sendFeedback').mockResolvedValue({
             resultCode: 'SUCCESS',
             recipient: 'recipient',
             from: 'from',
@@ -48,7 +49,7 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Actions, 'sendFeedback').mockResolvedValue({
+        vi.spyOn(Actions, 'sendFeedback').mockResolvedValue({
             resultCode: 'FAILURE',
             recipient: 'recipient',
             from: 'from',
@@ -73,21 +74,21 @@ describe('FeedbackForm', () => {
         const user = userEvent.setup();
         render(<FeedbackForm currentUser={testUser} />);
 
-        jest.spyOn(Actions, 'sendFeedback').mockResolvedValueOnce({
-            resultCode: 'FAILURE',
-            recipient: 'recipient',
-            from: 'from',
-            subject: 'subject',
-            text: 'text'
-        });
-
-        jest.spyOn(Actions, 'sendFeedback').mockResolvedValueOnce({
-            resultCode: 'SUCCESS',
-            recipient: 'recipient',
-            from: 'from',
-            subject: 'subject',
-            text: 'text'
-        });
+        vi.spyOn(Actions, 'sendFeedback')
+            .mockResolvedValueOnce({
+                resultCode: 'FAILURE',
+                recipient: 'recipient',
+                from: 'from',
+                subject: 'subject',
+                text: 'text'
+            })
+            .mockResolvedValueOnce({
+                resultCode: 'SUCCESS',
+                recipient: 'recipient',
+                from: 'from',
+                subject: 'subject',
+                text: 'text'
+            });
 
         await waitFor(
             async () => {

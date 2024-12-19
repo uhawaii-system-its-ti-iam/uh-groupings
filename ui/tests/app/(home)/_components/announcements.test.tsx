@@ -1,8 +1,9 @@
+import { vi, describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Announcements from '@/app/(home)/_components/announcements';
 import * as Fetchers from '@/lib/fetchers';
 
-jest.mock('@/lib/fetchers');
+vi.mock('@/lib/fetchers');
 
 const message = 'test announcement';
 const message1 = 'test1 announcement';
@@ -33,7 +34,7 @@ const announcements = {
 
 describe('Announcements', () => {
     it('renders announcement correctly', async () => {
-        jest.spyOn(Fetchers, 'getAnnouncements').mockResolvedValue(announcements);
+        vi.spyOn(Fetchers, 'getAnnouncements').mockResolvedValue(announcements);
         render(await Announcements());
 
         expect(screen.getByText(message)).toBeInTheDocument();

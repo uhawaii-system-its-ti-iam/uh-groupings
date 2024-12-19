@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import MembershipsLayout from '@/app/memberships/layout';
 import Memberships from '@/app/memberships/page';
 import { render, screen } from '@testing-library/react';

@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import WhatHappensIfSection from '@/app/about/_components/what-happens-if-section';
 

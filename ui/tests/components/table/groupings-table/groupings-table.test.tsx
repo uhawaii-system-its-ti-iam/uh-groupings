@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import GroupingsTable from '@/components/table/groupings-table/groupings-table';
 import userEvent from '@testing-library/user-event';
