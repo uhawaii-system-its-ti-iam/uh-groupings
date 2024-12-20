@@ -156,6 +156,29 @@ export type EmailResult = {
     text: string;
 };
 
+export type OotbActiveProfile = {
+    uid: string;
+    uhUuid: string;
+    authorities: string[];
+    attributes: Record<string, string | string[]>;
+    groupings: OotbGrouping[];
+};
+
+export type OotbGrouping = {
+    name: string;
+    displayName: string;
+    extension: string;
+    displayExtension: string;
+    description: string;
+    members: OotbMember[];
+};
+
+export type OotbMember = {
+    uid: string;
+    uhUuid: string;
+    name: string;
+};
+
 export type Group = 'basis' | 'include' | 'exclude' | 'owners';
 
 export type WhereListed = 'Basis' | 'Include' | 'Basis & Include';
