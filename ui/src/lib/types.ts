@@ -188,3 +188,8 @@ export type OotbMember = {
     uhUuid: string;
     name: string;
 }    
+
+export type OotbActiveProfileResult = {
+    resultCode: string;
+    result: OotbActiveProfile
+}
