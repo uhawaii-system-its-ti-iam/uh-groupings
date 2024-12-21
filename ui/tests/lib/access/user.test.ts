@@ -1,3 +1,4 @@
+
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import Role from '@/lib/access/role';
 import User, { AnonymousUser, getUser, loadUser, loadOotbUser } from '@/lib/access/user';
@@ -5,7 +6,6 @@ import * as NextCasClient from 'next-cas-client/app';
 import * as Fetchers from '@/lib/fetchers';
 import { matchProfile, updateActiveDefaultUser } from '@/lib/actions-ootb';
 import { OotbActiveProfile } from '@/lib/types';
-
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -71,7 +71,7 @@ describe('user', () => {
             vi.resetAllMocks();
         });
 
-        it('should call getCurrentUser in normal mode', async () => {
+        it('should call getCurrentUser', async () => {
             process.env.NEXT_PUBLIC_OOTB_MODE = 'false';
 
             vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
@@ -82,7 +82,6 @@ describe('user', () => {
       
         it('should return an AnonymousUser if getCurrentUser is null in normal mode', async () => {
             process.env.NEXT_PUBLIC_OOTB_MODE = 'false';
-
             vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(null);
 
             expect(await getUser()).toEqual(AnonymousUser);
