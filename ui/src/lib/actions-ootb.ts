@@ -5,8 +5,7 @@ import {
     OotbActiveProfileResult
 } from './types';
 import {
-    postRequest,
-    getRequest
+    postRequest
 } from './http-client';
 import ootbProfiles from '../../ootb.active.user.profiles.json' assert { type: 'json' };
 
@@ -36,6 +35,6 @@ export const matchProfile = async (givenName: string | undefined): Promise<OotbA
     if (!matchedProfile) {
         throw new Error(`No profile found for givenName: ${givenName}`);
     }
-    console.log("Matched Profile:", matchedProfile);
+    console.log('Matched Profile:', matchedProfile);
     return matchedProfile;
 };

@@ -1,10 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-<<<<<<< HEAD
-=======
-
->>>>>>> 76d761d0ed7fdad469a3fbcecc4b69c4a9d2222c
 import DynamicModal from '@/components/modal/dynamic-modal';
 import { faUser, faSchool } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

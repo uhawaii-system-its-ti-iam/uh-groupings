@@ -1,5 +1,5 @@
 
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 import Role from '@/lib/access/role';
 import User, { AnonymousUser, getUser, loadUser, loadOotbUser } from '@/lib/access/user';
 import * as NextCasClient from 'next-cas-client/app';
@@ -108,8 +108,8 @@ describe('user', () => {
             });
 
             it('should return an OOTB user if matchProfile and updateActiveDefaultUser succeed', async () => {
-                (matchProfile as vi.Mock).mockResolvedValue(ootbProfile);
-                (updateActiveDefaultUser as vi.Mock).mockResolvedValue({ resultCode: 'SUCCESS', result: ootbProfile });
+                (matchProfile as Mock).mockResolvedValue(ootbProfile);
+                (updateActiveDefaultUser as Mock).mockResolvedValue({ resultCode: 'SUCCESS', result: ootbProfile });
 
                 const ootbUser = await getUser();
                 expect(ootbUser.uid).toBe('admin0123');
@@ -120,15 +120,15 @@ describe('user', () => {
             });
 
             it('should return AnonymousUser if matchProfile cannot find a profile', async () => {
-                (matchProfile as vi.Mock).mockRejectedValue(new Error('No profile found for givenName: admin'));
+                (matchProfile as Mock).mockRejectedValue(new Error('No profile found for givenName: admin'));
 
                 expect(await getUser()).toEqual(AnonymousUser);
                 expect(matchProfile).toHaveBeenCalledWith('admin');
             });
 
             it('should return AnonymousUser if updateActiveDefaultUser fails', async () => {
-                (matchProfile as vi.Mock).mockResolvedValue(ootbProfile);
-                (updateActiveDefaultUser as vi.Mock).mockRejectedValue(new Error('Failed to update user'));
+                (matchProfile as Mock).mockResolvedValue(ootbProfile);
+                (updateActiveDefaultUser as Mock).mockRejectedValue(new Error('Failed to update user'));
 
                 // If we want this test to pass as currently is (returning AnonymousUser),
                 // we should not re-throw in the catch block. Instead, we should return AnonymousUser.
