@@ -164,6 +164,11 @@ export type OotbActiveProfile = {
     groupings: OotbGrouping[];
 };
 
+export type OotbActiveProfileResult = {
+    resultCode: string;
+    result: OotbActiveProfile;
+};
+
 export type OotbGrouping = {
     name: string;
     displayName: string;

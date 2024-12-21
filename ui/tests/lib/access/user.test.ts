@@ -6,7 +6,6 @@ import * as Fetchers from '@/lib/fetchers';
 import { matchProfile, updateActiveDefaultUser } from '@/lib/actions-ootb';
 import { OotbActiveProfile } from '@/lib/types';
 
-
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
 vi.mock('next-cas-client/app');
@@ -15,7 +14,6 @@ vi.mock('@/lib/actions-ootb', () => ({
     matchProfile: vi.fn(),
     updateActiveDefaultUser: vi.fn()
 }));
-
 
 describe('user', () => {
     describe('loadUser', () => {
@@ -79,7 +77,7 @@ describe('user', () => {
             expect(await getUser()).toEqual(testUser);
             expect(NextCasClient.getCurrentUser).toHaveBeenCalled();
         });
-      
+
         it('should return an AnonymousUser if getCurrentUser is null in normal mode', async () => {
             process.env.NEXT_PUBLIC_OOTB_MODE = 'false';
 
@@ -109,8 +107,8 @@ describe('user', () => {
             });
 
             it('should return an OOTB user if matchProfile and updateActiveDefaultUser succeed', async () => {
-                (matchProfile as vi.Mock).mockResolvedValue(ootbProfile);
-                (updateActiveDefaultUser as vi.Mock).mockResolvedValue({ resultCode: 'SUCCESS', result: ootbProfile });
+                (matchProfile as Mock).mockResolvedValue(ootbProfile);
+                (updateActiveDefaultUser as Mock).mockResolvedValue({ resultCode: 'SUCCESS', result: ootbProfile });
 
                 const ootbUser = await getUser();
                 expect(ootbUser.uid).toBe('admin0123');
@@ -121,20 +119,20 @@ describe('user', () => {
             });
 
             it('should return AnonymousUser if matchProfile cannot find a profile', async () => {
-                (matchProfile as vi.Mock).mockRejectedValue(new Error('No profile found for givenName: admin'));
+                (matchProfile as Mock).mockRejectedValue(new Error('No profile found for givenName: admin'));
 
                 expect(await getUser()).toEqual(AnonymousUser);
                 expect(matchProfile).toHaveBeenCalledWith('admin');
             });
 
             it('should return AnonymousUser if updateActiveDefaultUser fails', async () => {
-                (matchProfile as vi.Mock).mockResolvedValue(ootbProfile);
-                (updateActiveDefaultUser as vi.Mock).mockRejectedValue(new Error('Failed to update user'));
+                (matchProfile as Mock).mockResolvedValue(ootbProfile);
+                (updateActiveDefaultUser as Mock).mockRejectedValue(new Error('Failed to update user'));
 
                 // If we want this test to pass as currently is (returning AnonymousUser),
                 // we should not re-throw in the catch block. Instead, we should return AnonymousUser.
                 // Let's assume we handle errors gracefully and return AnonymousUser.
-                
+
                 expect(await getUser()).toEqual(AnonymousUser);
                 expect(updateActiveDefaultUser).toHaveBeenCalledWith('admin');
             });

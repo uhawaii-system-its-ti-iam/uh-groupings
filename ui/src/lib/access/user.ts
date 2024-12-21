@@ -70,4 +70,3 @@ export const getUser = async (): Promise<User> => {
 };
 
 export default User;
- 
