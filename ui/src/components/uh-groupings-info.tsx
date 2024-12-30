@@ -1,4 +1,5 @@
 import Image from 'next/image';
+//import { ImageItem } from '@/app/about/_components/image-item';
 
 const UHGroupingsInfo = ({ size }: { size?: 'lg' | 'default' }) => {
     const color = size === 'lg' ? 'text-text-color' : 'text-uh-black';
@@ -44,6 +45,7 @@ const UHGroupingsInfo = ({ size }: { size?: 'lg' | 'default' }) => {
                     </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-7 pt-3">
+                    {/*<ImageItem data={infoItems} size={size} />*/}
                     {infoItems.map((infoItem, index) => (
                         <div key={index} className="col-span-1">
                             <div className="flex justify-center">
