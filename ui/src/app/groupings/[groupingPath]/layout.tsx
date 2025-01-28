@@ -14,7 +14,7 @@ const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: str
         <div className="container">
             <div className="mt-4">
                 <ReturnButtons fromManageSubject={fromManageSubject} />
-                <ExportDropdown />
+                <ExportDropdown groupingPath={groupPath} />
             </div>
             <div className="mb-5 mt-0">
                 <GroupingHeader groupName={groupName} groupPath={groupPath} groupDescription={description} />

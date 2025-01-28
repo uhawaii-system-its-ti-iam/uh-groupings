@@ -21,7 +21,8 @@ import {
     resetIncludeGroupAsync,
     sendFeedback,
     sendStackTrace,
-    updateDescription
+    updateDescription,
+    getGroupingMembers
 } from '@/lib/actions';
 import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
@@ -681,6 +682,38 @@ describe('actions', () => {
                 },
                 method: 'POST'
             });
+        });
+    });
+
+    describe('getGroupingMembers', () => {
+        const page = 1;
+        const size = 20;
+        const sortString = 'name';
+        const isAscending = true;
+
+        it('should make a POST request at the correct endpoint', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            await getGroupingMembers(groupingPath, sortString, isAscending, page, size);
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/${groupingPath}?` +
+                    `page=${page}&size=${size}&sortString=${sortString}&isAscending=${isAscending}`,
+                {
+                    headers: {
+                        current_user: currentUser.uid
+                    }
+                }
+            );
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await getGroupingMembers(groupingPath, sortString, isAscending, page, size)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            const res = getGroupingMembers(groupingPath, sortString, isAscending, page, size);
+            expect(await res).toEqual(mockError);
         });
     });
 });
