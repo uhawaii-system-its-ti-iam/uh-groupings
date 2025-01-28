@@ -52,15 +52,7 @@ const GeneralInfoSection = () => {
     return (
         <div className="container pt-10 pb-10">
             <h2 className="info-title">GENERAL INFORMATION</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <QuestionItem data={generalInfoItems} />
-                {/*{generalInfoItems.map((generalInfoItem, index) => (
-                    <div key={index}>
-                        <h3 className="text-text-color text-lg pb-1">{generalInfoItem.question}</h3>
-                        <p>{generalInfoItem.answer}</p>
-                    </div>
-                ))}*/}
-            </div>
+            <QuestionItem data={generalInfoItems} />
         </div>
     );
 };

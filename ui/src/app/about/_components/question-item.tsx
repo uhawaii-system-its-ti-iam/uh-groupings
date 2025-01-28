@@ -4,11 +4,20 @@ type QuestionData = {
 };
 
 type QuestionItemProps = {
-    data: QuestionData[]; // Accept an array of question-answer objects
+    data: QuestionData[];
 };
+
 const QuestionItem = async ({ data }: QuestionItemProps) => {
+    // Calculates number of columns based on the length of data
+    const columns = Math.ceil(data.length / 3);
+
+    // Create styles for grid columns dynamically
+    const gridStyle = {
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
+    };
+
     return (
-        <div className="grid gap-8">
+        <div className="grid gap-8" style={gridStyle}>
             {data.map((item, index) => (
                 <div key={index}>
                     <h3 className="text-text-color text-lg pb-2">{item.question}</h3>
