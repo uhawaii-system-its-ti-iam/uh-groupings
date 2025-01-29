@@ -33,12 +33,6 @@ const WhatHappensIfSection = () => {
                 <h2 className="info-title">WHAT HAPPENS IF</h2>
                 <div className="grid gap-8">
                     <QuestionItem data={whatHappensIfItems} />
-                    {/*{whatHappensIfItems.map((item, index) => (
-                        <div key={index}>
-                            <h3 className="text-text-color text-lg pb-2">Q: {item.question}</h3>
-                            <p>A: {item.answer}</p>
-                        </div>
-                    ))}*/}
                 </div>
             </div>
         </div>
