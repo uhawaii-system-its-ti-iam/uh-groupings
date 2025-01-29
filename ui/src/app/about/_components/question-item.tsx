@@ -5,11 +5,12 @@ type QuestionData = {
 
 type QuestionItemProps = {
     data: QuestionData[];
+    col: number;
 };
 
-const QuestionItem = async ({ data }: QuestionItemProps) => {
+const QuestionItem = async ({ data, col }: QuestionItemProps) => {
     // Calculates number of columns based on the length of data
-    const columns = Math.ceil(data.length / 3);
+    const columns = col || Math.ceil(data.length / 3);
 
     // Create styles for grid columns dynamically
     const gridStyle = {
