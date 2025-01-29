@@ -52,7 +52,7 @@ const GeneralInfoSection = () => {
     return (
         <div className="container pt-10 pb-10">
             <h2 className="info-title">GENERAL INFORMATION</h2>
-            <QuestionItem data={generalInfoItems} />
+            <QuestionItem data={generalInfoItems} col={2} />
         </div>
     );
 };
