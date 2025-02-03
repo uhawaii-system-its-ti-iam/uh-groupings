@@ -5,6 +5,7 @@ import {
     Feedback,
     GroupingAddResult,
     GroupingAddResults,
+    GroupingGroupMembers,
     GroupingMembers,
     GroupingMoveMemberResult,
     GroupingMoveMembersResult,
@@ -25,6 +26,7 @@ import {
 import { getUser } from '@/lib/access/user';
 import { z } from 'zod';
 import { feedbackFormSchema } from '@/app/feedback/_components/feedback-form';
+import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -347,9 +349,9 @@ export const resetExcludeGroupAsync = async (groupingPath: string): Promise<Grou
 /**
  * Sends feedback to Groupings API to send email.
  *
- * @param feedback - the feedback
+ * @param feedback - The feedback
  *
- * @returns The EmailResult
+ * @returns The promise of the EmailResult
  */
 export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => {
     feedbackFormSchema.parse(feedback);
@@ -361,9 +363,9 @@ export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => 
 /**
  * Sends feedback to Groupings API to send stack trace email.
  *
- * @param stackTrace - the stack trace
+ * @param stackTrace - The stack trace
  *
- * @returns The EmailResult
+ * @returns The promise of the EmailResult
  */
 export const sendStackTrace = async (stackTrace: string): Promise<EmailResult> => {
     z.string().parse(stackTrace);
@@ -373,42 +375,97 @@ export const sendStackTrace = async (stackTrace: string): Promise<EmailResult> =
 };
 
 /**
- * Retrieves the members of a specified grouping.
+ * Get paginated members by a grouping path.
  *
  * @param groupingPath - The path of the grouping
- * @param page - The page number for paginated results. (Optional)
- * @param size - The number of members per page. (Optional)
- * @param sortString - The field to sort the results by.
- * @param isAscending - Whether the results should be sorted in ascending order.
+ * @param params - The object of page (page number), size (page size),
+ * sortString (field to sort the results by), and isAscending (sorted ascending order) params
  *
- * @returns The promise of members of a grouping
+ * @returns The promise of grouping group members
  */
 export const getGroupingMembers = async (
     groupingPath: string,
-    sortString: string,
-    isAscending: boolean,
-    page?: number,
-    size?: number
-): Promise<GroupingMembers> => {
+    params: {
+        page?: number;
+        size?: number;
+        sortBy: SortBy;
+        isAscending: boolean;
+        searchString?: string;
+    }
+): Promise<GroupingGroupMembers> => {
+    const { page, size, sortBy, isAscending, searchString } = params;
     z.object({
         groupingPath: z.string(),
         page: z.number().optional(),
         size: z.number().optional(),
-        sortString: z.string(),
-        isAscending: z.boolean()
+        sortBy: z.string(),
+        isAscending: z.boolean(),
+        searchString: z.string().optional()
     }).parse({
         groupingPath,
         page,
         size,
-        sortString,
-        isAscending
+        sortBy,
+        isAscending,
+        searchString
     });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}?${new URLSearchParams({
         ...(page && { page: page.toString() }),
         ...(size && { size: size.toString() }),
-        sortString,
-        isAscending: isAscending.toString()
+        sortBy,
+        isAscending: isAscending.toString(),
+        ...(searchString && { searchString })
     })}`;
-    return getRequest<GroupingMembers>(endpoint, currentUser.uid);
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
+};
+
+/**
+ * Get number of grouping members.
+ *
+ * @param groupingPath - The path of the grouping
+ *
+ * @returns The promise of the number of grouping members
+ */
+export const getNumberOfGroupingMembers = async (groupingPath: string): Promise<number> => {
+    z.string().parse(groupingPath);
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/count`;
+    return getRequest<number>(endpoint, currentUser.uid);
+};
+
+/**
+ * Get is basis information for members of a grouping path.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param uhIdentifiers - The list of uhIdentifiers
+ *
+ * @returns The promise of grouping members
+ */
+export const getGroupingMembersIsBasis = async (
+    groupingPath: string,
+    uhIdentifiers: string[]
+): Promise<GroupingMembers> => {
+    z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/is-basis`;
+    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
+};
+
+/**
+ * Get where listed information for members of a grouping path.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param uhIdentifiers - The list of uhIdentifiers
+ *
+ * @returns The promise of grouping members
+ */
+export const getGroupingMembersWhereListed = async (
+    groupingPath: string,
+    uhIdentifiers: string[]
+): Promise<GroupingMembers> => {
+    z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/where-listed`;
+    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
 };

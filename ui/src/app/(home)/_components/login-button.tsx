@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import Role from '@/lib/access/role';
 import { login, logout } from 'next-cas-client';
-import { User } from '@/lib/access/user';
+import User from '@/lib/access/user';
 
 const LoginButton = ({ currentUser }: { currentUser: User }) => (
     <>

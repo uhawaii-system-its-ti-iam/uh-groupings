@@ -19,7 +19,7 @@ import {
 import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { getGroupingMembers } from '@/lib/actions';
-import { GroupingMembers } from '@/lib/types';
+import { GroupingGroupMembers } from '@/lib/types';
 import { Spinner } from '@/components/ui/spinner';
 
 const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {
@@ -37,9 +37,9 @@ const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {
             const groupPath = group === '' ? groupingPath : `${groupingPath}:${group}`;
             const sortString = 'name';
             const isAscending = true;
-            const data: GroupingMembers = await getGroupingMembers(groupPath, sortString, isAscending);
+            const data: GroupingGroupMembers = await getGroupingMembers(groupPath, { sortString, isAscending });
 
-            const members = data?.members;
+            const members = data.members;
             const groupName = groupingPath.split(':').pop();
             const headers = ['Last', 'First', 'Username', 'UH Number', 'Email'];
 
@@ -77,7 +77,7 @@ const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {
                                     disabled={isPending}
                                 >
                                     {isPending ? (
-                                        <Spinner size="sm" className="mr-1"/>
+                                        <Spinner size="sm" className="mr-1" />
                                     ) : (
                                         <FontAwesomeIcon className="mr-2 text-base" icon={faFileExport} />
                                     )}

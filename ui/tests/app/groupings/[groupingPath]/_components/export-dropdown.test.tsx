@@ -41,7 +41,10 @@ describe('ExportDropdown', () => {
         await user.click(exportAllButton);
 
         await waitFor(() => {
-            expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath', 'name', true);
+            expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath', {
+                sortString: 'name',
+                isAscending: true
+            });
         });
 
         expect(createObjectURLSpy).toHaveBeenCalled();
@@ -68,7 +71,10 @@ describe('ExportDropdown', () => {
         await user.click(exportBasisButton);
 
         await waitFor(() => {
-            expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath:basis', 'name', true);
+            expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath:basis', {
+                sortString: 'name',
+                isAscending: true
+            });
         });
 
         expect(createObjectURLSpy).toHaveBeenCalled();

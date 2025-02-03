@@ -15,12 +15,11 @@ import {
     managePersonResults,
     membershipResults,
     optInGroupingPaths,
-    ownedGrouping,
     ownerGroupings
 } from '@/lib/fetchers';
 import * as NextCasClient from 'next-cas-client/app';
 import * as Actions from '@/lib/actions';
-import { vi, describe, beforeAll, it, expect, beforeEach, afterEach } from 'vitest';
+import { vi, describe, beforeAll, it, expect } from 'vitest';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
@@ -33,12 +32,6 @@ describe('fetchers', () => {
 
     const uhIdentifier = 'testiwta';
     const groupingPath = 'tmp:testiwta:testiwta-aux';
-    const groupPaths = [
-        `${groupingPath}:include`,
-        `${groupingPath}:include`,
-        `${groupingPath}:exclude`,
-        `${groupingPath}:owners`
-    ];
 
     const mockResponse = {
         resultCode: 'SUCCESS'
@@ -87,79 +80,6 @@ describe('fetchers', () => {
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
             expect(await getAnnouncements()).toEqual(mockError);
-        });
-    });
-
-    describe('ownedGrouping', () => {
-        const page = 1;
-        const size = 700;
-        const sortString = 'name';
-        const isAscending = true;
-
-        beforeEach(() => {
-            vi.useFakeTimers();
-        });
-
-        afterEach(() => {
-            vi.useRealTimers();
-        });
-
-        it('should make a POST request at the correct endpoint', async () => {
-            fetchMock.mockResponse(JSON.stringify(mockResponse));
-            await ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            expect(fetch).toHaveBeenCalledWith(
-                `${baseUrl}/groupings/group?` +
-                    `page=${page}&size=${size}&sortString=${sortString}&isAscending=${isAscending}`,
-                {
-                    body: JSON.stringify(groupPaths),
-                    headers: {
-                        current_user: currentUser.uid,
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'POST'
-                }
-            );
-        });
-
-        it('should handle the successful response', async () => {
-            fetchMock.mockResponse(JSON.stringify(mockResponse));
-            expect(await ownedGrouping(groupPaths, page, size, sortString, isAscending)).toEqual(mockResponse);
-
-            fetchMock
-                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
-                .mockResponseOnce(JSON.stringify(mockResponse));
-            let res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await vi.advanceTimersByTimeAsync(5000);
-            expect(await res).toEqual(mockResponse);
-
-            fetchMock
-                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
-                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
-                .mockResponseOnce(JSON.stringify(mockResponse));
-            res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await vi.advanceTimersByTimeAsync(5000);
-            expect(await res).toEqual(mockResponse);
-
-            fetchMock
-                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
-                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
-                .mockResponseOnce(JSON.stringify(mockResponse), { status: 500 })
-                .mockResponseOnce(JSON.stringify(mockResponse));
-            res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await vi.advanceTimersByTimeAsync(5000);
-            expect(await res).toEqual(mockResponse);
-        });
-
-        it('should handle the error response', async () => {
-            fetchMock.mockResponse(JSON.stringify(mockError), { status: 500 });
-            let res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await vi.advanceTimersByTimeAsync(5000);
-            expect(await res).toEqual(mockError);
-
-            fetchMock.mockReject(() => Promise.reject(mockError));
-            res = ownedGrouping(groupPaths, page, size, sortString, isAscending);
-            await vi.advanceTimersByTimeAsync(5000);
-            expect(await res).toEqual(mockError);
         });
     });
 
