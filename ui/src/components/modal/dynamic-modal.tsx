@@ -13,16 +13,20 @@ import { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 
 const DynamicModal = ({
-    open,
-    title,
-    body,
-    buttons,
-    onClose
-}: {
+                          open,
+                          title,
+                          body,
+                          warning,
+                          buttons,
+                          cancelText = "Cancel",
+                          onClose
+                      }: {
     open: boolean;
     title: string;
     body: string;
-    buttons?: ReactNode[];
+    warning?: string;
+    buttons?:  ReactNode[];
+    cancelText?: string;
     onClose: () => void;
 }) => {
     return (
@@ -31,15 +35,21 @@ const DynamicModal = ({
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                     <AlertDialogDescription>{body}</AlertDialogDescription>
+                    {warning && (
+                        <AlertDialogDescription>
+                            <div className="bg-yellow-100 border border-yellow-200 p-3 rounded-md ml-2.5">
+                                {warning}
+                            </div>
+                        </AlertDialogDescription>
+                    )}
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={onClose}>OK</AlertDialogCancel>
-                    {/*Any buttons that should lead the user to a different page.*/}
                     {buttons?.map((button, index) => (
                         <Button key={index} onClick={onClose}>
                             {button}
                         </Button>
                     ))}
+                    <AlertDialogCancel onClick={onClose}>{cancelText}</AlertDialogCancel>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
