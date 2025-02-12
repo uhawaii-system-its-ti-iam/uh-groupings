@@ -7,7 +7,7 @@ import {
     GroupingGroupMembers,
     GroupingPaths,
     MembershipResults,
-    GroupingGroupsMembers
+    GroupingGroupsMembers, GroupingSyncDestination, GroupingUpdatedAttributeResult
 } from './types';
 import { getUser } from '@/lib/access/user';
 

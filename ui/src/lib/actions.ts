@@ -9,7 +9,9 @@ import {
     GroupingMoveMembersResult,
     GroupingRemoveResult,
     GroupingRemoveResults,
+    GroupingUpdatedAttributeResult,
     GroupingUpdateDescriptionResult,
+    GroupingUpdateOptAttributeResult,
     MemberAttributeResults
 } from './types';
 import {
@@ -25,10 +27,65 @@ import { z } from 'zod';
 import { feedbackFormSchema } from '@/app/feedback/_components/feedback-form';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
+const OPT_IN = process.env.NEXT_PUBLIC_OPT_IN as string;
+const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
 
-// TODO:
-// The setOptIn, setOptOut, setSyncDest service functions will be up to the person who works on
-// implementing Opt Attributes and Sync Desinations into our React UI.
+/**
+ * Toggle the synchronization status of a specific sync destination within a grouping.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param syncDestId - The ID of the sync destination to be updated
+ * @param status - The new status to set (true to enable, false to disable)
+ *
+ * @returns The promise of the result of updating the sync destination status or ApiError type
+ */
+export const updateSyncDest = async (
+    groupingPath: string,
+    syncDestId: string,
+    status: boolean,
+): Promise<GroupingUpdatedAttributeResult> => {
+    z.object({groupingPath: z.string(), syncDestId: z.string(), status: z.boolean(),}).parse({ groupingPath, syncDestId, status });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/sync-destination/${syncDestId}/${status}`;
+    return putRequest<GroupingUpdatedAttributeResult>(endpoint, currentUser.uid);
+};
+
+/**
+ * Toggle the opt-in status for a grouping preference.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param status - The new status to set (true to enable, false to disable)
+ *
+ * @returns The promise of the result of updating the opt-in status or ApiError type
+ */
+export const updateOptIn = async (
+    groupingPath: string,
+    status: boolean,
+): Promise<GroupingUpdateOptAttributeResult> => {
+    z.object({groupingPath: z.string(), status: z.boolean(),}).parse({ groupingPath, status });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_IN}/${status}`;
+    return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
+};
+
+/**
+ * Toggle the opt-out status for a grouping preference.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param status - The new status to set (true to enable, false to disable)
+ *
+ * @returns The promise of the result of updating the opt-out status or ApiError type
+ */
+export const updateOptOut = async (
+    groupingPath: string,
+    status: boolean,
+): Promise<GroupingUpdateOptAttributeResult> => {
+    z.object({groupingPath: z.string(), status: z.boolean(),}).parse({ groupingPath, status });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_OUT}/${status}`;
+    return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
+};
+
 
 /**
  * Update the description of grouping at path.

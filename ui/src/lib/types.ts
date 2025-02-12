@@ -94,6 +94,30 @@ export type GroupingSyncDestinations = {
     syncDestinations: GroupingSyncDestination[];
 };
 
+export type GroupingUpdatedAttributeResult = {
+    name: string;
+    updatedStatus: boolean;
+    currentStatus: boolean;
+    resultCode: string;
+    groupPath: string;
+};
+
+export type GroupingUpdateOptAttributeResult = {
+    name: string;
+    updatedStatus: boolean;
+    currentStatus: boolean;
+    groupPath: string;
+    resultCode: string;
+    optInPrivilegeResult: {
+        privilegeName: string;
+        privilegeValue: boolean;
+    };
+    optOutPrivilegeResult: {
+        privilegeName: string;
+        privilegeValue: boolean;
+    };
+};
+
 export type GroupingOptAttributes = {
     optInOn: boolean;
     optOutOn: boolean;
