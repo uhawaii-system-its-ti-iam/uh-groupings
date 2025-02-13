@@ -1,6 +1,17 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { membershipResults, optInGroupingPaths } from '@/lib/fetchers';
+import dynamic from 'next/dynamic';
+import GroupingsTableSkeleton from '@/components/table/groupings-table/groupings-table-skeleton';
 
-const Memberships = () => {
+const MembershipsTable = dynamic(() => import('@/app/memberships/_components/memberships-table'), {
+    ssr: false,
+    loading: () => <GroupingsTableSkeleton />
+});
+
+const Memberships = async () => {
+    const { results } = await membershipResults();
+    const { groupingPaths } = await optInGroupingPaths();
+
     return (
         <Tabs className="bg-seafoam" defaultValue="current-memberships">
             <div className="container">
@@ -15,12 +26,16 @@ const Memberships = () => {
             </div>
             <TabsContent value="current-memberships">
                 <div className="bg-white">
-                    <div className="container">{/* MembershipsTable goes here */}</div>
+                    <div className="container">
+                        <MembershipsTable results={results} isOptOut={true} />
+                    </div>
                 </div>
             </TabsContent>
             <TabsContent value="membership-opportunities">
                 <div className="bg-white">
-                    <div className="container">{/* MembershipsTable goes here */}</div>
+                    <div className="container">
+                        <MembershipsTable results={groupingPaths} isOptOut={false} />
+                    </div>
                 </div>
             </TabsContent>
         </Tabs>
