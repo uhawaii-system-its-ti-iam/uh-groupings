@@ -14,11 +14,16 @@ import { useState } from 'react';
 import ErrorAlert from './error-alert';
 import SuccessAlert from './success-alert';
 
+const maxLength = parseInt(process.env.NEXT_PUBLIC_FEEDBACK_FORM_MAX_LENGTH as string);
+
 export const feedbackFormSchema = z.object({
     type: z.string(),
     name: z.optional(z.string()),
     email: z.string().email(),
-    message: z.string().min(15)
+    message: z
+        .string()
+        .min(15, 'Feedback must be at least 15 characters')
+        .max(500, 'Feedback must be 500 characters or less')
 });
 
 const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
@@ -27,12 +32,15 @@ const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
 
     const form = useForm<z.infer<typeof feedbackFormSchema>>({
         resolver: zodResolver(feedbackFormSchema),
+        mode: 'onChange',
         defaultValues: {
             type: 'General',
             email: `${currentUser.uid}@hawaii.edu`,
             message: ''
         }
     });
+
+    const message = form.watch('message', '');
 
     const onSubmit = async (values: z.infer<typeof feedbackFormSchema>) => {
         isShowSuccessAlert(false);
@@ -91,7 +99,7 @@ const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
                                 <FormControl>
                                     <Input id="name" placeholder="John Doe" {...field} />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-base" />
                             </FormItem>
                         )}
                     />
@@ -107,7 +115,7 @@ const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
                                 <FormControl>
                                     <Input id="email" placeholder="Enter your email here" {...field} />
                                 </FormControl>
-                                <FormMessage />
+                                <FormMessage className="text-base" />
                             </FormItem>
                         )}
                     />
@@ -123,11 +131,26 @@ const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
                                 <FormControl>
                                     <Textarea id="message" rows={6} {...field} />
                                 </FormControl>
-                                <FormMessage />
+                                <p
+                                    className={`text-sm ${
+                                        message.length === 0
+                                            ? 'text-gray-500'
+                                            : message.length > maxLength || message.length < 15
+                                              ? 'text-red-500'
+                                              : 'text-gray-500'
+                                    }`}
+                                >
+                                    {message.length}/{maxLength} characters
+                                </p>
+                                {form.formState.errors.message && (
+                                    <p className="text-red-500 text-base">{form.formState.errors.message?.message}</p>
+                                )}
                             </FormItem>
                         )}
                     />
-                    <Button>Submit</Button>
+                    <Button type="submit" disabled={!form.formState.isValid}>
+                        Submit
+                    </Button>
                 </form>
             </div>
         </Form>

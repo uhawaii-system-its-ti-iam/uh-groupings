@@ -25,7 +25,6 @@ import {
 } from './http-client';
 import { getUser } from '@/lib/access/user';
 import { z } from 'zod';
-import { feedbackFormSchema } from '@/app/feedback/_components/feedback-form';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
@@ -354,7 +353,6 @@ export const resetExcludeGroupAsync = async (groupingPath: string): Promise<Grou
  * @returns The promise of the EmailResult
  */
 export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => {
-    feedbackFormSchema.parse(feedback);
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/email/send/feedback`;
     return postRequest<EmailResult>(endpoint, currentUser.uid, feedback);

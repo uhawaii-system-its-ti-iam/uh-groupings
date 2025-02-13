@@ -119,4 +119,33 @@ describe('FeedbackForm', () => {
         });
         expect(screen.queryByRole('heading', { name: 'Oops!' })).not.toBeInTheDocument();
     });
+
+    it('should validate feedback length', async () => {
+        const user = userEvent.setup();
+        render(<FeedbackForm currentUser={testUser} />);
+
+        const minLengthText = 'testMinLength';
+        const maxLengthText = 'testMaxLength'.repeat(501);
+
+        await waitFor(
+            async () => {
+                await user.type(screen.getByRole('textbox', { name: 'Your Feedback: *' }), minLengthText);
+            },
+            { timeout: 5000 }
+        );
+        expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+        expect(screen.getByText('Feedback must be at least 15 characters')).toBeInTheDocument();
+
+        await waitFor(
+            async () => {
+                const textbox = screen.getByRole('textbox', { name: 'Your Feedback: *' });
+                await user.clear(textbox);
+                await user.click(textbox);
+                await user.paste(maxLengthText);
+            },
+            { timeout: 5000 }
+        );
+        expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+        expect(screen.getByText('Feedback must be 500 characters or less')).toBeInTheDocument();
+    });
 });
