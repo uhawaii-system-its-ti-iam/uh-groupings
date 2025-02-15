@@ -148,7 +148,7 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                         title="Reset Grouping"
                         body={`Are you sure you want to remove all members from the ${includeCheck && excludeCheck ? 'Exclude and Include lists' : includeCheck ? 'Include list' : 'Exclude list'} in the ${groupName} grouping?`}
                         warning="Membership changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases, changes may take several hours to be fully processed, depending on the number of members and the synchronization destination."
-                        buttons={[<span key="confirm" onClick={handleResetConfirm} style={{ cursor: 'pointer' }}>Yes</span>]}
+                        buttons={[<span key="confirm" role="button" onClick={handleResetConfirm}>Yes</span>]}
                         onClose={closeResetGroupModal}
                     />
                 )}

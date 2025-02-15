@@ -63,40 +63,24 @@ describe('Actions Component', () => {
         (resetIncludeGroup as any).mockResolvedValue({
             resultCode: 'SUCCESS'
         });
-
-
         render(<Actions groupingPath={shortGroupingPath} />);
         const user = userEvent.setup();
-
-        // 点击 Include 开关
         const includeSwitch = screen.getByRole('switch', { name: /reset include/i });
         await user.click(includeSwitch);
-
-        // 检查开关状态更新
         await waitFor(() => {
             expect(includeSwitch).toHaveAttribute('aria-checked', 'true');
         });
-
-        // 点击 Reset Selected 按钮
         const resetBtn = screen.getByRole('button', { name: /reset selected/i });
         await user.click(resetBtn);
-
-        // 检查 Modal 是否打开
         const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
         expect(modal).toBeInTheDocument();
         expect(modal).toHaveTextContent(/include list/i);
         expect(modal).toHaveTextContent(/groupName/i);
-
-        // 点击 Modal 中的 Yes 按钮
-        const yesButtons = screen.getAllByRole('button', { name: /yes/i });
-        await user.click(yesButtons[0]);
-
-        // 检查 Modal 是否关闭
+        const yesButton = screen.getByText('Yes');
+        await user.click(yesButton);
         await waitFor(() => {
             expect(screen.queryByRole('alertdialog', { name: /reset grouping/i })).not.toBeInTheDocument();
         });
-
-        // 检查 resetIncludeGroup 是否被正确调用
         await waitFor(() => {
             expect(resetIncludeGroup).toHaveBeenCalledWith(decodeURIComponent(shortGroupingPath));
         }, { timeout: 4000 });
