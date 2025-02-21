@@ -1,5 +1,5 @@
-import {sendStackTrace} from './actions';
-import {getUser} from '@/lib/access/user';
+import { sendStackTrace } from './actions';
+import { getUser } from '@/lib/access/user';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -33,7 +33,7 @@ const delay = async (ms = 5000) => new Promise((res) => setTimeout(res, ms));
  */
 const poll = async <T>(jobId: number): Promise<T> => {
     const currentUser = await getUser();
-    return await fetch(`${baseUrl}/jobs/${jobId}`, {headers: {current_user: currentUser.uid}})
+    return await fetch(`${baseUrl}/jobs/${jobId}`, { headers: { current_user: currentUser.uid } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
         .then(async (res) => {
             if (res.status === Status.COMPLETED) {
@@ -54,7 +54,7 @@ const poll = async <T>(jobId: number): Promise<T> => {
  * @returns The promise of type T
  */
 export const getRequest = async <T>(endpoint: string, currentUserKey: string = ''): Promise<T> =>
-    await fetch(endpoint, {headers: {current_user: currentUserKey}})
+    await fetch(endpoint, { headers: { current_user: currentUserKey } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
         .catch((err) => err);
 

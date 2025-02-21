@@ -314,8 +314,8 @@ describe('fetchers', () => {
     describe('isOwner', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isOwner(uhIdentifier);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/owners`, {
-                headers: { current_user: currentUser.uid }
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/is-owner`, {
+                headers: { current_user: uhIdentifier }
             });
         });
 
@@ -333,8 +333,8 @@ describe('fetchers', () => {
     describe('isAdmin', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isAdmin(uhIdentifier);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins`, {
-                headers: { current_user: currentUser.uid }
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/is-admin`, {
+                headers: { current_user: uhIdentifier }
             });
         });
 
