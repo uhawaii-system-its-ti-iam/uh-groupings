@@ -2,7 +2,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 //TODO: import { getAllGroupings, groupingAdmins } from '@/lib/fetchers';
 import { groupingAdmins, ownerGroupings } from '@/lib/fetchers';
 import GroupingsTable from '@/components/table/groupings-table/groupings-table';
-import AdminTable from '@/components/table/admin-table/admin-table';
+import AdminTable from '@/app/admin/_components/admin-table/admin-table';
 
 const Admin = async () => {
     //TODO: const { groupingPaths } = await getAllGroupings();

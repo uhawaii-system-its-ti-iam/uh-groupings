@@ -1,21 +1,23 @@
 import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import AdminTable from '@/components/table/admin-table/admin-table';
+import AdminTable from '@/app/admin/_components/admin-table/admin-table';
 import userEvent from '@testing-library/user-event';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
-const mockMembers = Array.from({ length: 200 }, (_, i) => ({
-    name: `name-example-${i}`,
-    uhUuid: `uhUuid-example-${i}`,
-    uid: `uid-example-${i}`,
-    firstName: `firstName-example-${i}`,
-    lastName: `lastName-example-${i}`
-}));
-
 const mockData = {
-    members: mockMembers
-}
+    resultCode: 'SUCCESS',
+    size: pageSize,
+    groupPath: 'example:groupingAdmins',
+    members: Array.from({ length: 200 }, (_, i) => ({
+        resultCode: 'SUCCESS',
+        name: `name-example-${i}`,
+        uhUuid: `uhUuid-example-${i}`,
+        uid: `uid-example-${i}`,
+        firstName: `firstName-example-${i}`,
+        lastName: `lastName-example-${i}`
+    }))
+};
 
 describe('AdminTable', () => {
     it('renders the table correctly', async () => {
@@ -84,20 +86,6 @@ describe('AdminTable', () => {
         render(<AdminTable groupingGroupMembers={mockData} />);
         const user = userEvent.setup();
 
-        // Open column settings
-        // await waitFor(
-        //     async () => {
-        //         await user.click(screen.getByLabelText('column-settings-button'));
-        //     },
-        //     { timeout: 2000 }
-        // );
-
-        // Toggle Admin Path Switch to true
-        // const adminPathSwitch = await screen.findByTestId('Admin Path Switch');
-        // await waitFor(async () => {
-        //     await user.click(adminpathSwitch);
-        // });
-
         // Sort by Admin Name - Descending order
         await clickAndWaitForSorting(
             'Admin Name',
@@ -111,6 +99,8 @@ describe('AdminTable', () => {
         // Sort by Admin Name- Ascending order
         await clickAndWaitForSorting('Admin Name', [mockData.members[0].name, mockData.members[1].name], true);
 
+        //Sort by UH Number- Ascending Order
+        await clickAndWaitForSorting('UH Number', [mockData.members[0].uhUuid, mockData.members[1].uhUuid], true);
 
         // Sort by UH Number - Descending order
         await clickAndWaitForSorting(
@@ -122,8 +112,8 @@ describe('AdminTable', () => {
             false
         );
 
-        //Sort by UH Number- Ascending Order
-        await clickAndWaitForSorting('UH Number', [mockData.members[0].uhUuid, mockData.members[1].uhUuid], true);
+        //  Sort by UH Username - Ascending order
+        await clickAndWaitForSorting('UH Username', [mockData.members[0].uid, mockData.members[1].uid], true);
 
         //  Sort by UH Username - Descending order
         await clickAndWaitForSorting(
@@ -134,8 +124,6 @@ describe('AdminTable', () => {
             ],
             false
         );
-        //  Sort by UH Username - Ascending order
-        await clickAndWaitForSorting('UH Username', [mockData.members[0].uid, mockData.members[1].uid], true);
 
 
     }, 10000);

@@ -1,7 +1,9 @@
+import { ColumnDef } from '@tanstack/react-table';
+import { GroupingGroupMember } from '@/lib/types';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
 import { removeAdmin } from '@/lib/actions';
 
-const AdminTableColumns = [
+const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
     {
         header: 'Admin Name',
         accessorKey: 'name',
