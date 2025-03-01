@@ -186,7 +186,7 @@ export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): P
  * @returns True if the uhIdentifier is an owner of a grouping
  */
 export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
-    const endpoint = `${baseUrl}/owners`;
+    const endpoint = `${baseUrl}/members/${uhIdentifier}/is-owner`;
     return getRequest<boolean>(endpoint, uhIdentifier);
 };
 
@@ -198,6 +198,6 @@ export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
  * @returns True if the uhIdentifier is an admin
  */
 export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
-    const endpoint = `${baseUrl}/admins`;
+    const endpoint = `${baseUrl}/members/${uhIdentifier}/is-admin`;
     return getRequest<boolean>(endpoint, uhIdentifier);
 };
