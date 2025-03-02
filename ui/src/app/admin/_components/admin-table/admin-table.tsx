@@ -6,9 +6,10 @@ import {
     getCoreRowModel,
     getPaginationRowModel,
     getFilteredRowModel,
-    getSortedRowModel, SortingState,
+    getSortedRowModel,
+    SortingState
 } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AdminTableColumns from '@/app/admin/_components/admin-table/table-element/admin-table-columns';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
@@ -17,11 +18,16 @@ import { useState } from 'react';
 import { GroupingGroupMembers } from '@/lib/types';
 import dynamic from 'next/dynamic';
 import AdminTableSkeleton from '@/app/admin/_components/admin-table/admin-table-skeleton';
+import AddAdmin from '@/app/admin/_components/admin-table/table-element/add-admin';
+
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
 const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGroupMembers }) => {
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState<SortingState>([]);
+
+    const uidColumn = groupingGroupMembers.members.map((member) => member.uid);
+    const uhUuidColumn = groupingGroupMembers.members.map((member) => member.uhUuid);
 
     const table = useReactTable({
         columns: AdminTableColumns,
@@ -84,8 +90,7 @@ const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGr
             </Table>
             <div className="grid grid-cols-2 items-center">
                 <div>
-                    {/*TODO: <AddAdmin input={adminInput} setInput={setAdminInput}/>
-                     TODO: <AddAdminsDialog input={adminInput} setInput={setAdminInput}/>*/}
+                    <AddAdmin uids={uidColumn} uhUuids={uhUuidColumn} />
                 </div>
                 <div className="flex justify-end">
                     <PaginationBar table={table} />
