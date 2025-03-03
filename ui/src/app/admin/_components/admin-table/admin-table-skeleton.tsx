@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import AdminTableColumns from '@/components/table/admin-table/table-element/admin-table-columns';
+import AdminTableColumns from '@/app/admin/_components/admin-table/table-element/admin-table-columns';
 
 const AdminTableSkeleton = () => {
     const pageSize = 7; // Average number of rows
