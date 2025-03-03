@@ -6,26 +6,26 @@ import {
     getCoreRowModel,
     getPaginationRowModel,
     getFilteredRowModel,
-    getSortedRowModel
+    getSortedRowModel, SortingState,
 } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import AdminTableColumns from '@/components/table/admin-table/table-element/admin-table-columns';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
+import AdminTableColumns from '@/app/admin/_components/admin-table/table-element/admin-table-columns';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 import { useState } from 'react';
-import { MemberResult } from '@/lib/types';
+import { GroupingGroupMembers } from '@/lib/types';
 import dynamic from 'next/dynamic';
-import AdminTableSkeleton from '@/components/table/admin-table/admin-table-skeleton';
+import AdminTableSkeleton from '@/app/admin/_components/admin-table/admin-table-skeleton';
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
-const AdminTable = ({ members }: { members: MemberResult[] }) => {
+const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGroupMembers }) => {
     const [globalFilter, setGlobalFilter] = useState('');
-    const [sorting, setSorting] = useState([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
 
     const table = useReactTable({
         columns: AdminTableColumns,
-        data: members,
+        data: groupingGroupMembers.members,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -34,7 +34,8 @@ const AdminTable = ({ members }: { members: MemberResult[] }) => {
         initialState: { pagination: { pageSize } },
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: setSorting,
-        enableMultiSort: true
+        enableMultiSort: true,
+        enableSortingRemoval: false
     });
 
     return (
