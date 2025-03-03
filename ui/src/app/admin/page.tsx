@@ -36,7 +36,7 @@ const Admin = async () => {
                     <TabsContent value="manage-admins">
                         <div className="bg-white">
                             <div className="container">
-                                <AdminTable groupingGroupMembers = {groupingGroupMembers} />
+                                <AdminTable groupingGroupMembers={groupingGroupMembers} />
                                 {/*<AddAdmin/>*/}
                             </div>
                         </div>
