@@ -1,3 +1,5 @@
+// This component takes in a list of items with 2 string properties, question and answer.
+
 type QuestionData = {
     question: string;
     answer: string;
