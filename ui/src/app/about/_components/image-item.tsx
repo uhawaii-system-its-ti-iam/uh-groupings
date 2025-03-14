@@ -1,3 +1,6 @@
+/* This is the component we'll be modifying for this workshop. It is similar to the question-item component,
+ the only difference being that the 'icon' property has two sub-properties, 'src' and 'alt'*/
+
 import Image from 'next/image';
 
 type ImageItem = {
