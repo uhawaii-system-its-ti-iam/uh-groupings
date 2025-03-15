@@ -1,9 +1,7 @@
-import Image from 'next/image';
-//import { ImageItem } from '@/app/about/_components/image-item';
+import ImageItem from '@/app/about/_components/image-item';
 
 const UHGroupingsInfo = ({ size }: { size?: 'lg' | 'default' }) => {
     const color = size === 'lg' ? 'text-text-color' : 'text-uh-black';
-    const textSize = size === 'lg' ? 'text-[1.2rem]' : 'text-base';
 
     const infoItems = [
         {
@@ -44,17 +42,7 @@ const UHGroupingsInfo = ({ size }: { size?: 'lg' | 'default' }) => {
                         A <em>grouping</em> is a collection of members (e.g., all full-time Hilo faculty).
                     </p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-7 pt-3">
-                    {/*<ImageItem data={infoItems} size={size} />*/}
-                    {infoItems.map((infoItem, index) => (
-                        <div key={index} className="col-span-1">
-                            <div className="flex justify-center">
-                                <Image src={infoItem.icon.src} alt={infoItem.icon.alt} width={115} height={115} />
-                            </div>
-                            <p className={`text-center font-normal ${textSize}`}>{infoItem.description}</p>
-                        </div>
-                    ))}
-                </div>
+                <ImageItem data={infoItems} size={size} />
             </div>
         </div>
     );
