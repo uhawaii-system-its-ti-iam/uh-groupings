@@ -72,11 +72,13 @@ const SyncDestinations = ({ syncDestArray, groupingPath }) => {
                                             thumbSize="h-3 w-3"
                                             checked={syncDest.synced}
                                             onCheckedChange={() => handleSwitchChange(syncDest)}
+                                            aria-labelledby={`label-${syncDest.syncDestId}`}
                                         />
-                                        <label className="text-base text-gray-900 pl-2 mb-0">{syncDest.description}</label>
+                                        <label id={`label-${syncDest.syncDestId}`} className="text-base text-gray-900 pl-2 mb-0">{syncDest.description}</label>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <div
+                                                    data-testid={`info-icon-${syncDest.syncDestId}`}
                                                     className="relative ml-2 cursor-pointer"
                                                     onClick={() => openDynamicModal(syncDest.description)}
                                                 >

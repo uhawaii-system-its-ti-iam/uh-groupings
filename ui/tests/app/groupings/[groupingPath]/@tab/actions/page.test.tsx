@@ -59,10 +59,12 @@ describe('Actions Component', () => {
         expect(resetBtn).toBeEnabled();
     });
 
-    it('opens reset modal with correct message when only include switch is toggled (short path) and confirms', async () => {
-        (resetIncludeGroup as any).mockResolvedValue({
-            resultCode: 'SUCCESS'
-        });
+    it('shows spinner after confirming reset, then displays success modal with Ok button', async () => {
+        (resetIncludeGroup as any).mockImplementation(() =>
+            new Promise((resolve) => {
+                setTimeout(() => resolve({ resultCode: 'SUCCESS' }), 500);
+            })
+        );
         render(<Actions groupingPath={shortGroupingPath} />);
         const user = userEvent.setup();
         const includeSwitch = screen.getByRole('switch', { name: /reset include/i });
@@ -78,12 +80,192 @@ describe('Actions Component', () => {
         expect(modal).toHaveTextContent(/groupName/i);
         const yesButton = screen.getByText('Yes');
         await user.click(yesButton);
+
         await waitFor(() => {
             expect(screen.queryByRole('alertdialog', { name: /reset grouping/i })).not.toBeInTheDocument();
         });
+        const spinnerContainer = document.querySelector('#loading-spinner');
+        expect(spinnerContainer).not.toBeNull();
         await waitFor(() => {
             expect(resetIncludeGroup).toHaveBeenCalledWith(decodeURIComponent(shortGroupingPath));
-        }, { timeout: 4000 });
+        });
+        await waitFor(() => {
+            expect(screen.queryByRole('status')).not.toBeInTheDocument();
+        });
+        const successModal = await screen.findByRole('alertdialog', { name: /grouping reset completion/i });
+        expect(successModal).toBeInTheDocument();
+        expect(successModal).toHaveTextContent('The Include list has successfully been reset.');
+        const okButton = screen.getByRole('button', { name: /ok/i });
+        expect(okButton).toBeInTheDocument();
+        await user.click(okButton);
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /grouping reset completion/i })).not.toBeInTheDocument();
+        });
+    });
+
+    it('shows spinner after confirming reset, then displays success modal for resetExcludeGroup', async () => {
+        (resetExcludeGroup as any).mockImplementation(() =>
+            new Promise((resolve) => {
+                setTimeout(() => resolve({ resultCode: 'SUCCESS' }), 500);
+            })
+        );
+
+        render(<Actions groupingPath={shortGroupingPath} />);
+        const user = userEvent.setup();
+        const excludeSwitch = screen.getByRole('switch', { name: /reset exclude/i });
+
+        await user.click(excludeSwitch);
+        await waitFor(() => {
+            expect(excludeSwitch).toHaveAttribute('aria-checked', 'true');
+        });
+
+        const resetBtn = screen.getByRole('button', { name: /reset selected/i });
+        await user.click(resetBtn);
+
+        const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
+        expect(modal).toBeInTheDocument();
+        expect(modal).toHaveTextContent(/exclude list/i);
+        expect(modal).toHaveTextContent(/groupName/i);
+
+        const yesButton = screen.getByText('Yes');
+        await user.click(yesButton);
+
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /reset grouping/i })).not.toBeInTheDocument();
+        });
+
+        const spinnerContainer = document.querySelector('#loading-spinner');
+        expect(spinnerContainer).not.toBeNull();
+
+        await waitFor(() => {
+            expect(resetExcludeGroup).toHaveBeenCalledWith(decodeURIComponent(shortGroupingPath));
+        });
+
+        await waitFor(() => {
+            expect(screen.queryByRole('status')).not.toBeInTheDocument();
+        });
+
+        const successModal = await screen.findByRole('alertdialog', { name: /grouping reset completion/i });
+        expect(successModal).toBeInTheDocument();
+        expect(successModal).toHaveTextContent('The Exclude list has successfully been reset.');
+
+        const okButton = screen.getByRole('button', { name: /ok/i });
+        expect(okButton).toBeInTheDocument();
+        await user.click(okButton);
+
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /grouping reset completion/i })).not.toBeInTheDocument();
+        });
+    });
+
+    it('shows spinner after confirming reset, then displays success modal for resetExcludeGroup', async () => {
+        (resetExcludeGroup as any).mockImplementation(() =>
+            new Promise((resolve) => {
+                setTimeout(() => resolve({ resultCode: 'SUCCESS' }), 500);
+            })
+        );
+
+        render(<Actions groupingPath={shortGroupingPath} />);
+        const user = userEvent.setup();
+        const excludeSwitch = screen.getByRole('switch', { name: /reset exclude/i });
+
+        await user.click(excludeSwitch);
+        await waitFor(() => {
+            expect(excludeSwitch).toHaveAttribute('aria-checked', 'true');
+        });
+
+        const resetBtn = screen.getByRole('button', { name: /reset selected/i });
+        await user.click(resetBtn);
+
+        const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
+        expect(modal).toBeInTheDocument();
+        expect(modal).toHaveTextContent(/exclude list/i);
+        expect(modal).toHaveTextContent(/groupName/i);
+
+        const yesButton = screen.getByText('Yes');
+        await user.click(yesButton);
+
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /reset grouping/i })).not.toBeInTheDocument();
+        });
+
+        const spinnerContainer = document.querySelector('#loading-spinner');
+        expect(spinnerContainer).not.toBeNull();
+
+        await waitFor(() => {
+            expect(resetExcludeGroup).toHaveBeenCalledWith(decodeURIComponent(shortGroupingPath));
+        });
+
+        await waitFor(() => {
+            expect(screen.queryByRole('status')).not.toBeInTheDocument();
+        });
+
+        const successModal = await screen.findByRole('alertdialog', { name: /grouping reset completion/i });
+        expect(successModal).toBeInTheDocument();
+        expect(successModal).toHaveTextContent('The Exclude list has successfully been reset.');
+
+        const okButton = screen.getByRole('button', { name: /ok/i });
+        expect(okButton).toBeInTheDocument();
+        await user.click(okButton);
+
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /grouping reset completion/i })).not.toBeInTheDocument();
+        });
+    });
+
+    it('shows spinner after confirming reset, then displays success modal for resetExcludeGroupAsync', async () => {
+        (resetExcludeGroupAsync as any).mockImplementation(() =>
+            new Promise((resolve) => {
+                setTimeout(() => resolve({ resultCode: 'SUCCESS' }), 500);
+            })
+        );
+
+        render(<Actions groupingPath={longGroupingPath} />);
+        const user = userEvent.setup();
+        const excludeSwitch = screen.getByRole('switch', { name: /reset exclude/i });
+
+        await user.click(excludeSwitch);
+        await waitFor(() => {
+            expect(excludeSwitch).toHaveAttribute('aria-checked', 'true');
+        });
+
+        const resetBtn = screen.getByRole('button', { name: /reset selected/i });
+        await user.click(resetBtn);
+
+        const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
+        expect(modal).toBeInTheDocument();
+        expect(modal).toHaveTextContent(/exclude list/i);
+        expect(modal).toHaveTextContent(/groupNameLong/i);
+
+        const yesButton = screen.getByText('Yes');
+        await user.click(yesButton);
+
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /reset grouping/i })).not.toBeInTheDocument();
+        });
+
+        const spinnerContainer = document.querySelector('#loading-spinner');
+        expect(spinnerContainer).not.toBeNull();
+
+        await waitFor(() => {
+            expect(resetExcludeGroupAsync).toHaveBeenCalledWith(decodeURIComponent(longGroupingPath));
+        });
+
+        await waitFor(() => {
+            expect(screen.queryByRole('status')).not.toBeInTheDocument();
+        });
+
+        const successModal = await screen.findByRole('alertdialog', { name: /grouping reset completion/i });
+        expect(successModal).toBeInTheDocument();
+        expect(successModal).toHaveTextContent('The Exclude list has successfully been reset.');
+
+        const okButton = screen.getByRole('button', { name: /ok/i });
+        expect(okButton).toBeInTheDocument();
+        await user.click(okButton);
+
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /grouping reset completion/i })).not.toBeInTheDocument();
+        });
     });
 
     it('opens and closes the dynamic modal', async () => {

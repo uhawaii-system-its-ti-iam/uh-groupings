@@ -1,10 +1,10 @@
 'use client';
-
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import { MessageCircleQuestion } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import DynamicModal from '@/components/modal/dynamic-modal';
 import { Switch } from '@/components/ui/switch';
+import { Spinner } from '@/components/ui/spinner';
 import { resetIncludeGroup, resetIncludeGroupAsync, resetExcludeGroup, resetExcludeGroupAsync } from '@/lib/actions';
 
 const Actions = ({ groupingPath }: { groupingPath: string }) => {
@@ -18,11 +18,12 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
     const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);
     const [dynamicModalContent, setDynamicModalContent] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     function toggleIncludeCheck() {
         setIncludeCheck(prev => !prev);
     }
-
 
     function toggleExcludeCheck() {
         setExcludeCheck(!excludeCheck);
@@ -47,8 +48,11 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
 
     async function handleResetConfirm() {
         setLoading(true);
+        closeResetGroupModal();
         await new Promise(resolve => setTimeout(resolve, 0));
         const requests: Promise<any>[] = [];
+        let successMessages: string[] = [];
+
         if (includeCheck) {
             setIncludeDisable(true);
             requests.push(
@@ -58,6 +62,7 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                 ).then(result => {
                     if (result.resultCode === 'SUCCESS') {
                         setIncludeCheck(false);
+                        successMessages.push("The Include list has successfully been reset.");
                     }
                     setIncludeDisable(false);
                 })
@@ -72,6 +77,7 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                 ).then(result => {
                     if (result.resultCode === 'SUCCESS') {
                         setExcludeCheck(false);
+                        successMessages.push("The Exclude list has successfully been reset.");
                     }
                     setExcludeDisable(false);
                 })
@@ -79,12 +85,15 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
         }
         await Promise.all(requests);
         setLoading(false);
-        closeResetGroupModal();
+        if (successMessages.length > 0) {
+            setSuccessMessage(successMessages.join(' '));
+            setIsSuccessModalOpen(true);
+        }
     }
 
     return (
         <TooltipProvider>
-            <div id="actions-display" className="block">
+            <div id="actions-display" className="block relative">
                 <div className="flex flex-wrap">
                     <div className="w-full pr-4 pl-4 relative">
                         <h1 className="font-bold text-3xl text-gray-900 mt-2 ml-0.5">Grouping Actions</h1>
@@ -147,11 +156,24 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                         open={isResetGroupModalOpen}
                         title="Reset Grouping"
                         body={`Are you sure you want to remove all members from the ${includeCheck && excludeCheck ? 'Exclude and Include lists' : includeCheck ? 'Include list' : 'Exclude list'} in the ${groupName} grouping?`}
-                        warning="Membership changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases, changes may take several hours to be fully processed, depending on the number of members and the synchronization destination."
                         buttons={[<span key="confirm" role="button" onClick={handleResetConfirm}>Yes</span>]}
                         onClose={closeResetGroupModal}
                     />
                 )}
+                {loading && (
+                    <div
+                        role="status"
+                        aria-live="assertive"
+                        aria-busy="true"
+                        aria-label="Loading spinner"
+                        id="loading-spinner"
+                        data-testid="loading-spinner"
+                        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    >
+                        <Spinner size="lg" data-testid="spinner" role="presentation" />
+                    </div>
+                )}
+
                 {isDynamicModalOpen && (
                     <DynamicModal
                         open={isDynamicModalOpen}
@@ -161,6 +183,16 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                         onClose={closeDynamicModal}
                     />
                 )}
+                {isSuccessModalOpen && (
+                    <DynamicModal
+                        open={isSuccessModalOpen}
+                        title="Grouping Reset Completion"
+                        body={successMessage}
+                        cancelText="OK"
+                        onClose={() => setIsSuccessModalOpen(false)}
+                    />
+                )}
+
             </div>
         </TooltipProvider>
     );

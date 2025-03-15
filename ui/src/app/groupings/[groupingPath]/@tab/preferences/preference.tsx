@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import { MessageCircleQuestion } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -50,13 +49,15 @@ const Preferences = ({ groupingPath }) => {
                         <form onSubmit={(e) => e.preventDefault()}>
                             <div className="flex items-center mb-1">
                                 <Switch
+                                    id="opt-in-switch"
+                                    aria-labelledby="opt-in-label"
                                     className="ml-5 w-9 h-4"
                                     thumbSize="h-3 w-3"
                                     checked={allowOptIn}
                                     onCheckedChange={handleOptInChange}
                                     disabled={loading}
                                 />
-                                <label className="text-base text-gray-900 pl-2 mb-0">
+                                <label id="opt-in-label" htmlFor="opt-in-switch" className="text-base text-gray-900 pl-2 mb-0">
                                     Allow people to add themselves to this group
                                 </label>
                                 <Tooltip>
@@ -75,13 +76,15 @@ const Preferences = ({ groupingPath }) => {
                             </div>
                             <div className="flex items-center mb-1">
                                 <Switch
+                                    id="opt-out-switch"
+                                    aria-labelledby="opt-out-label"
                                     className="ml-5 w-9 h-4"
                                     thumbSize="h-3 w-3"
                                     checked={allowOptOut}
                                     onCheckedChange={handleOptOutChange}
                                     disabled={loading}
                                 />
-                                <label className="text-base text-gray-900 pl-2 mb-0">
+                                <label id="opt-out-label" htmlFor="opt-out-switch" className="text-base text-gray-900 pl-2 mb-0">
                                     Allow people to remove themselves from this group
                                 </label>
                                 <Tooltip>
