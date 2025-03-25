@@ -1,6 +1,6 @@
 import Heading from '@/components/layout/heading';
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+const AdminLayout = ({ tab }: { tab: React.ReactNode }) => {
     return (
         <main>
             <Heading
@@ -8,7 +8,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                 description="Search for and manage any grouping on behalf of its
                         owner. Manage the list of UH Groupings administrators."
             />
-            {children}
+            {tab}
         </main>
     );
 };
