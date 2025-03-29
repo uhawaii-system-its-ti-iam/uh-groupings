@@ -1,23 +1,25 @@
 import { describe, it, vi, expect } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import DynamicModal from '@/components/modal/dynamic-modal';
 import Link from 'next/link';
 
 describe('DynamicModal', () => {
-    it('should open an informational modal with test contents and no extra buttons', () => {
+    it('should open an informational modal with test contents and no extra buttons', async () => {
         const onClose = vi.fn();
         render(
             <DynamicModal open={true} title="A Dynamic Title" onClose={onClose} body="Some dynamic message here." />
         );
-        fireEvent.focus(document);
+        const user = userEvent.setup();
+        await user.tab();
 
         expect(screen.getByRole('alertdialog', { name: 'A Dynamic Title' })).toBeInTheDocument();
         expect(screen.getByRole('alertdialog')).toHaveTextContent('Some dynamic message here.');
 
-        expect(screen.getByRole('button', { name: 'OK' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
     });
 
-    it('should open an informational modal with test contents and extra buttons', () => {
+    it('should open an informational modal with test contents and extra buttons', async () => {
         const onClose = vi.fn();
         render(
             <DynamicModal
@@ -28,17 +30,18 @@ describe('DynamicModal', () => {
                 buttons={[<>Button1</>, <>Button2</>]}
             />
         );
-        fireEvent.focus(document);
+        const user = userEvent.setup();
+        await user.tab();
 
         expect(screen.getByRole('alertdialog', { name: 'A Dynamic Title' })).toBeInTheDocument();
         expect(screen.getByRole('alertdialog')).toHaveTextContent('Some dynamic message here.');
 
-        expect(screen.getByRole('button', { name: 'OK' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Button1' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Button2' })).toBeInTheDocument();
     });
 
-    it('should close the modal upon clicking the OK button', () => {
+    it('should close the modal upon clicking the Cancel button', async () => {
         const onClose = vi.fn();
         render(
             <DynamicModal
@@ -49,20 +52,21 @@ describe('DynamicModal', () => {
                 buttons={[]}
             />
         );
-        fireEvent.focus(document);
+        const user = userEvent.setup();
+        await user.tab();
 
         expect(screen.getByRole('alertdialog', { name: 'A Dynamic Title' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'A Dynamic Title' })).toBeInTheDocument();
         expect(screen.getByRole('alertdialog')).toHaveTextContent('Some dynamic message here.');
 
-        expect(screen.getByRole('button', { name: 'OK' })).toBeInTheDocument();
+        const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+        expect(cancelButton).toBeInTheDocument();
 
-        fireEvent.click(screen.getByRole('button', { name: 'OK' }));
-        // Cannot use useState in the test environment so expect the onClose function to be called once.
-        expect(onClose).toHaveBeenCalledTimes(1); // Assumes the onClose function toggles a useState variable.
+        await user.click(cancelButton);
+        expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it('should close the modal and route to the provided link (Feedback)', () => {
+    it('should close the modal and route to the provided link (Feedback)', async () => {
         const onClose = vi.fn();
         render(
             <DynamicModal
@@ -77,17 +81,17 @@ describe('DynamicModal', () => {
                 ]}
             />
         );
-        fireEvent.focus(document);
+        const user = userEvent.setup();
+        await user.tab();
 
         expect(screen.getByRole('alertdialog', { name: 'A Modal to the Feedback Page' })).toBeInTheDocument();
         expect(screen.getByRole('alertdialog')).toHaveTextContent('Click Feedback to go to the Feedback Page.');
 
-        expect(screen.getByRole('button', { name: 'OK' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: 'Feedback' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
 
-        fireEvent.click(screen.getByRole('button', { name: 'Feedback' }));
-        // Cannot use useState in the test environment so expect the onClose function to be called once.
-        expect(onClose).toHaveBeenCalledTimes(1); // Assumes the onClose function toggles a useState variable.
+        await user.click(screen.getByRole('button', { name: 'Feedback' }));
+        expect(onClose).toHaveBeenCalledTimes(1);
     });
 });
