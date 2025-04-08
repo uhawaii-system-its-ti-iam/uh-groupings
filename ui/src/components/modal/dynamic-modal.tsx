@@ -3,44 +3,34 @@
 import {
     AlertDialog,
     AlertDialogHeader,
-    AlertDialogContent,
     AlertDialogDescription,
+    AlertDialogContent,
     AlertDialogTitle,
-    AlertDialogFooter,
-    AlertDialogCancel
+    AlertDialogFooter
 } from '@/components/ui/alert-dialog';
-import { ReactNode } from 'react';
-import { Button } from '@/components/ui/button';
 
 const DynamicModal = ({
     open,
     title,
-    body,
-    buttons,
-    onClose
+    description,
+    children,
+    buttons
 }: {
     open: boolean;
     title: string;
-    body: string;
-    buttons?: ReactNode[];
-    onClose: () => void;
+    description?: React.ReactNode | string;
+    children: React.ReactNode | string;
+    buttons?: React.ReactNode;
 }) => {
     return (
-        <AlertDialog open={open}>
+        <AlertDialog open={open} className="max-w-[90vw] sm:max-w-[500px] max-h-[80vh]">
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
-                    <AlertDialogDescription>{body}</AlertDialogDescription>
+                    {description.props.children && <AlertDialogDescription>{description}</AlertDialogDescription>}
                 </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel onClick={onClose}>OK</AlertDialogCancel>
-                    {/*Any buttons that should lead the user to a different page.*/}
-                    {buttons?.map((button, index) => (
-                        <Button key={index} onClick={onClose}>
-                            {button}
-                        </Button>
-                    ))}
-                </AlertDialogFooter>
+                {children}
+                <AlertDialogFooter>{buttons}</AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
     );
