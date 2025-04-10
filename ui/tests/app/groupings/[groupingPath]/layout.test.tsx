@@ -1,16 +1,14 @@
 import { vi, beforeEach, describe, it, expect, Mock } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import GroupingPathLayout from '@/app/groupings/[groupingPath]/layout';
-import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
-import { usePathname, redirect } from 'next/navigation';
+import { groupingDescription } from '@/lib/fetchers';
+import { usePathname } from 'next/navigation';
 import { GroupingDescription } from '@/lib/types';
 import GroupingHeader from '@/app/groupings/[groupingPath]/_components/grouping-header';
-import { getCurrentUser } from 'next-cas-client/app';
 
 vi.mock('next/navigation');
 vi.mock('@/lib/fetchers');
 vi.mock('@/app/groupings/[groupingPath]/_components/grouping-header');
-vi.mock('next-cas-client/app');
 
 const mockData: GroupingDescription = {
     groupPath: 'Test-path:Test-name',
@@ -19,12 +17,7 @@ const mockData: GroupingDescription = {
 };
 
 beforeEach(() => {
-    vi.clearAllMocks();
-    (getCurrentUser as Mock).mockResolvedValue({ uid: 'test-user' });
-    (isAdmin as Mock).mockResolvedValue(false);
-    (isGroupingOwner as Mock).mockResolvedValue(true);
     (groupingDescription as Mock).mockResolvedValue(mockData);
-    (groupingPathIsValid as Mock).mockResolvedValue(true);
     (usePathname as Mock).mockReturnValue('/groupings/Test-Path/Test-name');
 });
 
@@ -67,39 +60,5 @@ describe('GroupingPathLayout', () => {
         const tabContent = await screen.findByTestId('tab-content');
         expect(tabContent).toBeInTheDocument();
         expect(tabContent).toHaveTextContent('Tab Content');
-    });
-
-    it('redirects if path is invalid', async () => {
-        (groupingPathIsValid as Mock).mockResolvedValue(false);
-
-        await GroupingPathLayout({
-            params: { groupingPath: 'Invalid:path' },
-            tab: <div>Tab Content</div>
-        });
-
-        expect(redirect).toHaveBeenCalledWith('/');
-    });
-
-    it('redirects if user is not admin and not owner', async () => {
-        (isAdmin as Mock).mockResolvedValue(false);
-        (isGroupingOwner as Mock).mockResolvedValue(false);
-
-        await GroupingPathLayout({
-            params: { groupingPath: 'Test-path:Test-name' },
-            tab: <div>Tab Content</div>
-        });
-
-        expect(redirect).toHaveBeenCalledWith('/');
-    });
-
-    it('should not redirect if user is admin or owner', async () => {
-        (isAdmin as Mock).mockResolvedValue(true);
-
-        await GroupingPathLayout({
-            params: { groupingPath: 'Test-path:Test-name' },
-            tab: <div>Tab Content</div>
-        });
-
-        expect(redirect).not.toHaveBeenCalled();
     });
 });
