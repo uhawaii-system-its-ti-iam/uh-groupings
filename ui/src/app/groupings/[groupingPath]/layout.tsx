@@ -3,23 +3,13 @@ import ExportDropdown from './_components/export-dropdown';
 import GroupingHeader from './_components/grouping-header';
 import ReturnButtons from './_components/return-buttons';
 import SideNav from './_components/side-nav';
-import { redirect } from 'next/navigation';
-import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
-import { getCurrentUser } from 'next-cas-client/app';
+import { groupingDescription } from '@/lib/fetchers';
 
 const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: string }; tab: React.ReactNode }) => {
     const groupPath = decodeURIComponent(params.groupingPath);
     const { description } = await groupingDescription(groupPath);
     const groupName = groupPath.split(':').pop() as string;
     const fromManageSubject = groupPath.includes('manage-person');
-
-    const checkIsValidPath = await groupingPathIsValid(groupPath);
-    if (!checkIsValidPath) redirect('/');
-
-    const currentUser = await getCurrentUser();
-    const checkIsUserAdmin = await isAdmin(currentUser.uid);
-    const checkIsGroupingOwner = await isGroupingOwner(groupPath, currentUser.uid);
-    if (!checkIsUserAdmin && !checkIsGroupingOwner) redirect('/');
 
     return (
         <Providers>
