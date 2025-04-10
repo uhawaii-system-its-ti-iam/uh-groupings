@@ -15,17 +15,17 @@ const spinnerVariants = cva('flex-col items-center justify-center', {
     }
 });
 
-const loaderVariants = cva('animate-spin text-primary', {
+const loaderVariants = cva('animate-spin text-white stroke-[0.7]', {
     variants: {
         size: {
             xs: 'size-4',
             sm: 'size-6',
             default: 'size-8',
-            lg: 'size-12'
+            lg: 'w-[9rem] h-[9rem]'
         }
     },
     defaultVariants: {
-        size: 'default'
+        size: 'lg'
     }
 });
 
