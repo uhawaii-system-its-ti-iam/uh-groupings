@@ -11,11 +11,13 @@ import {
     groupingSyncDest,
     isAdmin,
     isOwner,
+    isGroupingOwner,
     isSoleOwner,
     managePersonResults,
     membershipResults,
     optInGroupingPaths,
-    ownerGroupings
+    ownerGroupings,
+    groupingPathIsValid
 } from '@/lib/fetchers';
 import * as NextCasClient from 'next-cas-client/app';
 import * as Actions from '@/lib/actions';
@@ -330,6 +332,25 @@ describe('fetchers', () => {
         });
     });
 
+    describe('isGroupingOwner', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await isGroupingOwner(groupingPath, uhIdentifier);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${groupingPath}/${uhIdentifier}/is-owner`, {
+                headers: { current_user: uhIdentifier }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await isGroupingOwner(groupingPath, uhIdentifier)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await isGroupingOwner(groupingPath, uhIdentifier)).toEqual(mockError);
+        });
+    });
+
     describe('isAdmin', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isAdmin(uhIdentifier);
@@ -346,6 +367,25 @@ describe('fetchers', () => {
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
             expect(await isAdmin(uhIdentifier)).toEqual(mockError);
+        });
+    });
+
+    describe('groupingPathIsValid', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await groupingPathIsValid(groupingPath);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/is-valid`, {
+                headers: { current_user: currentUser.uid }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await groupingPathIsValid(groupingPath)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await groupingPathIsValid(groupingPath)).toEqual(mockError);
         });
     });
 });
