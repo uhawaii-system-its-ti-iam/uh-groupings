@@ -191,6 +191,19 @@ export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
 };
 
 /**
+ * Check if the uhIdentifier is an owner of the grouping.
+ *
+ * @param groupingPath - The path of the grouping
+ * @param uhIdentifier - The uid or uhUuid
+ *
+ * @returns True if the uhIdentifier is an owner of a grouping
+ */
+export const isGroupingOwner = async (groupingPath: string, uhIdentifier: string): Promise<boolean> => {
+    const endpoint = `${baseUrl}/members/${groupingPath}/${uhIdentifier}/is-owner`;
+    return getRequest<boolean>(endpoint, uhIdentifier);
+};
+
+/**
  * Check if the uhIdentifier is an admin.
  *
  * @param uhIdentifier - The uid or uhUuid
@@ -200,4 +213,17 @@ export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
 export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${uhIdentifier}/is-admin`;
     return getRequest<boolean>(endpoint, uhIdentifier);
+};
+
+/**
+ * Check if the path of the grouping is valid.
+ *
+ * @param uhIdentifier - The uid or uhUuid
+ *
+ * @returns True if the path of the grouping is valid.
+ */
+export const groupingPathIsValid = async (groupingPath: string): Promise<boolean> => {
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/grouping/${groupingPath}/is-valid`;
+    return getRequest<boolean>(endpoint, currentUser.uid);
 };
