@@ -3,11 +3,11 @@
 import {
     AlertDialog,
     AlertDialogHeader,
-    AlertDialogContent,
     AlertDialogDescription,
+    AlertDialogContent,
     AlertDialogTitle,
     AlertDialogFooter,
-    AlertDialogCancel,
+    AlertDialogCancel
 } from '@/components/ui/alert-dialog';
 import { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
@@ -23,14 +23,14 @@ const DynamicModal = ({
 }: {
     open: boolean;
     title: string;
-    body: string;
+    body: string | ReactNode;
     warning?: string;
     buttons?: ReactNode[];
     closeText?: string;
     onClose: () => void;
 }) => {
     return (
-        <AlertDialog open={open}>
+        <AlertDialog open={open} className="max-w-[90vw] sm:max-w-[500px] max-h-[80vh]">
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>

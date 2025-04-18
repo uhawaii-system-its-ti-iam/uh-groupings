@@ -20,6 +20,7 @@ const GlobalFilter = ({
     return (
         <div className="relative w-full">
             <Input
+                type="search"
                 placeholder={placeholder}
                 value={filter || ''}
                 onChange={(e) => {
