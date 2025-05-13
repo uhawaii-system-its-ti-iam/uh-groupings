@@ -1,7 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AdminTable from '@/app/admin/_components/admin-table/admin-table';
 import userEvent from '@testing-library/user-event';
+
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        refresh: vi.fn()
+    })
+}));
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -27,7 +33,7 @@ describe('AdminTable', () => {
         expect(screen.getByText('Manage Admins')).toBeInTheDocument();
         await waitFor(() => {
             expect(screen.getByPlaceholderText('Filter Admins...')).toBeInTheDocument();
-        }, );
+        });
 
         // Check for table column headers
         expect(screen.getByText('Admin Name')).toBeInTheDocument();
@@ -89,10 +95,7 @@ describe('AdminTable', () => {
         // Sort by Admin Name - Descending order
         await clickAndWaitForSorting(
             'Admin Name',
-            [
-                mockData.members[mockData.members.length - 1].name,
-                mockData.members[mockData.members.length - 2].name
-            ],
+            [mockData.members[mockData.members.length - 1].name, mockData.members[mockData.members.length - 2].name],
             false
         );
 
@@ -107,7 +110,7 @@ describe('AdminTable', () => {
             'UH Number',
             [
                 mockData.members[mockData.members.length - 1].uhUuid,
-                mockData.members[mockData.members.length - 2].uhUuid,
+                mockData.members[mockData.members.length - 2].uhUuid
             ],
             false
         );
@@ -118,14 +121,9 @@ describe('AdminTable', () => {
         //  Sort by UH Username - Descending order
         await clickAndWaitForSorting(
             'UH Username',
-            [
-                mockData.members[mockData.members.length - 1].uid,
-                mockData.members[mockData.members.length - 2].uid
-            ],
+            [mockData.members[mockData.members.length - 1].uid, mockData.members[mockData.members.length - 2].uid],
             false
         );
-
-
     }, 10000);
 
     it('should paginate correctly', async () => {

@@ -16,7 +16,7 @@ const PaginationBar = <T,>({ table }: { table: Table<T> }) => {
     const endPage = Math.min(table.getPageCount() - 1, activePage + pageRange);
 
     return (
-        <Pagination className="flex justify-end pt-3 pb-3 text-green-blue">
+        <Pagination className="flex md:justify-end pb-3 text-green-blue justify-center">
             <PaginationContent className="border rounded gap-0">
                 <PaginationItem key={'first'} className="px-2 hover:bg-light-grey">
                     <PaginationLink
