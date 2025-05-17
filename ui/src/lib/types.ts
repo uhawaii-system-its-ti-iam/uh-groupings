@@ -143,7 +143,7 @@ export type GroupingMoveMembersResult = {
 export type MemberAttributeResults = {
     resultCode: string;
     invalid: string[];
-    result: MemberResult[];
+    results: MemberResult[];
 };
 
 export type ApiSubError = {
