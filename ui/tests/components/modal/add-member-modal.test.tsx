@@ -64,7 +64,7 @@ describe('AddMemberModal', () => {
         expect(mockAction).toHaveBeenCalledWith('test-uid');
         expect(mockOnSuccess).toHaveBeenCalled();
         expect(
-            await screen.findByText('test-user has been successfully added to test-group list.')
+            await screen.findByText('test-user has been successfully added to the test-group list.')
         ).toBeInTheDocument();
     });
 

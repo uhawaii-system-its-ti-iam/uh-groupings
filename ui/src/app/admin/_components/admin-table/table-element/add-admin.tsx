@@ -15,14 +15,14 @@ const AddAdmin = ({ uids, uhUuids }: { uids: string[]; uhUuids: string[] }) => {
     const [isError, setError] = useState('');
 
     const validateInput = (input: string) => {
-        if (!input.trim()) return 'You must enter a UH member to search';
+        if (!input) return 'You must enter a UH member to search';
         if (input.includes(' ') || input.includes(',')) return 'You can only add one UH member at a time';
         if (uids.includes(input) || uhUuids.includes(input)) return `${input} is already an admin`;
         return '';
     };
 
     const handleClick = async () => {
-        const identifier = getValues('uhIdentifier');
+        const identifier = getValues('uhIdentifier').trim();
         const validationError = validateInput(identifier);
         if (validationError) {
             setError(validationError);
@@ -62,7 +62,7 @@ const AddAdmin = ({ uids, uhUuids }: { uids: string[]; uhUuids: string[] }) => {
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>
-                            <p>Add to admins</p>
+                            <p>Add to admins list</p>
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>

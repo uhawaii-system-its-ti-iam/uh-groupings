@@ -54,10 +54,10 @@ const RemoveMemberModal = ({
                             <Label className="font-bold text-s text-left whitespace-nowrap">NAME:</Label>
                         </div>
                         <div className="grid grid-cols-3 items-center py-1 px-4">
-                            <Label className="font-bold text-s text-left whitespace-nowrap">UH USERNAME:</Label>
+                            <Label className="font-bold text-s text-left whitespace-nowrap">UH NUMBER:</Label>
                         </div>
                         <div className="grid grid-cols-3 items-center py-1 px-4">
-                            <Label className="font-bold text-s text-left whitespace-nowrap">UH USER ID:</Label>
+                            <Label className="font-bold text-s text-left whitespace-nowrap">UH USERNAME:</Label>
                         </div>
                     </div>
 
@@ -66,10 +66,10 @@ const RemoveMemberModal = ({
                             <Label className="text-s text-left whitespace-nowrap">{name}</Label>
                         </div>
                         <div className="grid grid-cols-4 items-center">
-                            <Label className="text-s text-left whitespace-nowrap">{uid}</Label>
+                            <Label className="text-s text-left whitespace-nowrap">{uhUuid}</Label>
                         </div>
                         <div className="grid grid-cols-4 items-center">
-                            <Label className="text-s text-left whitespace-nowrap">{uhUuid}</Label>
+                            <Label className="text-s text-left whitespace-nowrap">{uid}</Label>
                         </div>
                     </div>
                 </div>
