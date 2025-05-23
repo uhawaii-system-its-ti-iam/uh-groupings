@@ -1,16 +1,16 @@
 //TODO: import AdminLayout from '@/app/admin/layout';
-import { vi, beforeEach, describe, it, expect } from 'vitest';
+import {vi, beforeEach, describe, it, expect} from 'vitest';
 import Admin from '@/app/admin/page';
-import { render, screen, waitFor } from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
 import * as Fetchers from '@/lib/fetchers';
-import { MemberResult, GroupingPaths } from '@/lib/types';
+import {MemberResult, GroupingPaths} from '@/lib/types';
 import Groupings from '@/app/groupings/page';
 
 vi.mock('@/lib/fetchers');
 
 const mockGroupingsData: GroupingPaths = {
     resultCode: 'SUCCESS',
-    groupingPaths: Array.from({ length: 10 }, (_, i) => ({
+    groupingPaths: Array.from({length: 10}, (_, i) => ({
         path: `tmp:example:example-${i}`,
         name: `example-${i}`,
         description: `Test Description ${i}`
@@ -19,7 +19,7 @@ const mockGroupingsData: GroupingPaths = {
 
 const mockAdminsData: MemberResult = {
     resultCode: 'SUCCESS',
-    members: Array.from({ length: 10 }, (_, i) => ({
+    members: Array.from({length: 10}, (_, i) => ({
         name: `example-${i}`,
         uid: `example-${i}`,
         uhUuid: `example-${i}`
@@ -71,13 +71,13 @@ describe('Admin', () => {
             expect(screen.getByRole('tablist')).toBeInTheDocument();
         });
         await waitFor(async () => {
-            expect(screen.getByRole('tab', { name: 'Manage Groupings' })).toBeInTheDocument();
+            expect(screen.getByRole('tab', {name: 'Manage Groupings'})).toBeInTheDocument();
         });
         await waitFor(async () => {
-            expect(screen.getByRole('tab', { name: 'Manage Admins' })).toBeInTheDocument();
+            expect(screen.getByRole('tab', {name: 'Manage Admins'})).toBeInTheDocument();
         });
         await waitFor(async () => {
-            expect(screen.getByRole('tab', { name: 'Manage Person' })).toBeInTheDocument();
+            expect(screen.getByRole('tab', {name: 'Manage Person'})).toBeInTheDocument();
         });
     });
 });

@@ -7,7 +7,7 @@ import {
     AlertDialogDescription,
     AlertDialogTitle,
     AlertDialogFooter,
-    AlertDialogCancel,
+    AlertDialogCancel
 } from '@/components/ui/alert-dialog';
 import { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,7 @@ const DynamicModal = ({
     warning,
     buttons,
     closeText = 'Cancel',
-    onClose,
+    onClose
 }: {
     open: boolean;
     title: string;
@@ -45,11 +45,7 @@ const DynamicModal = ({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     {buttons?.map((button, index) => (
-                        <Button
-                            key={index}
-                            onClick={onClose}
-                            className="bg-uh-teal text-white hover:bg-uh-teal/90"
-                        >
+                        <Button key={index} onClick={onClose} className="bg-uh-teal text-white hover:bg-uh-teal/90">
                             {button}
                         </Button>
                     ))}
