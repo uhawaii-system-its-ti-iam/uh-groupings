@@ -1,5 +1,8 @@
 import { vi, describe, beforeAll, it, expect, beforeEach, afterEach } from 'vitest';
 import {
+    updateOptOut,
+    updateSyncDest,
+    updateOptIn,
     addAdmin,
     addExcludeMembers,
     addExcludeMembersAsync,
@@ -34,6 +37,8 @@ import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-mem
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
+const OPT_IN = process.env.NEXT_PUBLIC_OPT_IN as string;
+const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
 
 vi.mock('next-cas-client/app');
 
@@ -68,6 +73,94 @@ describe('actions', () => {
 
     beforeAll(() => {
         vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+    });
+
+    describe('updateSyncDest', () => {
+        const syncDestId = 'uhgmail';
+        const status = true;
+
+        it('should make a PUT request at the correct endpoint', async () => {
+            await updateSyncDest(groupingPath, syncDestId, status);
+
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/${groupingPath}/sync-destination/${syncDestId}/${status}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        current_user: currentUser.uid,
+                        'Content-Type': 'application/json',
+                    },
+                },
+            );
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await updateSyncDest(groupingPath, syncDestId, status)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await updateSyncDest(groupingPath, syncDestId, status)).toEqual(mockError);
+        });
+    });
+
+    describe('updateOptIn', () => {
+        const status = true;
+
+        it('should make a PUT request at the correct endpoint', async () => {
+            await updateOptIn(groupingPath, status);
+
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_IN}/${status}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        current_user: currentUser.uid,
+                        'Content-Type': 'application/json',
+                    },
+                },
+            );
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await updateOptIn(groupingPath, status)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await updateOptIn(groupingPath, status)).toEqual(mockError);
+        });
+    });
+
+    describe('updateOptOut', () => {
+        const status = false;
+
+        it('should make a PUT request at the correct endpoint', async () => {
+            await updateOptOut(groupingPath, status);
+
+            expect(fetch).toHaveBeenCalledWith(
+                `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_OUT}/${status}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        current_user: currentUser.uid,
+                        'Content-Type': 'application/json',
+                    },
+                },
+            );
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await updateOptOut(groupingPath, status)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await updateOptOut(groupingPath, status)).toEqual(mockError);
+        });
     });
 
     describe('updateDescription', () => {

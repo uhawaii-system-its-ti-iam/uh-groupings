@@ -13,14 +13,20 @@ import {
 import Link from 'next/link';
 import { useState } from 'react';
 
-const ApiErrorModal = ({ open }: { open: boolean }) => {
+const ApiErrorModal = ({
+    open,
+    onClose
+    }: {
+    open: boolean;
+    onClose?: () => void;
+}) => {
     const [openApiErrorModal, setOpenApiErrorModal] = useState(open);
 
-    /**
-     * Closes the modal.
-     */
     const close = () => {
         setOpenApiErrorModal(false);
+        if (onClose) {
+            onClose();
+        }
     };
     return (
         <AlertDialog open={openApiErrorModal}>
@@ -28,8 +34,7 @@ const ApiErrorModal = ({ open }: { open: boolean }) => {
                 <AlertDialogHeader>
                     <AlertDialogTitle>Error</AlertDialogTitle>
                     <AlertDialogDescription>
-                        There was an unexpected communications problem. Please use your browser to refresh the page and
-                        try again.
+                        There was an unexpected communications problem. Please refresh the page and try again.
                         <br />
                         <br />
                         If the error persists please refer to our
@@ -40,9 +45,9 @@ const ApiErrorModal = ({ open }: { open: boolean }) => {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => close()}>OK</AlertDialogCancel>
+                    <AlertDialogCancel onClick={close}>OK</AlertDialogCancel>
                     <Link href={'/feedback'}>
-                        <AlertDialogAction onClick={() => close()}>Feedback</AlertDialogAction>
+                        <AlertDialogAction onClick={close}>Feedback</AlertDialogAction>
                     </Link>
                 </AlertDialogFooter>
             </AlertDialogContent>
