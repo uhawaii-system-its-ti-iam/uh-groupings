@@ -1,8 +1,15 @@
-vi.mock('next/navigation', () => ({
-    useRouter: () => ({
-        refresh: vi.fn(),
-    }),
-}));
+const refreshMock = vi.fn();
+
+vi.mock('next/navigation', async () => {
+    const actual = await vi.importActual<typeof import('next/navigation')>('next/navigation');
+    return {
+        ...actual,
+        useRouter: () => ({
+            refresh: refreshMock,
+        }),
+    };
+});
+
 
 import { describe, it, vi, expect, beforeEach, beforeAll } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -245,4 +252,89 @@ describe('Actions Component', () => {
         form?.dispatchEvent(submitEvent);
         expect(submitEvent.preventDefault).toHaveBeenCalled();
     });
+
+    it('shows spinner after confirming reset, then displays success modal for resetIncludeGroupAsync', async () => {
+        (resetIncludeGroupAsync as any).mockImplementation(() =>
+            Promise.resolve({ resultCode: 'SUCCESS' })
+        );
+        const longPath = 'test:' + 'b'.repeat(751) + ':groupNameLong';
+        const encodedPath = encodeURIComponent(longPath);
+        render(<Actions groupingPath={encodedPath} />);
+        const user = userEvent.setup();
+        const includeCheckbox = screen.getByRole('checkbox', { name: /reset include/i });
+        expect(includeCheckbox).not.toBeChecked();
+        await user.click(includeCheckbox);
+        await waitFor(() => expect(includeCheckbox).toBeChecked());
+        const resetBtn = screen.getByRole('button', { name: /reset selected/i });
+        await user.click(resetBtn);
+        const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
+        const yesButton = screen.getByText('Yes');
+        await user.click(yesButton);
+        await waitFor(() => {
+            expect(resetIncludeGroupAsync).toHaveBeenCalledWith(decodeURIComponent(encodedPath));
+        });
+        await waitFor(() => {
+            expect(screen.queryByRole('status')).not.toBeInTheDocument();
+        });
+        await waitFor(() => {
+            expect(includeCheckbox).not.toBeChecked();
+        });
+        const successModal = await screen.findByRole('alertdialog', {
+            name: /grouping reset completion/i
+        });
+        expect(successModal).toHaveTextContent('The Include list has successfully been reset.');
+        const okButton = screen.getByRole('button', { name: /ok/i });
+        await user.click(okButton);
+        await waitFor(() => {
+            expect(successModal).not.toBeInTheDocument();
+        });
+    });
+
+    it('does not show success modal or call refresh if resetExcludeGroupAsync fails', async () => {
+        const refreshMock = vi.fn();
+        (resetExcludeGroupAsync as any).mockImplementation(() =>
+            Promise.resolve({ resultCode: 'FAILURE' })
+        );
+        const longPath = 'test:' + 'fail'.repeat(200) + ':groupNameLong';
+        render(<Actions groupingPath={encodeURIComponent(longPath)} />);
+        const user = userEvent.setup();
+        const excludeCheckbox = screen.getByRole('checkbox', { name: /reset exclude/i });
+        await user.click(excludeCheckbox);
+        await waitFor(() => {
+            expect(excludeCheckbox).toBeChecked();
+        });
+        const resetBtn = screen.getByRole('button', { name: /reset selected/i });
+        await user.click(resetBtn);
+        const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
+        const yesButton = screen.getByText('Yes');
+        await user.click(yesButton);
+        await waitFor(() => {
+            expect(resetExcludeGroupAsync).toHaveBeenCalledWith(longPath);
+        });
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog', { name: /grouping reset completion/i })).not.toBeInTheDocument();
+        });
+        expect(excludeCheckbox).toBeChecked();
+        expect(refreshMock).not.toHaveBeenCalled();
+    });
+
+    it('does not show success modal or call refresh if resetIncludeGroup fails', async () => {
+        (resetIncludeGroup as any).mockResolvedValue({ resultCode: 'FAILURE' });
+        refreshMock.mockClear();
+        render(<Actions groupingPath={shortGroupingPath} />);
+        const user = userEvent.setup();
+        const includeCheckbox = screen.getByRole('checkbox', { name: /reset include/i });
+        await user.click(includeCheckbox);
+        expect(includeCheckbox).toBeChecked();
+        await user.click(screen.getByRole('button', { name: /reset selected/i }));
+        await user.click(screen.getByText('Yes'));
+        await waitFor(() =>
+            expect(resetIncludeGroup).toHaveBeenCalledWith(decodeURIComponent(shortGroupingPath))
+        );
+        await waitFor(() => expect(screen.queryByRole('status')).not.toBeInTheDocument());
+        expect(screen.queryByRole('alertdialog', { name: /grouping reset completion/i })).toBeNull();
+        expect(includeCheckbox).toBeChecked();
+        expect(refreshMock).not.toHaveBeenCalled();
+    });
+
 });

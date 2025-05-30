@@ -1,5 +1,6 @@
 import { sendStackTrace } from './actions';
 import { getUser } from '@/lib/access/user';
+import { redirect } from 'next/navigation';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -226,10 +227,11 @@ export const deleteRequestAsync = async <T>(
  *
  * @returns The res.json()
  */
-const handleFetch = (res: Response, httpMethod: HTTPMethod) => {
+export const handleFetch = (res: Response, httpMethod: HTTPMethod) => {
     if (!res.ok) {
         const error = Error(`${res.status} error from ${httpMethod} ${res.url}`);
         sendStackTrace(error.stack as string);
+        redirect('/error');
     }
     return res.json();
 };

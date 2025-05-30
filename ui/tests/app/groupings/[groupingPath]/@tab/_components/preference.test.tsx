@@ -1,9 +1,14 @@
-vi.mock('next/navigation', () => ({
-    useRouter: () => ({
-        refresh: vi.fn(),
-    }),
-}));
+const refreshMock = vi.fn();
 
+vi.mock('next/navigation', async () => {
+    const actual = await vi.importActual<typeof import('next/navigation')>('next/navigation');
+    return {
+        ...actual,
+        useRouter: () => ({
+            refresh: refreshMock,
+        }),
+    };
+});
 
 import { describe, it, vi, expect, beforeEach, beforeAll } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
@@ -122,6 +127,44 @@ describe('Preferences Component', () => {
         form.dispatchEvent(submitEvent);
 
         expect(submitEvent.preventDefault).toHaveBeenCalled();
+    });
+
+    it('calls router.refresh and updates state when updateOptIn succeeds', async () => {
+        (updateOptIn as any).mockResolvedValue({ resultCode: 'SUCCESS', updatedStatus: true });
+        render(<Preferences groupingPath={groupingPath} allowOptIn={false} allowOptOut={false} />);
+        const user = userEvent.setup();
+        const optInSwitch = screen.getByLabelText(/allow people to add themselves/i);
+        expect(optInSwitch).toHaveAttribute('aria-checked', 'false');
+        await user.click(optInSwitch);
+        await waitFor(() => expect(updateOptIn).toHaveBeenCalledWith('group:test:path', true));
+        await waitFor(() => expect(refreshMock).toHaveBeenCalled());
+        await new Promise(r => setTimeout(r, 0));
+        expect(optInSwitch).toHaveAttribute('aria-checked', 'true');
+    });
+
+    it('does not change state or call refresh when updateOptOut fails', async () => {
+        (updateOptOut as any).mockResolvedValue({ resultCode: 'FAILURE', updatedStatus: false });
+        render(<Preferences groupingPath={groupingPath} allowOptIn={false} allowOptOut={false} />);
+        const user = userEvent.setup();
+        const optOutSwitch = screen.getByLabelText(/allow people to remove themselves/i);
+        expect(optOutSwitch).toHaveAttribute('aria-checked', 'false');
+        await user.click(optOutSwitch);
+        await waitFor(() => expect(updateOptOut).toHaveBeenCalled());
+        expect(optOutSwitch).toHaveAttribute('aria-checked', 'false');
+        expect(refreshMock).not.toHaveBeenCalled();
+    });
+
+    it('does not change state or call refresh when updateOptIn fails', async () => {
+        (updateOptIn as any).mockResolvedValue({ resultCode: 'FAILURE', updatedStatus: false });
+        refreshMock.mockClear();
+        render(<Preferences groupingPath={groupingPath} allowOptIn={false} allowOptOut={false} />);
+        const user = userEvent.setup();
+        const optInSwitch = screen.getByLabelText(/allow people to add themselves/i);
+        expect(optInSwitch).toHaveAttribute('aria-checked', 'false');
+        await user.click(optInSwitch);
+        await waitFor(() => expect(updateOptIn).toHaveBeenCalled());
+        expect(optInSwitch).toHaveAttribute('aria-checked', 'false');
+        expect(refreshMock).not.toHaveBeenCalled();
     });
 
 });

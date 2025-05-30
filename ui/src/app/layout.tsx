@@ -22,14 +22,17 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({
-    children
+    children,
+    error
 }: Readonly<{
     children?: React.ReactNode;
+    error?: React.ReactNode;
 }>) => (
     <html lang="en">
         <body className={`${sourceSans3.variable} min-h-screen flex flex-col`}>
             <Navbar />
             <main className="flex-grow">{children}</main>
+            {error}
             <Footer />
         </body>
     </html>

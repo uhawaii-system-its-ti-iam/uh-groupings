@@ -94,4 +94,23 @@ describe('DynamicModal', () => {
         await user.click(screen.getByRole('button', { name: 'Feedback' }));
         expect(onClose).toHaveBeenCalledTimes(1);
     });
+
+    it('renders a warning box when warning prop is provided', async () => {
+        const onClose = vi.fn();
+        render(
+            <DynamicModal
+                open={true}
+                title="Warning Modal"
+                body="Body text"
+                warning="This is a warning!"
+                onClose={onClose}
+            />
+        );
+        expect(screen.getByRole('alertdialog', { name: 'Warning Modal' })).toBeInTheDocument();
+        expect(screen.getByText('Body text')).toBeInTheDocument();
+        const warningBox = screen.getByText('This is a warning!');
+        expect(warningBox).toBeInTheDocument();
+        expect(warningBox).toHaveClass('bg-yellow-100');
+    });
+
 });
