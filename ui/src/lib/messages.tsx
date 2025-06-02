@@ -43,16 +43,12 @@ export const message = {
         MODAL_TITLE: 'Reset Grouping',
         MODAL_BODY: (isInclude: boolean, isExclude: boolean, groupName: string) => {
             const target =
-                isInclude && isExclude
-                    ? 'Exclude and Include lists'
-                    : isInclude
-                        ? 'Include list'
-                        : 'Exclude list';
+                isInclude && isExclude ? 'Exclude and Include lists' : isInclude ? 'Include list' : 'Exclude list';
             return `Are you sure you want to remove all members from the ${target} in the ${groupName} grouping?`;
         },
         MODAL_CONFIRM: 'Yes',
         MODAL_INFO_TITLE: 'Actions Information',
-        MODAL_SUCCESS_TITLE: 'Grouping Reset Completion',
+        MODAL_SUCCESS_TITLE: 'Grouping Reset Completion'
     },
 
     ApiError: {

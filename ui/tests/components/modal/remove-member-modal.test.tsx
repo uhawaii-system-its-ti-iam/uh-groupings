@@ -2,78 +2,81 @@ import { describe, it, vi, beforeEach, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
-import { GroupingGroupMember } from '@/lib/types';
+
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        refresh: vi.fn()
+    })
+}));
 
 describe('RemoveMemberModal', () => {
-    let mockConfirm: ReturnType<typeof vi.fn>;
-    let mockClose: ReturnType<typeof vi.fn>;
-
-    const member: GroupingGroupMember = {
-        uid: 'test-uid',
-        name: 'test-user',
-        uhUuid: 'test-uhUuid',
-        firstName: 'test',
-        lastName: 'user',
-        resultCode: 'SUCCESS',
-    };
+    let mockAction: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
-        mockConfirm = vi.fn();
-        mockClose = vi.fn();
+        mockAction = vi.fn();
         vi.clearAllMocks();
     });
 
-    it('renders modal content when open is true', () => {
+    it('should render and open the modal when trash icon is clicked', async () => {
+        const user = userEvent.setup();
         render(
             <RemoveMemberModal
-                open={true}
-                member={member}
+                uid="test-uid"
+                name="test-user"
+                uhUuid="test-uhUuid"
                 group="test-group"
-                onConfirm={mockConfirm}
-                onClose={mockClose}
+                action={mockAction}
             />
         );
 
-        expect(screen.getByText('Remove Member')).toBeInTheDocument();
+        const trashIcon = screen.getByTestId('remove-member-icon');
+        expect(trashIcon).toBeInTheDocument();
+
+        await user.click(trashIcon);
+
+        expect(await screen.findByText('Remove Member')).toBeInTheDocument();
         expect(screen.getAllByText('test-user')).toHaveLength(2);
         expect(screen.getByText('test-uid')).toBeInTheDocument();
         expect(screen.getByText('test-uhUuid')).toBeInTheDocument();
         expect(screen.getAllByText('test-group')).toHaveLength(2);
     });
 
-    it('calls onConfirm when "Yes" is clicked', async () => {
+    it('should call action and close modal when "Yes" is clicked', async () => {
         const user = userEvent.setup();
-
         render(
             <RemoveMemberModal
-                open={true}
-                member={member}
+                uid="test-uid"
+                name="test-user"
+                uhUuid="test-uhUuid"
                 group="test-group"
-                onConfirm={mockConfirm}
-                onClose={mockClose}
+                action={mockAction}
             />
         );
 
-        await user.click(screen.getByRole('button', { name: 'Yes' }));
+        await user.click(screen.getByTestId('remove-member-icon'));
+        await user.click(await screen.findByRole('button', { name: 'Yes' }));
 
-        expect(mockConfirm).toHaveBeenCalledTimes(1);
+        expect(mockAction).toHaveBeenCalledWith('test-uid');
     });
 
-    it('calls onClose when "Cancel" is clicked', async () => {
+    it('should close modal when "Cancel" is clicked', async () => {
         const user = userEvent.setup();
-
         render(
             <RemoveMemberModal
-                open={true}
-                member={member}
+                uid="test-uid"
+                name="test-user"
+                uhUuid="test-uhUuid"
                 group="test-group"
-                onConfirm={mockConfirm}
-                onClose={mockClose}
+                action={mockAction}
             />
         );
 
-        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+        await user.click(screen.getByTestId('remove-member-icon'));
+        const cancelButton = await screen.findByRole('button', { name: 'Cancel' });
 
-        expect(mockClose).toHaveBeenCalledTimes(1);
+        expect(cancelButton).toBeInTheDocument();
+        await user.click(cancelButton);
+
+        expect(screen.queryByText('Remove Member')).not.toBeInTheDocument();
     });
 });
