@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GroupingGroupMember } from '@/lib/types';
-import RemoveMemberModal from '@/components/modal/remove-member-modal';
-import { removeAdmin } from '@/lib/actions';
-
-const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
+import RemoveAdminCell from './remove-admin-cell';
+const AdminTableColumns = (
+    onManageAdminSuccess: (type: string, count: number, name: string) => void
+): ColumnDef<GroupingGroupMember>[] => [
     {
         header: 'Admin Name',
         accessorKey: 'name',
@@ -22,15 +22,7 @@ const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
     },
     {
         header: 'Remove',
-        cell: ({ row }) => (
-            <RemoveMemberModal
-                uid={row.getValue('uid')}
-                name={row.getValue('name')}
-                uhUuid={row.getValue('uhUuid')}
-                group={'admins'}
-                action={removeAdmin}
-            />
-        )
+        cell: ({ row }) => <RemoveAdminCell row={row} onSuccess={onManageAdminSuccess} />
     }
 ];
 
