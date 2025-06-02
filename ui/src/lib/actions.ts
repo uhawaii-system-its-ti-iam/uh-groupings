@@ -45,9 +45,13 @@ const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
 export const updateSyncDest = async (
     groupingPath: string,
     syncDestId: string,
-    status: boolean,
+    status: boolean
 ): Promise<GroupingUpdatedAttributeResult> => {
-    z.object({groupingPath: z.string(), syncDestId: z.string(), status: z.boolean(),}).parse({ groupingPath, syncDestId, status });
+    z.object({ groupingPath: z.string(), syncDestId: z.string(), status: z.boolean() }).parse({
+        groupingPath,
+        syncDestId,
+        status
+    });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/sync-destination/${syncDestId}/${status}`;
     return putRequest<GroupingUpdatedAttributeResult>(endpoint, currentUser.uid);
@@ -61,11 +65,8 @@ export const updateSyncDest = async (
  *
  * @returns The promise of the result of updating the opt-in status or ApiError type
  */
-export const updateOptIn = async (
-    groupingPath: string,
-    status: boolean,
-): Promise<GroupingUpdateOptAttributeResult> => {
-    z.object({groupingPath: z.string(), status: z.boolean(),}).parse({ groupingPath, status });
+export const updateOptIn = async (groupingPath: string, status: boolean): Promise<GroupingUpdateOptAttributeResult> => {
+    z.object({ groupingPath: z.string(), status: z.boolean() }).parse({ groupingPath, status });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_IN}/${status}`;
     return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
@@ -81,14 +82,13 @@ export const updateOptIn = async (
  */
 export const updateOptOut = async (
     groupingPath: string,
-    status: boolean,
+    status: boolean
 ): Promise<GroupingUpdateOptAttributeResult> => {
-    z.object({groupingPath: z.string(), status: z.boolean(),}).parse({ groupingPath, status });
+    z.object({ groupingPath: z.string(), status: z.boolean() }).parse({ groupingPath, status });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_OUT}/${status}`;
     return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
 };
-
 
 /**
  * Update the description of grouping at path.
@@ -522,5 +522,36 @@ export const getGroupingMembersWhereListed = async (
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/where-listed`;
+    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
+};
+
+/*
+  Get if members exist in include
+ */
+export const getMembersExistInInclude = async (
+    groupingPath: string,
+    uhIdentifiers: string[]
+): Promise<GroupingMembers> => {
+    z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members/in-list`;
+    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
+};
+export const getMembersExistInExclude = async (
+    groupingPath: string,
+    uhIdentifiers: string[]
+): Promise<GroupingMembers> => {
+    z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members/in-list`;
+    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
+};
+export const getMembersExistInOwners = async (
+    groupingPath: string,
+    uhIdentifiers: string[]
+): Promise<GroupingMembers> => {
+    z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/in-list`;
     return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
 };

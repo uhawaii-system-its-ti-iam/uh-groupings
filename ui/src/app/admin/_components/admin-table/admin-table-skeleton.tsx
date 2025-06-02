@@ -4,7 +4,8 @@ import AdminTableColumns from '@/app/admin/_components/admin-table/table-element
 
 const AdminTableSkeleton = () => {
     const pageSize = 7; // Average number of rows
-
+    const placeHolderCallback = () => {};
+    const columns = AdminTableColumns(placeHolderCallback);
     return (
         <div className="mb-12">
             <div className="h-full flex flex-col md:flex-row md:justify-between pt-5 mb-4">
@@ -19,7 +20,7 @@ const AdminTableSkeleton = () => {
             <Table className="mb-4">
                 <TableHeader>
                     <TableRow>
-                        {AdminTableColumns.map((column) => (
+                        {columns.map((_, column) => (
                             <TableHead key={`header-${column}`} className={`pl-[0.5rem]`}>
                                 <Skeleton className="h-5 w-36 rounded-[0.25rem]" />
                             </TableHead>
@@ -27,10 +28,10 @@ const AdminTableSkeleton = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {Array.from(Array(pageSize), (_, index) => (
-                        <TableRow key={index}>
-                            {AdminTableColumns.map((column) => (
-                                <TableCell key={`header-${column}`} className={`p-[0.5rem]`}>
+                    {Array.from(Array(pageSize), (_, rowIndex) => (
+                        <TableRow key={rowIndex}>
+                            {columns.map((_, columnIndex) => (
+                                <TableCell key={`cell-${rowIndex}-${columnIndex}`} className={`p-[0.5rem]`}>
                                     <Skeleton className="h-5 w-72 rounded-[0.25rem]" />
                                 </TableCell>
                             ))}

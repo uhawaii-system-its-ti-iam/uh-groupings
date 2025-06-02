@@ -14,11 +14,13 @@ import AdminTableColumns from '@/app/admin/_components/admin-table/table-element
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { GroupingGroupMembers } from '@/lib/types';
 import dynamic from 'next/dynamic';
 import AdminTableSkeleton from '@/app/admin/_components/admin-table/admin-table-skeleton';
 import AddAdmin from '@/app/admin/_components/admin-table/table-element/add-admin';
+import SuccessModal from '@/components/modal/success-modal';
+import { useRouter } from 'next/navigation';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -26,11 +28,38 @@ const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGr
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState<SortingState>([]);
 
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [manageType, setManageType] = useState('');
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [memberCount, setMemberCount] = useState(1);
+    const [memberName, setMemberName] = useState('');
+    const router = useRouter();
+    const [, startTransition] = useTransition();
+
+    const handleManageAdminSuccess = (type: string, count: number = 1, name: string = '') => {
+        setManageType('removeMembers');
+        setMemberCount(count);
+        setMemberName(name);
+        setIsSuccessModalOpen(true);
+    };
+
+    const handleCloseSuccessModal = () => {
+        setIsSuccessModalOpen(false);
+        setIsRefreshing(true);
+        startTransition(() => {
+            router.refresh();
+            setManageType('');
+            setTimeout(() => {
+                setIsRefreshing(false);
+            }, 1000);
+        });
+    };
+
     const uidColumn = groupingGroupMembers.members.map((member) => member.uid);
     const uhUuidColumn = groupingGroupMembers.members.map((member) => member.uhUuid);
 
     const table = useReactTable({
-        columns: AdminTableColumns,
+        columns: AdminTableColumns(handleManageAdminSuccess),
         data: groupingGroupMembers.members,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -96,6 +125,16 @@ const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGr
                     <PaginationBar table={table} />
                 </div>
             </div>
+
+            <SuccessModal
+                isOpen={isSuccessModalOpen}
+                onClose={handleCloseSuccessModal}
+                manageType={manageType}
+                isRefreshing={isRefreshing}
+                group={'Admins'}
+                memberCount={memberCount}
+                name={memberName}
+            />
         </>
     );
 };

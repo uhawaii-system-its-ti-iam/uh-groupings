@@ -19,8 +19,8 @@ export type MemberResult = {
     uid: string;
     uhUuid: string;
     name: string;
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
 };
 
 export type GroupingPath = {
