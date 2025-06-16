@@ -13,7 +13,7 @@ describe('UHGroupings Component', () => {
 
     const expectEmail = (size: 'text-[1.2rem]' | 'text-base') => {
         const description =
-            'Synchronize groupings email LISTSERV lists,' + ' attributes for access control via CAS and LDAP, etc..';
+            'Synchronize groupings email LISTSERV lists,' + ' attributes for access control via CAS and LDAP, etc.';
         expect(screen.getByAltText('Email icon')).toHaveAttribute('src', '/uhgroupings/id-email.svg');
         expect(screen.getByText(description)).toHaveClass(size);
     };

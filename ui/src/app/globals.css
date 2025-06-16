@@ -11,3 +11,7 @@
         font-family: var(--font-source-sans-3), 'Helvetica', Arial, sans-serif;
     }
 }
+
+.info-title {
+    @apply text-center text-xl text-text-color font-bold pb-7 pt-5;
+}
