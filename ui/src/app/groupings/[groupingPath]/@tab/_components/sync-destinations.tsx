@@ -133,6 +133,7 @@ const SyncDestinations = ({ syncDestArray, groupingPath }) => {
                                 {message.SyncDestinations.MODAL_CONFIRM}
                             </button>
                         ]}
+                        closeText={message.Preferences.MODAL_CANCEL}
                         onClose={closeSyncDestModal}
                     />
                 )}
@@ -141,7 +142,7 @@ const SyncDestinations = ({ syncDestArray, groupingPath }) => {
                     open={isDynamicModalOpen}
                     title={message.SyncDestinations.MODAL_INFO_TITLE}
                     body={modalContent}
-                    cancelText={message.Preferences.MODAL_CLOSE}
+                    buttons={[<span key="stay" onClick={closeDynamicModal}>{message.Preferences.MODAL_CLOSE}</span>]}
                     onClose={closeDynamicModal}
                 />
             </div>
