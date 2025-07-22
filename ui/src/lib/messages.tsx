@@ -7,6 +7,7 @@ export const message = {
         OPT_OUT_LABEL: 'Allow people to remove themselves from this group',
         MODAL_TITLE: 'Preferences Information',
         MODAL_CLOSE: 'OK',
+        MODAL_CANCEL: 'Cancel',
     },
 
     Tooltip: {
@@ -48,5 +49,18 @@ export const message = {
         MODAL_CONFIRM: 'Yes',
         MODAL_INFO_TITLE: 'Actions Information',
         MODAL_SUCCESS_TITLE: 'Grouping Reset Completion',
+    },
+
+    ApiError: {
+        TITLE: 'Error',
+        MODAL_BODY: () => (
+            <div className="flex flex-col gap-4">
+                <p>There was an unexpected communications problem. Please refresh the page and try again.</p>
+                <p>If the error persists please refer to our feedback page.</p>
+            </div>
+        ),
+        FEEDBACK_LINK: '/feedback',
+        FEEDBACK_TEXT2: 'Feedback',
+        CLOSE_TEXT: 'OK',
     }
 };

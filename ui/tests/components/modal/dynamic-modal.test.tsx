@@ -8,14 +8,20 @@ describe('DynamicModal', () => {
     it('should open an informational modal with test contents and no extra buttons', async () => {
         const onClose = vi.fn();
         render(
-            <DynamicModal open={true} title="A Dynamic Title" onClose={onClose} body="Some dynamic message here." />
+            <DynamicModal
+                open={true}
+                title="A Dynamic Title"
+                onClose={onClose}
+                body="Some dynamic message here."
+                closeText="Cancel"
+            />
         );
+
         const user = userEvent.setup();
         await user.tab();
 
         expect(screen.getByRole('alertdialog', { name: 'A Dynamic Title' })).toBeInTheDocument();
         expect(screen.getByRole('alertdialog')).toHaveTextContent('Some dynamic message here.');
-
         expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
     });
 
@@ -27,6 +33,7 @@ describe('DynamicModal', () => {
                 title="A Dynamic Title"
                 body="Some dynamic message here."
                 onClose={onClose}
+                closeText="Cancel"
                 buttons={[<>Button1</>, <>Button2</>]}
             />
         );
@@ -49,6 +56,7 @@ describe('DynamicModal', () => {
                 title="A Dynamic Title"
                 body="Some dynamic message here."
                 onClose={onClose}
+                closeText="Cancel"
                 buttons={[]}
             />
         );
@@ -74,6 +82,7 @@ describe('DynamicModal', () => {
                 title="A Modal to the Feedback Page"
                 body="Click Feedback to go to the Feedback Page."
                 onClose={onClose}
+                closeText="Cancel"
                 buttons={[
                     <Link key={'feedbackButton'} href={'/feedback'}>
                         Feedback
@@ -103,6 +112,7 @@ describe('DynamicModal', () => {
                 title="Warning Modal"
                 body="Body text"
                 warning="This is a warning!"
+                closeText="Cancel"
                 onClose={onClose}
             />
         );

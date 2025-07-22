@@ -18,12 +18,12 @@ const DynamicModal = ({
     body,
     warning,
     buttons,
-    closeText = 'Cancel',
+    closeText,
     onClose
 }: {
     open: boolean;
     title: string;
-    body: string;
+    body: React.ReactNode;
     warning?: string;
     buttons?: ReactNode[];
     closeText?: string;
@@ -49,7 +49,7 @@ const DynamicModal = ({
                             {button}
                         </Button>
                     ))}
-                    <AlertDialogCancel onClick={onClose}>{closeText}</AlertDialogCancel>
+                    {closeText && (<AlertDialogCancel onClick={onClose}>{closeText}</AlertDialogCancel>)}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
