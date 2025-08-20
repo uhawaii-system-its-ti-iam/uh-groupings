@@ -149,7 +149,7 @@ export const groupingOwners = async (groupingPath: string): Promise<GroupingGrou
  */
 export const ownerGroupings = async (): Promise<GroupingPaths> => {
     const currentUser = await getUser();
-    const endpoint = `${baseUrl}/owners/${currentUser.uid}/groupings`;
+    const endpoint = `${baseUrl}/owners/groupings`;
     return getRequest<GroupingPaths>(endpoint, currentUser.uid);
 };
 
@@ -160,7 +160,7 @@ export const ownerGroupings = async (): Promise<GroupingPaths> => {
  */
 export const getNumberOfGroupings = async (): Promise<number> => {
     const currentUser = await getUser();
-    const endpoint = `${baseUrl}/owners/${currentUser.uid}/groupings/count`;
+    const endpoint = `${baseUrl}/owners/groupings/count`;
     return getRequest<number>(endpoint, currentUser.uid);
 };
 
