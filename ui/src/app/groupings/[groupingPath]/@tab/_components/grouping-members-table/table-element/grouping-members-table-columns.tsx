@@ -73,7 +73,8 @@ const GroupingMembersTableColumns = (
                         <GroupingMemberNameCell
                             name={row.getValue('name')}
                             uid={row.getValue('uid')}
-                            uhUuid={row.getValue('uhUuid')}
+                            // uhUuid={row.getValue('uhUuid')}
+                            uhUuid={group !== 'owners' ? row.getValue('uhUuid') : ''}
                         />
                     </div>
                     {['include', 'exclude', 'owners'].includes(group || '') && (
