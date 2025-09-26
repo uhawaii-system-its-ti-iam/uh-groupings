@@ -90,7 +90,7 @@ export const getAllGroupings = async (): Promise<GroupingPaths> => {
  */
 export const membershipResults = async (): Promise<MembershipResults> => {
     const currentUser = await getUser();
-    const endpoint = `${baseUrl}/members/${currentUser.uid}/memberships`;
+    const endpoint = `${baseUrl}/members/memberships`;
     return getRequest<MembershipResults>(endpoint, currentUser.uid);
 };
 
@@ -114,7 +114,7 @@ export const managePersonResults = async (uhIdentifier: string): Promise<Members
  */
 export const getNumberOfMemberships = async (): Promise<number> => {
     const currentUser = await getUser();
-    const endpoint = `${baseUrl}/members/${currentUser.uid}/memberships/count`;
+    const endpoint = `${baseUrl}/members/memberships/count`;
     return getRequest<number>(endpoint, currentUser.uid);
 };
 

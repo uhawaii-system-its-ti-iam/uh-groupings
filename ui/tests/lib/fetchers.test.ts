@@ -164,7 +164,7 @@ describe('fetchers', () => {
     describe('membershipResults', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await membershipResults();
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${currentUser.uid}/memberships`, {
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/memberships`, {
                 headers: { current_user: currentUser.uid }
             });
         });
@@ -202,7 +202,7 @@ describe('fetchers', () => {
     describe('getNumberOfMemberships', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getNumberOfMemberships();
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${currentUser.uid}/memberships/count`, {
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/memberships/count`, {
                 headers: { current_user: currentUser.uid }
             });
         });
