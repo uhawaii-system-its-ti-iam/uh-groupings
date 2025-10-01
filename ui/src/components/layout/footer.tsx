@@ -5,7 +5,12 @@ const Footer = () => (
         <div className="container py-2">
             <div className="grid sm:grid-cols-12">
                 <div className="mx-auto mb-6 col-span-6 md:col-span-5 lg:col-span-4">
-                    <Image src="/uhgroupings/uh-logo-system.svg" alt="UH System logo" width={235} height={235} />
+                    <Image
+                        src="/uhgroupings/uh-logo-system.svg"
+                        alt="UH System logo"
+                        width={235}
+                        height={235}
+                    />
                 </div>
                 <div className="col-span-6 md:col-span-7 lg:col-span-8 text-white">
                     <p>
@@ -14,7 +19,7 @@ const Footer = () => (
                             href="https://www.hawaii.edu/offices/eeo/policies/?policy=antidisc"
                             className="underline hover:text-gray-300"
                         >
-                            equal opportunity/affirmative action institution
+                            equal opportunity institution
                         </a>
                         .
                     </p>

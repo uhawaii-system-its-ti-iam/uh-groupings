@@ -13,7 +13,7 @@ describe('Footer', () => {
         );
         expect(
             screen.getByRole('link', {
-                name: 'equal opportunity/affirmative action institution'
+                name: 'equal opportunity institution'
             })
         ).toHaveAttribute('href', 'https://www.hawaii.edu/offices/eeo/policies/?policy=antidisc');
         expect(screen.getByRole('link', { name: 'Usage Policy' })).toHaveAttribute(
