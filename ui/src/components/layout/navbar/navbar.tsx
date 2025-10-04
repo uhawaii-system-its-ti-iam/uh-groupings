@@ -23,6 +23,7 @@ const Navbar = async () => {
                                 alt="UH Groupings Logo"
                                 width={256}
                                 height={256}
+                                className="w-[auto] h-[60px]"
                             />
                         </Link>
                         <div className="flex lg:hidden">
@@ -33,6 +34,7 @@ const Navbar = async () => {
                                     alt="UH Groupings Logo"
                                     width={56}
                                     height={56}
+                                    className="w-[56px] h-[56px]"
                                 />
                             </Link>
                         </div>
