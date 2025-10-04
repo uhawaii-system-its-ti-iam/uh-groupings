@@ -20,7 +20,7 @@ const Footer = () => (
                             href="https://www.hawaii.edu/offices/eeo/policies/?policy=antidisc"
                             className="underline hover:text-gray-300"
                         >
-                            equal opportunity/affirmative action institution
+                            equal opportunity institution
                         </a>
                         .
                     </p>
