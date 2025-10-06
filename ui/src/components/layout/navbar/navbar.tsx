@@ -21,9 +21,10 @@ const Navbar = async () => {
                             <Image
                                 src="/uhgroupings/uh-groupings-logo.svg"
                                 alt="UH Groupings Logo"
+                                priority={false}
                                 width={256}
                                 height={256}
-                                className="w-[auto] h-[60px]"
+                                className="w-[auto] h-[47px]"
                             />
                         </Link>
                         <div className="flex lg:hidden">
