@@ -14,8 +14,10 @@ export const message = {
     Tooltip: {
         OPT_IN: 'Enable the opt-in self-service so that new members can discover and join this grouping.',
         OPT_OUT: 'Enable the opt-out self-service so that members can leave at any time.',
-        SYNC_DEST: (description: string) =>
-            `This option syncs destinations to ${description}`,
+        SYNC_DEST: (description: string) => `This option syncs destinations to ${description}`,
+        SELECT_ALL_LIST: 'See tools tab to remove entire list',
+        TRASH_ICON_REMOVAL: (group: string) =>
+            `Remove member from the ${group.charAt(0).toUpperCase() + group.slice(1)} list`
     },
 
     SyncDestinations: {
@@ -28,7 +30,7 @@ export const message = {
             'destination.',
         MODAL_BODY: (synced: boolean, description: string) =>
             `Are you sure you want to ${synced ? 'disable' : 'enable'} the synchronization destination: ${description}?`,
-        MODAL_CONFIRM: 'Yes',
+        MODAL_CONFIRM: 'Yes'
     },
 
     Actions: {
@@ -64,5 +66,35 @@ export const message = {
         FEEDBACK_LINK: '/feedback',
         FEEDBACK_TEXT2: 'Feedback',
         CLOSE_TEXT: 'OK',
-    }
+    },
+
+    RemoveMemberModals: {
+        ALERT_DESCRIPTION:
+            'Membership changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases changes may take several hours to be fully processed, depending on the number of members and the synchronization destination.',
+        TOOLTIP: {
+            NO_UID_SINGLE: 'This member does not have a UH username.',
+            NO_UID_MULTIPLE: 'This person does not have a UH username.'
+        }
+    },
+
+    ListManagement: {
+        ERROR: {
+            EMPTY_INPUT: 'You must enter a UH member to add or remove.',
+            INVALID_TEXT_INPUTS: 'Input must contain only alphanumeric characters, separated by commas or spaces.',
+            CONTAINS_MEMBERS_NOT_IN_LIST: `Member(s) not in the list: `,
+            DUPLICATE_MEMBERS_INPUT: `Duplicate member(s) in the input: `,
+            NO_VALID_MEMBERS_TO_REMOVE: `The members you've attempted to remove do not exist.`
+        }
+    },
+
+    AdminTable: {
+        SUCCESS: {
+            ADD_TITLE: 'Add Member',
+            REMOVE_TITLE: 'Remove Member',
+            ADD_BODY: (name: string) =>
+                `${name} has been successfully added to the admins list.`,
+            REMOVE_BODY: (name: string) =>
+                `${name} has been successfully removed from the admins list.`
+        }
+    },
 };
