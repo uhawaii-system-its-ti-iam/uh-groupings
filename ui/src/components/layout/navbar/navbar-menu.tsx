@@ -31,7 +31,9 @@ const NavbarMenu = ({ currentUser }: { currentUser: User }) => {
                 <nav className="container flex flex-col space-y-5 h-1/4">
                     {NavbarLinks.filter(
                         (navbarLink) =>
-                            currentUser?.roles.includes(Role.ADMIN) || currentUser?.roles.includes(navbarLink.role)
+                            navbarLink.role === Role.ANONYMOUS ||                // 👈 所有人都能看到
+                            currentUser?.roles.includes(Role.ADMIN) ||           // admin sees all
+                            currentUser?.roles.includes(navbarLink.role)         // user sees their own)
                     ).map((navbarLink) => (
                         <Link href={navbarLink.link} key={navbarLink.name} className="hover:text-uh-teal">
                             {navbarLink.name}
