@@ -1,3 +1,5 @@
+'use client';
+
 import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -5,11 +7,18 @@ import { memberAttributeResults } from '@/lib/actions';
 import AddMemberModal from '@/components/modal/add-member-modal';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { addAdmin } from '@/lib/actions';
 import { useState } from 'react';
-import { MemberResult } from '@/lib/types';
+import { GroupingGroupMember, MemberResult } from '@/lib/types';
 
-const AddAdmin = ({ uids, uhUuids }: { uids: string[]; uhUuids: string[] }) => {
+const AddAdmin = ({
+                      uids,
+                      uhUuids,
+                      onOptimisticAdd,
+                  }: {
+    uids: string[];
+    uhUuids: string[];
+    onOptimisticAdd: (newAdmin: GroupingGroupMember) => void;
+}) => {
     const { register, getValues, reset } = useForm<{ uhIdentifier: string }>();
     const [isSelectedUser, setSelectedUser] = useState<MemberResult | null>(null);
     const [isError, setError] = useState('');
@@ -28,16 +37,10 @@ const AddAdmin = ({ uids, uhUuids }: { uids: string[]; uhUuids: string[] }) => {
             setError(validationError);
             return;
         }
-
         setError('');
-
         const data = await memberAttributeResults([identifier]);
-
-        if (data?.results?.length) {
-            setSelectedUser(data.results[0]);
-        } else {
-            setError('No valid user data found');
-        }
+        if (data?.results?.length) setSelectedUser(data.results[0]);
+        else setError('No valid user data found');
     };
 
     return (
@@ -73,17 +76,29 @@ const AddAdmin = ({ uids, uhUuids }: { uids: string[]; uhUuids: string[] }) => {
                     <AlertDescription>{isError}</AlertDescription>
                 </Alert>
             )}
+
             {isSelectedUser && (
                 <AddMemberModal
                     uid={isSelectedUser.uid}
                     name={isSelectedUser.name}
                     uhUuid={isSelectedUser.uhUuid}
-                    group={'admins'}
-                    action={addAdmin}
-                    onClose={() => {
+                    group="admins"
+                    action={async () => {
+                        const optimisticAdmin: GroupingGroupMember = {
+                            resultCode: 'SUCCESS',
+                            uid: isSelectedUser.uid,
+                            name: isSelectedUser.name,
+                            uhUuid: isSelectedUser.uhUuid,
+                            firstName: isSelectedUser.firstName,
+                            lastName: isSelectedUser.lastName,
+                        };
+                        await onOptimisticAdd(optimisticAdmin);
+                    }}
+                    onClose={() => setSelectedUser(null)}
+                    onSuccess={() => {
+                        reset();
                         setSelectedUser(null);
                     }}
-                    onSuccess={() => reset()}
                 />
             )}
         </form>
