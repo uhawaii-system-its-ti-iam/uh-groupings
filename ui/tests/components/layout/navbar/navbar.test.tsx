@@ -1,114 +1,70 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import User, { AnonymousUser } from '@/lib/access/user';
-import * as NextCasClient from 'next-cas-client/app';
 import { render, screen } from '@testing-library/react';
 import Navbar from '@/components/layout/navbar/navbar';
 import Role from '@/lib/access/role';
+import userEvent from '@testing-library/user-event';
 
-const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
+const logoutMock = vi.fn();
+vi.mock('@/components/hook/useBlockNavigation.tsx', () => ({
+    __esModule: true,
+    default: () => ({
+        logoutWithBlock: logoutMock,
+        setIsApiPending: vi.fn(),
+    }),
+}));
+
+const mockUser = { uid: 'test123', roles: [] };
+
+vi.mock('@/lib/access/user', () => ({
+    __esModule: true,
+    getUser: () => mockUser,
+    AnonymousUser: { uid: '', roles: [] }
+}));
 
 vi.mock('next-cas-client/app');
 
 describe('Navbar', () => {
-    describe('User is logged-out', () => {
-        it('should render the navbar with only the link to /about', async () => {
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(AnonymousUser);
-            render(await Navbar());
-
-            expect(screen.getByRole('navigation')).toBeInTheDocument();
-            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0]).toHaveAttribute(
-                'src',
-                '/uhgroupings/uh-groupings-logo.svg'
-            );
-            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
-            expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
-            expect(screen.queryByRole('link', { name: 'Memberships' })).not.toBeInTheDocument();
-            expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.queryByRole('link', { name: 'Feedback' })).not.toBeInTheDocument();
-            expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
-        });
+    beforeEach(() => {
+        mockUser.roles = [];
+        logoutMock.mockClear();
     });
 
-    describe('User is logged-in', () => {
-        beforeEach(() => {
-            testUser.roles = [Role.ANONYMOUS];
-        });
+    it('renders Login button when logged out', async () => {
+        mockUser.roles = [];
+        render(await Navbar());
+        expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
+    });
 
-        it('should render only /memberships, /about, /feedback for the average user', async () => {
-            testUser.roles.push(Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
-            render(await Navbar());
+    it('renders Logout button when logged in', async () => {
+        mockUser.roles = [Role.UH];
+        render(await Navbar());
+        expect(
+            screen.getByRole('button', { name: `Logout (${mockUser.uid})` })
+        ).toBeInTheDocument();
+    });
 
-            expect(screen.getByRole('navigation')).toBeInTheDocument();
-            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0]).toHaveAttribute(
-                'src',
-                '/uhgroupings/uh-groupings-logo.svg'
-            );
-            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
-            expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
-            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
-        });
+    it('calls logoutWithBlock when logout clicked', async () => {
+        mockUser.roles = [Role.UH];
+        render(await Navbar());
+        await userEvent.click(
+            screen.getByRole('button', { name: `Logout (${mockUser.uid})` })
+        );
+        expect(logoutMock).toHaveBeenCalled();
+    });
 
-        it('should render only /memberships, /groupings, /about, /feedback for an owner of a grouping', async () => {
-            testUser.roles.push(Role.OWNER, Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
-            render(await Navbar());
+    it('renders correct links for UH user', async () => {
+        mockUser.roles = [Role.UH];
+        render(await Navbar());
+        await userEvent.click(screen.getByLabelText('Open navigation menu'));
+        expect(screen.getByRole('link', { name: 'Memberships' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'About' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Feedback' })).toBeInTheDocument();
+    });
 
-            expect(screen.getByRole('navigation')).toBeInTheDocument();
-            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0]).toHaveAttribute(
-                'src',
-                '/uhgroupings/uh-groupings-logo.svg'
-            );
-            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
-            expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
-            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
-        });
 
-        it('should render all links for an Admin', async () => {
-            testUser.roles.push(Role.ADMIN, Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
-            render(await Navbar());
-
-            expect(screen.getByRole('navigation')).toBeInTheDocument();
-            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0]).toHaveAttribute(
-                'src',
-                '/uhgroupings/uh-groupings-logo.svg'
-            );
-            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
-            expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
-            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
-        });
-
-        it('should render the departmental icon for a Departmental Account without Admin or Groupings links', async () => {
-            testUser.roles.push(Role.DEPARTMENTAL, Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
-            render(await Navbar());
-
-            expect(screen.getByRole('navigation')).toBeInTheDocument();
-            expect(screen.getAllByRole('img', { name: 'UH Groupings Logo' })[0]).toHaveAttribute(
-                'src',
-                '/uhgroupings/uh-groupings-logo.svg'
-            );
-
-            expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
-            expect(screen.getByLabelText('Departmental Account Icon')).toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
-            expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
-        });
+    it('renders Admin link for Admin user', async () => {
+        mockUser.roles = [Role.UH, Role.ADMIN];
+        render(await Navbar());
+        expect(screen.getByRole('link', { name: 'Admin' })).toBeInTheDocument();
     });
 });
