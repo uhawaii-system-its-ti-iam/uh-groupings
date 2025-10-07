@@ -20,19 +20,27 @@ const mockMember = {
     name: 'test-name'
 };
 
+const mockOnOptimisticAdd = vi.fn();
+
 describe('AddAdmin', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
     it('renders the input field and Add button', () => {
-        render(<AddAdmin uids={['test-uid']} uhUuids={['test-uhUuid']} />);
+        render(
+            <AddAdmin
+                uids={['test-uid']}
+                uhUuids={['test-uhUuid']}
+                onOptimisticAdd={mockOnOptimisticAdd}
+            />
+        );
         expect(screen.getByPlaceholderText('UH Username or UH Number')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /add/i })).toBeInTheDocument();
     });
 
     it('displays validation error when input field is empty', async () => {
-        render(<AddAdmin uids={[]} uhUuids={[]} />);
+        render(<AddAdmin uids={[]} uhUuids={[]} onOptimisticAdd={mockOnOptimisticAdd} />);
         fireEvent.click(screen.getByRole('button', { name: /add/i }));
         await waitFor(() => {
             expect(screen.getByText(/You must enter a UH member to search/i)).toBeInTheDocument();
@@ -40,7 +48,7 @@ describe('AddAdmin', () => {
     });
 
     it('displays validation error when multiple entries are provided', async () => {
-        render(<AddAdmin uids={[]} uhUuids={[]} />);
+        render(<AddAdmin uids={[]} uhUuids={[]} onOptimisticAdd={mockOnOptimisticAdd} />);
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), {
             target: { value: 'test-uid-1, test-uid-2' }
         });
@@ -51,7 +59,13 @@ describe('AddAdmin', () => {
     });
 
     it('displays error message when entered user is already an admin', async () => {
-        render(<AddAdmin uids={['test-uid']} uhUuids={['test-uhUuid']} />);
+        render(
+            <AddAdmin
+                uids={['test-uid']}
+                uhUuids={['test-uhUuid']}
+                onOptimisticAdd={mockOnOptimisticAdd}
+            />
+        );
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), {
             target: { value: mockMember.uid }
         });
@@ -64,7 +78,7 @@ describe('AddAdmin', () => {
     it('displays error message when entered user cannot be found', async () => {
         (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [] });
 
-        render(<AddAdmin uids={[]} uhUuids={[]} />);
+        render(<AddAdmin uids={[]} uhUuids={[]} onOptimisticAdd={mockOnOptimisticAdd} />);
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), {
             target: { value: mockMember.uid }
         });
@@ -77,7 +91,7 @@ describe('AddAdmin', () => {
     it('displays the confirmation modal when a valid user is found', async () => {
         (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [mockMember] });
 
-        render(<AddAdmin uids={[]} uhUuids={[]} />);
+        render(<AddAdmin uids={[]} uhUuids={[]} onOptimisticAdd={mockOnOptimisticAdd} />);
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), {
             target: { value: mockMember.uid }
         });
@@ -91,7 +105,7 @@ describe('AddAdmin', () => {
     it('closes the confirmation modal when cancel action is triggered', async () => {
         (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [mockMember] });
 
-        render(<AddAdmin uids={[]} uhUuids={[]} />);
+        render(<AddAdmin uids={[]} uhUuids={[]} onOptimisticAdd={mockOnOptimisticAdd} />);
 
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), { target: { value: mockMember.uid } });
         fireEvent.click(screen.getByRole('button', { name: /add/i }));
@@ -103,7 +117,7 @@ describe('AddAdmin', () => {
     it('resets the input field after a user is successfully added as admin', async () => {
         (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [mockMember] });
 
-        render(<AddAdmin uids={[]} uhUuids={[]} />);
+        render(<AddAdmin uids={[]} uhUuids={[]} onOptimisticAdd={mockOnOptimisticAdd} />);
 
         const input = screen.getByPlaceholderText(/UH Username/i);
         fireEvent.change(input, { target: { value: mockMember.uid } });
