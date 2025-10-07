@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import {
     AlertDialog,
@@ -37,7 +39,7 @@ const RemoveMemberModal = ({
             <AlertDialogTrigger asChild>
                 <Trash2Icon
                     data-testid="remove-member-icon"
-                    className="h-4 w-4 text-red-600"
+                    className="h-4 w-4 text-red-600 cursor-pointer"
                     onClick={() => setOpen(true)}
                 />
             </AlertDialogTrigger>
@@ -80,8 +82,8 @@ const RemoveMemberModal = ({
                 <div className="px-3">
                     <Alert className="bg-yellow-100 border border-yellow-200 mb-2">
                         <AlertDescription>
-                            Membership changes made may not take effect immediately. Usually, 3-5 minutes should be
-                            anticipated. In extreme cases changes may take several hours to be fully processed,
+                            Membership changes made may not take effect immediately. Usually, 3–5 minutes should be
+                            anticipated. In extreme cases, changes may take several hours to be fully processed,
                             depending on the number of members and the synchronization destination.
                         </AlertDescription>
                     </Alert>
@@ -89,7 +91,7 @@ const RemoveMemberModal = ({
                 <AlertDialogFooter>
                     <Button
                         onClick={() => {
-                            action(uid);
+                            action();
                             router.refresh();
                             setOpen(false);
                         }}
