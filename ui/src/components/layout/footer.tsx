@@ -10,6 +10,7 @@ const Footer = () => (
                         alt="UH System logo"
                         width={235}
                         height={235}
+                        className="w-[auto] h-[80px]"
                     />
                 </div>
                 <div className="col-span-6 md:col-span-7 lg:col-span-8 text-white">
