@@ -32,6 +32,7 @@ const Navbar = async () => {
                             <Link href="/">
                                 <Image
                                     src="/uhgroupings/uh-groupings-logo-large.svg"
+                                    priority={true}
                                     alt="UH Groupings Logo"
                                     width={56}
                                     height={56}
