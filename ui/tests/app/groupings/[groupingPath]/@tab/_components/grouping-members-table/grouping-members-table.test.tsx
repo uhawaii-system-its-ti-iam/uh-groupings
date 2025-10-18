@@ -417,35 +417,37 @@ describe('GroupingMembersTable', () => {
             //     expect(modal).toHaveTextContent('Remove Member');
             // });
 
-            // it('should open RemoveMemberModal with correct member when trash icon is clicked', async () => {
-            //     const user = userEvent.setup();
-            //     render(
-            //         <GroupingMembersTable
-            //             groupingGroupMembers={mockGroupingGroupMembers}
-            //             groupingPath={groupingPath}
-            //             group="include"
-            //         />,
-            //         { wrapper: createMockProviders() }
-            //     );
-            //
-            //     // click the trash icon
-            //     const trashIconButton = screen.getAllByRole('button', { name: /remove member/i })[0];
-            //     await user.click(trashIconButton);
-            //
-            //     // log the first members's name
-            //     console.log('First member name:', mockGroupingGroupMembers.members[0].name);
-            //
-            //     // expect modal to show
-            //     const modal = await screen.findByTestId('remove-member-modal');
-            //     expect(modal).toBeVisible();
-            //     expect(within(modal).getByText('Remove Member')).toBeInTheDocument();
-            //
-            //     // expect to show the current user's name to shwo
-            //     const firstMember = mockGroupingGroupMembers.members[0];
-            //     expect(within(modal).getByText(firstMember.name)).toBeInTheDocument();
-            //     expect(within(modal).getByText(firstMember.uhUuid)).toBeInTheDocument();
-            //     expect(within(modal).getByText(firstMember.uid)).toBeInTheDocument();
-            // });
+            it('should open RemoveMemberModal with correct member when trash icon is clicked', async () => {
+                const user = userEvent.setup();
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group="include"
+                    />,
+                    { wrapper: createMockProviders() }
+                );
+
+                // click the trash icon
+                const trashIconButton = screen.getAllByRole('button', { name: /remove member/i })[0];
+                await fireEvent.click(trashIconButton);
+
+                // expect modal to show
+                await waitFor(() => {
+                    // expect(screen.getByTestId('remove-member-modal')).toBeInTheDocument();
+                    const modal = screen.getByTestId('remove-member-modal');
+                    expect(modal).toBeInTheDocument();
+
+                    //expect title:
+                    expect(within(modal).getByText('Remove Member')).toBeInTheDocument();
+
+                    // expect matching names of member to remove
+                    const firstMember = mockGroupingGroupMembers.members[0];
+                    expect(within(modal).getAllByText(firstMember.name)[0]).toBeInTheDocument();
+                    expect(within(modal).getAllByText(firstMember.uhUuid)[0]).toBeInTheDocument();
+                    expect(within(modal).getAllByText(firstMember.uid)[0]).toBeInTheDocument();
+                });
+            });
 
             // it('should display the correct tooltip content on hover over the trash icon', async () => {
             //     const user = userEvent.setup();
@@ -468,6 +470,36 @@ describe('GroupingMembersTable', () => {
             //     expect(tooltipContent).toBeVisible();
             //     expect(tooltipContent).toHaveTextContent(message.Tooltip.TRASH_ICON_REMOVAL('include'));
             // });
+        });
+    });
+
+    describe('RemoveMemberModal', () => {
+        it('should close the remove member modal when cancel action is triggered', async () => {
+            //open remove member modal through click of trash icon
+            const user = userEvent.setup();
+            render(
+                <GroupingMembersTable
+                    groupingGroupMembers={mockGroupingGroupMembers}
+                    groupingPath={groupingPath}
+                    group="include"
+                />,
+                { wrapper: createMockProviders() }
+            );
+
+            const trashIconButton = screen.getAllByRole('button', { name: /remove member/i })[0];
+            await fireEvent.click(trashIconButton);
+
+            // expect modal to show
+            await waitFor(() => {
+                const modal = screen.getByTestId('remove-member-modal');
+                expect(modal).toBeInTheDocument();
+
+                // Click the modal close button
+                fireEvent.click(within(modal).getByTestId('modal-close-button'));
+
+                // Expect the modal to be closed
+                expect(screen.queryByTestId('remove-member-modal')).not.toBeInTheDocument();
+            });
         });
     });
 

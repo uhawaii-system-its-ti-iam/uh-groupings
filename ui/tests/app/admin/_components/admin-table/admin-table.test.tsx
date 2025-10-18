@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import AdminTable from '@/app/admin/_components/admin-table/admin-table';
 import userEvent from '@testing-library/user-event';
 
@@ -144,5 +144,32 @@ describe('AdminTable', () => {
             mockData.members.length - pageSize * 2,
             mockData.members.length - pageSize - 1
         );
+    });
+
+    // Trash icon test
+    describe('Trash Icon', () => {
+        it('should display trash icon in atleast 1 row', async () => {
+            render(<AdminTable groupingGroupMembers={mockData} />);
+            const trashIcons = await screen.findAllByRole('button', { name: /remove admin/i });
+            expect(trashIcons.length).toBeGreaterThan(0);
+        });
+
+        it('should open RemoveMemberModal with the correct member when trash icon is clicked', async () => {
+            render(<AdminTable groupingGroupMembers={mockData} />);
+            const trashIcons = await screen.findAllByRole('button', { name: /remove admin/i });
+            await fireEvent.click(trashIcons[0]);
+
+            await waitFor(() => {
+                const modal = screen.getByTestId('remove-member-modal');
+                expect(modal).toBeInTheDocument();
+
+                expect(within(modal).getByText('Remove Member')).toBeInTheDocument();
+
+                const firstMember = mockData.members[0];
+                expect(within(modal).getAllByText(firstMember.name)).toHaveLength(2);
+                expect(within(modal).getByText(firstMember.uid)).toBeInTheDocument();
+                expect(within(modal).getByText(firstMember.uhUuid)).toBeInTheDocument();
+            });
+        });
     });
 });
