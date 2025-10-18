@@ -70,6 +70,7 @@ const RemoveMemberModal = ({
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
             <AlertDialogContent
+                data-testid="remove-member-modal"
                 className="max-w-[484px] sm:max-w-[500px] max-h-[90vh] rounded flex flex-col"
                 onInteractOutside={(e) => e.preventDefault()}
                 onCloseAutoFocus={(e) => {
@@ -164,7 +165,11 @@ const RemoveMemberModal = ({
                     <AlertDialogAction onClick={handleRemoveMember} className="!h-[47px] !w-[50px]">
                         Yes
                     </AlertDialogAction>
-                    <AlertDialogCancel onClick={onClose} className="mt-0 !h-[47px] !w-[72px]">
+                    <AlertDialogCancel
+                        onClick={onClose}
+                        data-testid="modal-close-button"
+                        className="mt-0 !h-[47px] !w-[72px]"
+                    >
                         Cancel
                     </AlertDialogCancel>
                 </AlertDialogFooter>
