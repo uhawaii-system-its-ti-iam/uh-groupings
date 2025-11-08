@@ -91,7 +91,7 @@ const GroupingMembersTableColumns = (
                                             aria-label="Remove Member"
                                             className="text-red-500 hover:text-red-700"
                                         >
-                                            <Trash2Icon className="h-4 w-4" />
+                                            <Trash2Icon className="h-4 w-4" data-testid="remove-member-trash-icon" />
                                         </button>
                                     </span>
                                 </TooltipTrigger>
