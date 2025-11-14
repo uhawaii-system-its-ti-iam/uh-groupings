@@ -30,9 +30,8 @@ export const getAnnouncements = (): Promise<Announcements> => {
  * @returns The promise of the grouping description
  */
 export const groupingDescription = async (groupingPath: string): Promise<GroupingDescription> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/description`;
-    return getRequest<GroupingDescription>(endpoint, currentUser.uid);
+    return getRequest<GroupingDescription>(endpoint);
 };
 
 /**
@@ -43,9 +42,8 @@ export const groupingDescription = async (groupingPath: string): Promise<Groupin
  * @returns The promise of the grouping sync destinations
  */
 export const groupingSyncDest = async (groupingPath: string): Promise<GroupingSyncDestinations> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/groupings-sync-destinations`;
-    return getRequest<GroupingSyncDestinations>(endpoint, currentUser.uid);
+    return getRequest<GroupingSyncDestinations>(endpoint);
 };
 
 /**
@@ -56,9 +54,8 @@ export const groupingSyncDest = async (groupingPath: string): Promise<GroupingSy
  * @returns The promise of the grouping opt attributes
  */
 export const groupingOptAttributes = async (groupingPath: string): Promise<GroupingOptAttributes> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attributes`;
-    return getRequest<GroupingOptAttributes>(endpoint, currentUser.uid);
+    return getRequest<GroupingOptAttributes>(endpoint);
 };
 
 /**
@@ -67,9 +64,8 @@ export const groupingOptAttributes = async (groupingPath: string): Promise<Group
  * @returns The promise of the grouping admins
  */
 export const groupingAdmins = async (): Promise<GroupingGroupMembers> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/admins`;
-    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
+    return getRequest<GroupingGroupMembers>(endpoint);
 };
 
 /**
@@ -78,9 +74,8 @@ export const groupingAdmins = async (): Promise<GroupingGroupMembers> => {
  * @returns The promise of all the grouping paths
  */
 export const getAllGroupings = async (): Promise<GroupingPaths> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings`;
-    return getRequest<GroupingPaths>(endpoint, currentUser.uid);
+    return getRequest<GroupingPaths>(endpoint);
 };
 
 /**
@@ -89,9 +84,8 @@ export const getAllGroupings = async (): Promise<GroupingPaths> => {
  * @returns The promise of the membership results
  */
 export const membershipResults = async (): Promise<MembershipResults> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/members/memberships`;
-    return getRequest<MembershipResults>(endpoint, currentUser.uid);
+    return getRequest<MembershipResults>(endpoint);
 };
 
 /**
@@ -102,9 +96,8 @@ export const membershipResults = async (): Promise<MembershipResults> => {
  * @returns The promise of the membership results
  */
 export const managePersonResults = async (uhIdentifier: string): Promise<MembershipResults> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/members/${uhIdentifier}/groupings`;
-    return getRequest<MembershipResults>(endpoint, currentUser.uid);
+    return getRequest<MembershipResults>(endpoint);
 };
 
 /**
@@ -113,9 +106,8 @@ export const managePersonResults = async (uhIdentifier: string): Promise<Members
  * @returns The promise of the number of memberships
  */
 export const getNumberOfMemberships = async (): Promise<number> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/members/memberships/count`;
-    return getRequest<number>(endpoint, currentUser.uid);
+    return getRequest<number>(endpoint);
 };
 
 /**
@@ -126,7 +118,19 @@ export const getNumberOfMemberships = async (): Promise<number> => {
 export const optInGroupingPaths = async (): Promise<GroupingPaths> => {
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`;
-    return getRequest<GroupingPaths>(endpoint, currentUser.uid);
+    return getRequest<GroupingPaths>(endpoint);
+};
+
+/**
+ * Get a list of owners in the current path.
+ *
+ * @param groupingPath - The path of the grouping
+ *
+ * @returns The promise of the grouping group members
+ */
+export const groupingOwners = async (groupingPath: string): Promise<GroupingGroupMembers> => {
+    const endpoint = `${baseUrl}/grouping/${groupingPath}/owners`;
+    return getRequest<GroupingGroupMembers>(endpoint);
 };
 
 /**
@@ -135,9 +139,8 @@ export const optInGroupingPaths = async (): Promise<GroupingPaths> => {
  * @returns The promise of the grouping paths
  */
 export const ownerGroupings = async (): Promise<GroupingPaths> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/owners/groupings`;
-    return getRequest<GroupingPaths>(endpoint, currentUser.uid);
+    return getRequest<GroupingPaths>(endpoint);
 };
 
 /**
@@ -146,9 +149,8 @@ export const ownerGroupings = async (): Promise<GroupingPaths> => {
  * @returns The promise of the number of groupings
  */
 export const getNumberOfGroupings = async (): Promise<number> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/owners/groupings/count`;
-    return getRequest<number>(endpoint, currentUser.uid);
+    return getRequest<number>(endpoint);
 };
 
 /**
@@ -160,9 +162,8 @@ export const getNumberOfGroupings = async (): Promise<number> => {
  * @returns The promise of true if uhIdentifier is the sole owner of a grouping
  */
 export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): Promise<boolean> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`;
-    return getRequest<boolean>(endpoint, currentUser.uid);
+    return getRequest<boolean>(endpoint);
 };
 
 /**
@@ -174,7 +175,7 @@ export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): P
  */
 export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${uhIdentifier}/is-owner`;
-    return getRequest<boolean>(endpoint, uhIdentifier);
+    return getRequest<boolean>(endpoint);
 };
 
 /**
@@ -187,7 +188,7 @@ export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
  */
 export const isGroupingOwner = async (groupingPath: string, uhIdentifier: string): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${groupingPath}/${uhIdentifier}/is-owner`;
-    return getRequest<boolean>(endpoint, uhIdentifier);
+    return getRequest<boolean>(endpoint);
 };
 
 /**
@@ -199,7 +200,7 @@ export const isGroupingOwner = async (groupingPath: string, uhIdentifier: string
  */
 export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${uhIdentifier}/is-admin`;
-    return getRequest<boolean>(endpoint, uhIdentifier);
+    return getRequest<boolean>(endpoint);
 };
 
 /**
@@ -210,7 +211,6 @@ export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
  * @returns True if the path of the grouping is valid.
  */
 export const groupingPathIsValid = async (groupingPath: string): Promise<boolean> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/grouping/${groupingPath}/is-valid`;
-    return getRequest<boolean>(endpoint, currentUser.uid);
+    return getRequest<boolean>(endpoint);
 };
