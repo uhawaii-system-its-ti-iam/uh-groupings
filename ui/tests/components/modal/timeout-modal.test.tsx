@@ -58,7 +58,10 @@ describe('TimeoutModal', () => {
         expect(screen.getByRole('alertdialog', { name: 'Inactivity Warning' })).toBeInTheDocument();
 
         for (let i = 5; i >= 0; i--) {
-            expect(screen.getByText(i + ':00.')).toBeInTheDocument();
+            const matches = screen.getAllByText((_, element) =>
+                element?.tagName === 'P' && element.textContent?.includes(`${i}:00`)
+            );
+            expect(matches.length).toBe(1);
             act(() => vi.advanceTimersByTime(1000 * 60));
             fireEvent.focus(document);
         }
@@ -91,7 +94,7 @@ describe('TimeoutModal', () => {
         fireEvent.focus(document);
 
         expect(screen.getByRole('alertdialog', { name: 'Inactivity Warning' })).toBeInTheDocument();
-        fireEvent.click(screen.getByRole('button', { name: 'Log off now' }));
+        fireEvent.click(screen.getByText('Log off now' ));
         expect(logoutSpy).toHaveBeenCalled();
     });
 

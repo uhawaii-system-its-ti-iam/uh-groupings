@@ -2,6 +2,7 @@ import { managePersonResults } from '@/lib/fetchers';
 import PersonTable from '@/app/admin/_components/person-table/person-table';
 import { memberAttributeResults } from '@/lib/actions';
 
+<<<<<<< HEAD
 const PersonTab = async ({ searchParams }: { uhIdentifier: string }) => {
     const uhIdentifier = searchParams.uhIdentifier;
     const membershipResults = await managePersonResults(uhIdentifier);
@@ -9,6 +10,18 @@ const PersonTab = async ({ searchParams }: { uhIdentifier: string }) => {
         uhIdentifier === undefined ? undefined : (await memberAttributeResults([uhIdentifier])).results[0];
     const showWarning =
         (membershipResults.resultCode === 'FAILURE' && uhIdentifier !== undefined) ||
+=======
+const PersonTab = async ({ searchParams }: { searchParams: { uhIdentifier?: string } }) => {
+    const uhIdentifier = searchParams.uhIdentifier ?? '';
+    const membershipResults = JSON.parse(JSON.stringify(await managePersonResults(uhIdentifier)));
+    let memberResult = undefined;
+    if (uhIdentifier) {
+        const rawMemberResult = (await memberAttributeResults([uhIdentifier])).results[0];
+        memberResult = rawMemberResult ? JSON.parse(JSON.stringify(rawMemberResult)) : undefined;
+    }
+    const showWarning =
+        (membershipResults.resultCode === 'FAILURE' && uhIdentifier !== '') ||
+>>>>>>> dev-rpirnia-1761
         (membershipResults.resultCode === undefined && uhIdentifier !== '') ||
         uhIdentifier === '';
 

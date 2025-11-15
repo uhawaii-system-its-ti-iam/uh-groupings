@@ -10,8 +10,8 @@ const PersonTableSkeleton = () => {
             <Table className="mb-4">
                 <TableHeader>
                     <TableRow>
-                        {PersonTableColumns.map((column) => (
-                            <TableHead key={`header-${column}`} className={`pl-[0.5rem]`}>
+                        {PersonTableColumns.map((column, i) => (
+                            <TableHead key={`header-${column}-${i}`} className={`pl-[0.5rem]`}>
                                 <Skeleton className="h-5 w-20 rounded-[0.25rem]" />
                             </TableHead>
                         ))}
@@ -20,8 +20,8 @@ const PersonTableSkeleton = () => {
                 <TableBody>
                     {Array.from(Array(pageSize), (_, index) => (
                         <TableRow key={index}>
-                            {PersonTableColumns.map((column) => (
-                                <TableCell key={`header-${column}`} className={`p-[0.5rem]`}>
+                            {PersonTableColumns.map((column, j) => (
+                                <TableCell key={`header-${column}-${j}\``} className={`p-[0.5rem]`}>
                                     <Skeleton
                                         className={`h-5 ${column.header === 'Grouping' ? 'w-96' : 'ms-5 w-1/4'}
                                         rounded-[0.25rem]`}

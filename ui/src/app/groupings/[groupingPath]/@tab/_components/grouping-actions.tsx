@@ -201,6 +201,7 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                                 {message.Actions.MODAL_CONFIRM}
                             </span>
                         ]}
+                        closeText={message.Preferences.MODAL_CANCEL}
                         onClose={closeResetGroupModal}
                     />
                 )}
@@ -224,7 +225,7 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                         open={isDynamicModalOpen}
                         title={message.Actions.MODAL_INFO_TITLE}
                         body={dynamicModalContent}
-                        closeText={message.Preferences.MODAL_CLOSE}
+                        buttons={[<span key="stay" onClick={close}>OK</span>]}
                         onClose={closeDynamicModal}
                     />
                 )}

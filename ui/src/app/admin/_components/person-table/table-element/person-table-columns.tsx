@@ -1,11 +1,13 @@
 const PersonTableColumns = [
     {
+        id: 'name',
         header: 'Grouping',
         accessorKey: 'name',
         enableHiding: false,
         sortDescFirst: true
     },
     {
+        id: 'inOwner',
         header: 'Owner?',
         accessorKey: 'inOwner',
         enableSorting: false,
@@ -16,6 +18,7 @@ const PersonTableColumns = [
         )
     },
     {
+        id: 'inBasisAndInclude',
         header: 'Basis?',
         accessorKey: 'inBasisAndInclude',
         enableSorting: false,
@@ -28,6 +31,7 @@ const PersonTableColumns = [
         )
     },
     {
+        id: 'inInclude',
         header: 'Include?',
         accessorKey: 'inInclude',
         enableSorting: false,
@@ -40,6 +44,7 @@ const PersonTableColumns = [
         )
     },
     {
+        id: 'inExclude',
         header: 'Exclude?',
         accessorKey: 'inExclude',
         enableSorting: false,
@@ -52,8 +57,8 @@ const PersonTableColumns = [
         )
     },
     {
+        id: 'remove-checkbox',
         header: 'Remove',
-        accessorKey: 'remove',
         enableSorting: false,
         cell: ({ row }) => (
             <div className="ml-3">

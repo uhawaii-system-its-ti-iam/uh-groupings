@@ -52,7 +52,7 @@ const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGr
                     <GlobalFilter placeholder={'Filter Admins...'} filter={globalFilter} setFilter={setGlobalFilter} />
                 </div>
             </div>
-            <Table className="table-fixed">
+            <Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -60,7 +60,6 @@ const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGr
                                 <TableHead
                                     key={header.id}
                                     onClick={header.column.getToggleSortingHandler()}
-                                    className={`w-1/3`}
                                 >
                                     <div className="flex items-center">
                                         {flexRender(header.column.columnDef.header, header.getContext())}
@@ -77,7 +76,6 @@ const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGr
                             {row.getVisibleCells().map((cell) => (
                                 <TableCell
                                     key={cell.id}
-                                    className={`${cell.column.getIndex() > 0 ? 'hidden sm:table-cell' : ''}`}
                                 >
                                     <div className={`flex items-center px-2 py-1 overflow-hidden whitespace-nowrap`}>
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

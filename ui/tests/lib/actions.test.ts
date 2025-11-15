@@ -29,7 +29,8 @@ import {
     sendFeedback,
     sendStackTrace,
     updateDescription,
-    getGroupingMembers
+    getGroupingMembers,
+    getNumberOfDirectOwners
 } from '@/lib/actions';
 import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
@@ -897,6 +898,25 @@ describe('actions', () => {
         it('should handle the error response', async () => {
             fetchMock.mockRejectOnce(() => Promise.reject(mockError));
             expect(await getGroupingMembersWhereListed(groupingPath, uhIdentifiers)).toEqual(mockError);
+        });
+    });
+
+    describe('getNumberOfDirectOwners', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await getNumberOfDirectOwners(groupingPath);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${groupingPath}/owners/count`, {
+                headers: { current_user: currentUser.uid }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await getNumberOfDirectOwners(groupingPath)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await getNumberOfDirectOwners(groupingPath)).toEqual(mockError);
         });
     });
 });

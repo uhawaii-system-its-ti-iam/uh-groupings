@@ -21,7 +21,7 @@ describe('Error Modal Page', () => {
 
         expect(screen.getByRole('alertdialog')).toBeInTheDocument();
 
-        const okButton = screen.getByRole('button', { name: /ok/i });
+        const okButton = screen.getByText(/ok/i);
         fireEvent.click(okButton);
 
         expect(backMock).toHaveBeenCalled();

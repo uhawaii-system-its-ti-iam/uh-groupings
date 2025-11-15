@@ -3,8 +3,8 @@
 import {
     AlertDialog,
     AlertDialogHeader,
-    AlertDialogDescription,
     AlertDialogContent,
+    AlertDialogDescription,
     AlertDialogTitle,
     AlertDialogFooter,
     AlertDialogCancel
@@ -18,26 +18,26 @@ const DynamicModal = ({
     body,
     warning,
     buttons,
-    closeText = 'Cancel',
+    closeText,
     onClose
 }: {
     open: boolean;
     title: string;
-    body: string | ReactNode;
+    body: React.ReactNode;
     warning?: string;
     buttons?: ReactNode[];
     closeText?: string;
     onClose: () => void;
 }) => {
     return (
-        <AlertDialog open={open} className="max-w-[90vw] sm:max-w-[500px] max-h-[80vh]">
+        <AlertDialog open={open}>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
-                    <AlertDialogDescription>{body}</AlertDialogDescription>
+                    <AlertDialogDescription className="newline">{body}</AlertDialogDescription>
                     {warning && (
-                        <AlertDialogDescription>
-                            <div className="bg-yellow-100 border border-yellow-200 p-3 rounded-md ml-2.5">
+                        <AlertDialogDescription asChild>
+                            <div className="bg-yellow-100 border border-yellow-200 p-3 rounded-md ml-2.5 mr-2.5">
                                 {warning}
                             </div>
                         </AlertDialogDescription>
@@ -49,7 +49,7 @@ const DynamicModal = ({
                             {button}
                         </Button>
                     ))}
-                    <AlertDialogCancel onClick={onClose}>{closeText}</AlertDialogCancel>
+                    {closeText && (<AlertDialogCancel onClick={onClose}>{closeText}</AlertDialogCancel>)}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

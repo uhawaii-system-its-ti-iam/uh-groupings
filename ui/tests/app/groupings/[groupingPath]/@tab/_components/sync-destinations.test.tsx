@@ -95,7 +95,7 @@ describe('SyncDestinations Component', () => {
         const icon = screen.getByTestId('info-icon-g1');
         await user.click(icon);
         expect(await screen.findByText('Syncs with Google')).toBeInTheDocument();
-        const okBtn = screen.getByRole('button', { name: /Cancel/i });
+        const okBtn = screen.getByRole('button', { name: /OK/i });
         await user.click(okBtn);
         await waitFor(() => {
             expect(screen.queryByText('Syncs with Google')).not.toBeInTheDocument();
@@ -176,7 +176,7 @@ describe('SyncDestinations Component', () => {
         const modal = await screen.findByRole('alertdialog', { name: /sync destinations information/i });
         expect(modal).toBeInTheDocument();
         expect(screen.queryByText('Hello tooltip')).not.toBeInTheDocument();
-        const okBtn = screen.getByRole('button', { name: /Cancel/i });
+        const okBtn = screen.getByRole('button', { name: /OK/i });
         expect(okBtn).toBeInTheDocument();
         await user.click(okBtn);
         await waitFor(() => {

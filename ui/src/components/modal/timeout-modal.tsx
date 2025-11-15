@@ -1,20 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-    AlertDialog,
-    AlertDialogHeader,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogTitle,
-    AlertDialogFooter,
-    AlertDialogAction,
-    AlertDialogCancel
-} from '@/components/ui/alert-dialog';
 import { useIdleTimer } from 'react-idle-timer';
 import User from '@/lib/access/user';
 import { logout } from 'next-cas-client';
 import Role from '@/lib/access/role';
+import DynamicModal from '@/components/modal/dynamic-modal';
 
 const timeout = 1000 * 60 * 30; // Total timeout - 30 minutes in milliseconds
 const promptBeforeIdle = 1000 * 60 * 5; // Time prior to timeout until modal opens - 5 minutes in milliseconds
@@ -66,21 +57,16 @@ const TimeoutModal = ({ currentUser }: { currentUser: User }) => {
     };
 
     return (
-        <AlertDialog open={open}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Inactivity Warning</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Warning! This session will expire soon. Time remaining:
-                        <span className="text-text-color"> {formatTime(remainingTime)}.</span>
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel onClick={() => close()}>Stay logged in</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => logout()}>Log off now</AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+        <DynamicModal
+            open={open}
+            title="Inactivity Warning"
+            body={`Warning! This session will expire soon. Time remaining: ${formatTime(remainingTime)}.`}
+            onClose={close}
+            buttons={[
+                <span key="stay" onClick={close}>Stay logged in</span>,
+                <span key="logout" onClick={() => logout()}>Log off now</span>,
+            ]}
+        />
     );
 };
 
