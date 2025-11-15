@@ -15,3 +15,7 @@
 .info-title {
     @apply text-center text-xl text-text-color font-bold pb-7 pt-5;
 }
+
+.newline {
+    white-space: pre-line;
+}

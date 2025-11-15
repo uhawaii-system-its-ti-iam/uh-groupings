@@ -88,7 +88,8 @@ const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {
                             <DropdownMenuContent align="end">
                                 {groups.map(({ type, label, icon }) => (
                                     <DropdownMenuItem
-                                        className="text-base mb-2 py-1 px-6 text-left font-normal rounded cursor-pointer"
+                                        className="text-base mb-2 py-1 px-6 text-left font-normal rounded
+                                        cursor-pointer"
                                         key={type}
                                         onClick={() => exportCsv(type)}
                                         disabled={isPending}
