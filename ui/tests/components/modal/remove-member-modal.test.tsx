@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
 import { removeIncludeMembers, removeExcludeMembers, removeOwners, removeAdmin } from '@/lib/actions';
-import SuccessModal from '@/components/modal/success-modal';
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
