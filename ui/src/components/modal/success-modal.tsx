@@ -53,7 +53,7 @@ const SuccessModal = ({
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogContent className="max-w-[484px] sm:max-w-[500px] rounded">
+            <AlertDialogContent data-testid="success-modal" className="max-w-[484px] sm:max-w-[500px] rounded">
                 <AlertDialogHeader>
                     <AlertDialogTitle className="text-[1.4rem] text-left">{getTitle()}</AlertDialogTitle>
                     <AlertDialogCancel
