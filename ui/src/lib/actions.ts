@@ -45,9 +45,13 @@ const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
 export const updateSyncDest = async (
     groupingPath: string,
     syncDestId: string,
-    status: boolean,
+    status: boolean
 ): Promise<GroupingUpdatedAttributeResult> => {
-    z.object({groupingPath: z.string(), syncDestId: z.string(), status: z.boolean(),}).parse({ groupingPath, syncDestId, status });
+    z.object({ groupingPath: z.string(), syncDestId: z.string(), status: z.boolean() }).parse({
+        groupingPath,
+        syncDestId,
+        status
+    });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/sync-destination/${syncDestId}/${status}`;
     return putRequest<GroupingUpdatedAttributeResult>(endpoint, currentUser.uid);
@@ -63,9 +67,9 @@ export const updateSyncDest = async (
  */
 export const updateOptIn = async (
     groupingPath: string,
-    status: boolean,
+    status: boolean
 ): Promise<GroupingUpdateOptAttributeResult> => {
-    z.object({groupingPath: z.string(), status: z.boolean(),}).parse({ groupingPath, status });
+    z.object({ groupingPath: z.string(), status: z.boolean() }).parse({ groupingPath, status });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_IN}/${status}`;
     return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
@@ -81,9 +85,9 @@ export const updateOptIn = async (
  */
 export const updateOptOut = async (
     groupingPath: string,
-    status: boolean,
+    status: boolean
 ): Promise<GroupingUpdateOptAttributeResult> => {
-    z.object({groupingPath: z.string(), status: z.boolean(),}).parse({ groupingPath, status });
+    z.object({ groupingPath: z.string(), status: z.boolean() }).parse({ groupingPath, status });
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_OUT}/${status}`;
     return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
@@ -178,6 +182,19 @@ export const addExcludeMembersAsync = async (
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members/async`;
     return putRequestAsync<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
+};
+
+/**
+ * Get a list of owners in the current path.
+ *
+ * @param groupingPath - The path of the grouping
+ *
+ * @returns The promise of the grouping group members or ApiError type
+ */
+export const groupingOwners = async (groupingPath: string): Promise<GroupingGroupMembers> => {
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/grouping/${groupingPath}/owners`;
+    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
 };
 
 /**
@@ -524,3 +541,10 @@ export const getGroupingMembersWhereListed = async (
     const endpoint = `${baseUrl}/groupings/${groupingPath}/where-listed`;
     return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
 };
+
+export async function getNumberOfDirectOwners(groupingPath: string) {
+    z.string().parse(groupingPath);
+    const currentUser = await getUser();
+    const endpoint = `${baseUrl}/members/${groupingPath}/owners/count`;
+    return getRequest<number>(endpoint, currentUser.uid);
+}

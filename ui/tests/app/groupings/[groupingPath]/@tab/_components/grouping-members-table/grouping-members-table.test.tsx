@@ -273,9 +273,9 @@ describe('GroupingMembersTable', () => {
                 }
             );
 
-            expect(screen.getByRole('textbox')).toHaveValue('test');
+            expect(screen.getByRole('searchbox')).toHaveValue('test');
 
-            await user.type(screen.getByRole('textbox'), 's');
+            await user.type(screen.getByRole('searchbox'), 's');
 
             await waitFor(() => {
                 expect(onUrlUpdate).toHaveBeenCalledTimes(1);
@@ -286,7 +286,7 @@ describe('GroupingMembersTable', () => {
             expect(event.searchParams.get('search')).toBe('tests');
             expect(event.options.history).toBe('replace');
 
-            await user.clear(screen.getByRole('textbox'));
+            await user.clear(screen.getByRole('searchbox'));
 
             await waitFor(() => {
                 expect(onUrlUpdate).toHaveBeenCalledTimes(2);

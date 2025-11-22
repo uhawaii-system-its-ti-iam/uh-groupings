@@ -16,10 +16,10 @@ import { Switch } from '@/components/ui/switch';
 import { updateOptIn, updateOptOut } from '@/lib/actions';
 
 const Preferences = ({
-                         groupingPath,
-                         allowOptIn,
-                         allowOptOut,
-                     }: {
+    groupingPath,
+    allowOptIn,
+    allowOptOut,
+}: {
     groupingPath: string;
     allowOptIn: boolean;
     allowOptOut: boolean;

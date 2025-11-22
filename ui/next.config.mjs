@@ -22,6 +22,10 @@ const nextConfig = {
             {
                 source: '/memberships',
                 destination: '/memberships/current'
+            },
+            {
+                source: '/admin',
+                destination: '/admin/manage-groupings'
             }
         ];
     }
