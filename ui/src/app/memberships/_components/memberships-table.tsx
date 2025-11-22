@@ -24,7 +24,13 @@ import GroupingsTableSkeleton from '@/components/table/groupings-table/groupings
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
-const MembershipsTable = ({ memberships, isOptOut }: { memberships: Membership[]  | GroupingPath[]; isOptOut: boolean }) => {
+const MembershipsTable = ({
+    memberships,
+    isOptOut
+}: {
+    memberships: Membership[] | GroupingPath[];
+    isOptOut: boolean;
+}) => {
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useLocalStorage<VisibilityState>('columnVisibility', {
@@ -86,7 +92,11 @@ const MembershipsTable = ({ memberships, isOptOut }: { memberships: Membership[]
                                         key={header.id}
                                         onClick={header.column.getToggleSortingHandler()}
                                         className={`
-                                            ${!table.getIsAllColumnsVisible() && header.column.getIndex() === 1 ? 'w-7/12' : ''}
+                                            ${
+                                                !table.getIsAllColumnsVisible() && header.column.getIndex() === 1
+                                                    ? 'w-7/12'
+                                                    : ''
+                                            }
                                             ${table.getIsAllColumnsVisible() && isLastVisible ? 'w-1/12' : ''}
                                             ${header.column.getIndex() > 0 ? 'hidden md:table-cell' : 'w-1/3'}
                                         `}

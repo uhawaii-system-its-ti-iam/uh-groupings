@@ -8,6 +8,7 @@ import {
     addExcludeMembersAsync,
     addIncludeMembers,
     addIncludeMembersAsync,
+    groupingOwners,
     addOwners,
     getGroupingMembersIsBasis,
     getGroupingMembersWhereListed,
@@ -28,7 +29,8 @@ import {
     sendFeedback,
     sendStackTrace,
     updateDescription,
-    getGroupingMembers
+    getGroupingMembers,
+    getNumberOfDirectOwners
 } from '@/lib/actions';
 import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
@@ -324,6 +326,25 @@ describe('actions', () => {
             res = addExcludeMembersAsync(uhIdentifiers, groupingPath);
             await vi.advanceTimersByTimeAsync(5000);
             expect(await res).toEqual(mockError);
+        });
+    });
+
+    describe('groupingOwners', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await groupingOwners(groupingPath);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/owners`, {
+                headers: { current_user: currentUser.uid }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await groupingOwners(groupingPath)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await groupingOwners(groupingPath)).toEqual(mockError);
         });
     });
 
@@ -877,6 +898,25 @@ describe('actions', () => {
         it('should handle the error response', async () => {
             fetchMock.mockRejectOnce(() => Promise.reject(mockError));
             expect(await getGroupingMembersWhereListed(groupingPath, uhIdentifiers)).toEqual(mockError);
+        });
+    });
+
+    describe('getNumberOfDirectOwners', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await getNumberOfDirectOwners(groupingPath);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${groupingPath}/owners/count`, {
+                headers: { current_user: currentUser.uid }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await getNumberOfDirectOwners(groupingPath)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await getNumberOfDirectOwners(groupingPath)).toEqual(mockError);
         });
     });
 });

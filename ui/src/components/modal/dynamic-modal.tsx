@@ -34,10 +34,10 @@ const DynamicModal = ({
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
-                    <AlertDialogDescription>{body}</AlertDialogDescription>
+                    <AlertDialogDescription className="newline">{body}</AlertDialogDescription>
                     {warning && (
-                        <AlertDialogDescription>
-                            <div className="bg-yellow-100 border border-yellow-200 p-3 rounded-md ml-2.5">
+                        <AlertDialogDescription asChild>
+                            <div className="bg-yellow-100 border border-yellow-200 p-3 rounded-md ml-2.5 mr-2.5">
                                 {warning}
                             </div>
                         </AlertDialogDescription>
