@@ -44,3 +44,4 @@ export const generateJWT = async (): Promise<string> => {
         expiresIn: expirationSeconds
     });
 };
+
