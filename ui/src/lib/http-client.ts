@@ -1,5 +1,4 @@
 import { sendStackTrace } from './actions';
-import { getUser } from '@/lib/access/user';
 import { redirect } from 'next/navigation';
 import { generateJWT } from './jwt-service'
 
