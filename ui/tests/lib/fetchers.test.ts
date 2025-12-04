@@ -7,7 +7,6 @@ import {
     groupingAdmins,
     groupingDescription,
     groupingOptAttributes,
-    groupingOwners,
     groupingSyncDest,
     isAdmin,
     isOwner,
@@ -234,25 +233,6 @@ describe('fetchers', () => {
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
             expect(await optInGroupingPaths()).toEqual(mockError);
-        });
-    });
-
-    describe('groupingOwners', () => {
-        it('should make a GET request at the correct endpoint', async () => {
-            await groupingOwners(groupingPath);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/owners`, {
-                headers: { current_user: currentUser.uid }
-            });
-        });
-
-        it('should handle the successful response', async () => {
-            fetchMock.mockResponse(JSON.stringify(mockResponse));
-            expect(await groupingOwners(groupingPath)).toEqual(mockResponse);
-        });
-
-        it('should handle the error response', async () => {
-            fetchMock.mockReject(() => Promise.reject(mockError));
-            expect(await groupingOwners(groupingPath)).toEqual(mockError);
         });
     });
 

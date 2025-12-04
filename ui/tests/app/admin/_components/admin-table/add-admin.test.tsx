@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import AddAdmin from '@/app/admin/_components/admin-table/table-element/add-admin';
 import { memberAttributeResults } from '@/lib/actions';
 import { describe, beforeEach, expect, it, vi } from 'vitest';
+import User from '@/lib/access/user';
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
@@ -14,11 +15,7 @@ vi.mock('@/lib/actions', () => ({
     addAdmin: vi.fn()
 }));
 
-const mockMember = {
-    uid: 'test-uid',
-    uhUuid: 'test-uhUuid',
-    name: 'test-name'
-};
+const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
 describe('AddAdmin', () => {
     beforeEach(() => {
@@ -26,7 +23,7 @@ describe('AddAdmin', () => {
     });
 
     it('renders the input field and Add button', () => {
-        render(<AddAdmin uids={['test-uid']} uhUuids={['test-uhUuid']} />);
+        render(<AddAdmin uids={[testUser.uid]} uhUuids={[testUser.uhUuid]} />);
         expect(screen.getByPlaceholderText('UH Username or UH Number')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /add/i })).toBeInTheDocument();
     });
@@ -51,13 +48,13 @@ describe('AddAdmin', () => {
     });
 
     it('displays error message when entered user is already an admin', async () => {
-        render(<AddAdmin uids={['test-uid']} uhUuids={['test-uhUuid']} />);
+        render(<AddAdmin uids={[testUser.uid]} uhUuids={[testUser.uhUuid]} />);
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), {
-            target: { value: mockMember.uid }
+            target: { value: testUser.uid }
         });
         fireEvent.click(screen.getByRole('button', { name: /add/i }));
         await waitFor(() => {
-            expect(screen.getByText(`${mockMember.uid} is already an admin`)).toBeInTheDocument();
+            expect(screen.getByText(`${testUser.uid} is already an admin`)).toBeInTheDocument();
         });
     });
 
@@ -66,7 +63,7 @@ describe('AddAdmin', () => {
 
         render(<AddAdmin uids={[]} uhUuids={[]} />);
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), {
-            target: { value: mockMember.uid }
+            target: { value: testUser.uid }
         });
         fireEvent.click(screen.getByRole('button', { name: /add/i }));
         await waitFor(() => {
@@ -75,11 +72,11 @@ describe('AddAdmin', () => {
     });
 
     it('displays the confirmation modal when a valid user is found', async () => {
-        (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [mockMember] });
+        (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [testUser.uid, testUser.uhUuid, testUser.name] });
 
         render(<AddAdmin uids={[]} uhUuids={[]} />);
         fireEvent.change(screen.getByPlaceholderText(/UH Username/i), {
-            target: { value: mockMember.uid }
+            target: { value: testUser.uid }
         });
         fireEvent.click(screen.getByRole('button', { name: /add/i }));
 
@@ -89,11 +86,11 @@ describe('AddAdmin', () => {
     });
 
     it('closes the confirmation modal when cancel action is triggered', async () => {
-        (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [mockMember] });
+        (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [testUser] });
 
         render(<AddAdmin uids={[]} uhUuids={[]} />);
 
-        fireEvent.change(screen.getByPlaceholderText(/UH Username/i), { target: { value: mockMember.uid } });
+        fireEvent.change(screen.getByPlaceholderText(/UH Username/i), { target: { value: testUser.uid } });
         fireEvent.click(screen.getByRole('button', { name: /add/i }));
 
         await screen.findByTestId('add-member-modal');
@@ -101,12 +98,12 @@ describe('AddAdmin', () => {
     });
 
     it('resets the input field after a user is successfully added as admin', async () => {
-        (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [mockMember] });
+        (memberAttributeResults as ReturnType<typeof vi.fn>).mockResolvedValue({ results: [testUser]});
 
         render(<AddAdmin uids={[]} uhUuids={[]} />);
 
         const input = screen.getByPlaceholderText(/UH Username/i);
-        fireEvent.change(input, { target: { value: mockMember.uid } });
+        fireEvent.change(input, { target: { value: testUser.uid } });
         fireEvent.click(screen.getByRole('button', { name: /add/i }));
 
         await screen.findByTestId('add-member-modal');
