@@ -5,6 +5,9 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
     plugins: [tsconfigPaths(), react()],
     test: {
+        env: {
+            JWT_SECRET_KEY: 'dGhpcytqd3Qrc2VjcmV0K3VzZWQrZm9yK3Rlc3Rpbmc=', //jwt secret used for tests.
+        },
         server: {
             deps: {
                 inline: ['nuqs', 'nuqs/server']

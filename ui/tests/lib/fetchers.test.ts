@@ -16,11 +16,13 @@ import {
     membershipResults,
     optInGroupingPaths,
     ownerGroupings,
-    groupingPathIsValid
+    groupingPathIsValid,
+    groupingOwners
 } from '@/lib/fetchers';
 import * as NextCasClient from 'next-cas-client/app';
 import * as Actions from '@/lib/actions';
 import { vi, describe, beforeAll, it, expect } from 'vitest';
+import * as JwtService from '@/lib/jwt-service';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
@@ -30,6 +32,7 @@ vi.mock('@/lib/actions');
 
 describe('fetchers', () => {
     const currentUser = testUser;
+    let authToken: string;
 
     const uhIdentifier = 'testiwta';
     const groupingPath = 'tmp:testiwta:testiwta-aux';
@@ -41,16 +44,19 @@ describe('fetchers', () => {
         resultCode: 'FAILURE'
     };
 
-    beforeAll(() => {
+    beforeAll(async () => {
         vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
         vi.spyOn(Actions, 'sendStackTrace');
+        authToken = await JwtService.generateJWT();
+        // Mock generateJWT to always return the same token for consistent test assertions
+        vi.spyOn(JwtService, 'generateJWT').mockResolvedValue(authToken);
     });
 
     describe('getAllGroupings', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getAllGroupings();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -69,7 +75,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getAnnouncements();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/announcements`, {
-                headers: { current_user: '' }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -88,7 +94,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingDescription(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/description`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -107,7 +113,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingSyncDest(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/groupings-sync-destinations`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -126,7 +132,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingOptAttributes(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/opt-attributes`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -145,7 +151,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingAdmins();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/admins`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -164,7 +170,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await membershipResults();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/memberships`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -183,7 +189,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await managePersonResults(uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/groupings`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -202,7 +208,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getNumberOfMemberships();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/memberships/count`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -221,7 +227,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await optInGroupingPaths();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -236,11 +242,30 @@ describe('fetchers', () => {
         });
     });
 
+    describe('groupingOwners', () => {
+        it('should make a GET request at the correct endpoint', async () => {
+            await groupingOwners(groupingPath);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/owners`, {
+                headers: { Authorization: `Bearer ${authToken}` }
+            });
+        });
+
+        it('should handle the successful response', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockResponse));
+            expect(await groupingOwners(groupingPath)).toEqual(mockResponse);
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await groupingOwners(groupingPath)).toEqual(mockError);
+        });
+    });
+
     describe('ownersGroupings', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await ownerGroupings();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/owners/groupings`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -259,7 +284,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getNumberOfGroupings();
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/owners/groupings/count`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -278,7 +303,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isSoleOwner(uhIdentifier, groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifier}`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -297,7 +322,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isOwner(uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/is-owner`, {
-                headers: { current_user: uhIdentifier }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -316,7 +341,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isGroupingOwner(groupingPath, uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${groupingPath}/${uhIdentifier}/is-owner`, {
-                headers: { current_user: uhIdentifier }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -335,7 +360,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await isAdmin(uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/is-admin`, {
-                headers: { current_user: uhIdentifier }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -354,7 +379,7 @@ describe('fetchers', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingPathIsValid(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/is-valid`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 

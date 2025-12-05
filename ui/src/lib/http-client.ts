@@ -1,6 +1,6 @@
 import { sendStackTrace } from './actions';
-import { getUser } from '@/lib/access/user';
 import { redirect } from 'next/navigation';
+import { generateJWT } from './jwt-service'
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -33,8 +33,8 @@ const delay = async (ms = 5000) => new Promise((res) => setTimeout(res, ms));
  * @returns The promise of type T
  */
 const poll = async <T>(jobId: number): Promise<T> => {
-    const currentUser = await getUser();
-    return await fetch(`${baseUrl}/jobs/${jobId}`, { headers: { current_user: currentUser.uid } })
+    const jwtToken = await generateJWT();
+    return await fetch(`${baseUrl}/jobs/${jobId}`, { headers: { Authorization: `Bearer ${jwtToken}` } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
         .then(async (res) => {
             if (res.status === Status.COMPLETED) {
@@ -50,60 +50,60 @@ const poll = async <T>(jobId: number): Promise<T> => {
  * Perform a GET request to the specified URL.
  *
  * @param endpoint - the URL to perform the request on
- * @param currentUserKey - the uhIdentifier of the current user
  *
  * @returns The promise of type T
  */
-export const getRequest = async <T>(endpoint: string, currentUserKey: string = ''): Promise<T> =>
-    await fetch(endpoint, { headers: { current_user: currentUserKey } })
+export const getRequest = async <T>(endpoint: string): Promise<T> => {
+    const jwtToken = await generateJWT();
+    return await fetch(endpoint, { headers: { Authorization: `Bearer ${jwtToken}` } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
         .catch((err) => err);
+};
 
 /**
  * Perform a POST request to the specified URL.
  *
  * @param endpoint - the URL to perform the request on
- * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
  * @returns The promise of type T
  */
 export const postRequest = async <T>(
     endpoint: string,
-    currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T> =>
-    await fetch(endpoint, {
+): Promise<T> => {
+    const jwtToken = await generateJWT();
+    return await fetch(endpoint, {
         method: HTTPMethod.POST,
         headers: {
-            current_user: currentUserKey,
+            Authorization: `Bearer ${jwtToken}`,
             'Content-Type': contentType
         },
         body: stringifyBody(body)
     })
         .then((res) => handleFetch(res, HTTPMethod.POST))
         .catch((err) => err);
+};
 
 /**
  * Perform a POST request to the specified URL asynchronously using polling.
  *
  * @param endpoint - the URL to perform the request on
- * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
  * @returns The promise of type T
  */
 export const postRequestAsync = async <T>(
     endpoint: string,
-    currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T> =>
-    await fetch(endpoint, {
+): Promise<T> => {
+    const jwtToken = await generateJWT();
+    return await fetch(endpoint, {
         method: HTTPMethod.POST,
         headers: {
-            current_user: currentUserKey,
+            Authorization: `Bearer ${jwtToken}`,
             'Content-Type': contentType
         },
         body: stringifyBody(body)
@@ -111,52 +111,52 @@ export const postRequestAsync = async <T>(
         .then((res) => handleFetch(res, HTTPMethod.POST))
         .then((res) => poll<T>(res))
         .catch((err) => err);
+};
 
 /**
  * Perform a PUT request to the specified URL.
  *
  * @param endpoint - the URL to perform the request on
- * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
  * @returns The promise of type T
  */
 export const putRequest = async <T>(
     endpoint: string,
-    currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T> =>
-    await fetch(endpoint, {
+): Promise<T> => {
+    const jwtToken = await generateJWT();
+    return await fetch(endpoint, {
         method: HTTPMethod.PUT,
         headers: {
-            current_user: currentUserKey,
+            Authorization: `Bearer ${jwtToken}`,
             'Content-Type': contentType
         },
         body: stringifyBody(body)
     })
         .then((res) => handleFetch(res, HTTPMethod.PUT))
         .catch((err) => err);
+};
 
 /**
  * Perform a PUT request to the specified URL asynchronously using polling.
  *
  * @param endpoint - the URL to perform the request on
- * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
  * @returns The promise of type T
  */
 export const putRequestAsync = async <T>(
     endpoint: string,
-    currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T> =>
-    await fetch(endpoint, {
+): Promise<T> => {
+    const jwtToken = await generateJWT();
+    return await fetch(endpoint, {
         method: HTTPMethod.PUT,
         headers: {
-            current_user: currentUserKey,
+            Authorization: `Bearer ${jwtToken}`,
             'Content-Type': contentType
         },
         body: stringifyBody(body)
@@ -164,52 +164,52 @@ export const putRequestAsync = async <T>(
         .then((res) => handleFetch(res, HTTPMethod.PUT))
         .then((res) => poll<T>(res))
         .catch((err) => err);
+};
 
 /**
  * Perform a DELETE request to the specified URL.
  *
  * @param endpoint - the URL to perform the request on
- * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
  * @returns The promise of type T
  */
 export const deleteRequest = async <T>(
     endpoint: string,
-    currentUserKey: string,
-    body?: object | string | string[],
+     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T> =>
-    await fetch(endpoint, {
+): Promise<T> => {
+    const jwtToken = await generateJWT();
+    return await fetch(endpoint, {
         method: HTTPMethod.DELETE,
         headers: {
-            current_user: currentUserKey,
+            Authorization: `Bearer ${jwtToken}`,
             'Content-Type': contentType
         },
         body: stringifyBody(body)
     })
         .then((res) => handleFetch(res, HTTPMethod.DELETE))
         .catch((err) => err);
+};
 
 /**
  * Perform a DELETE request to the specified URL asynchronously using polling.
  *
  * @param endpoint - the URL to perform the request on
- * @param currentUserKey - the uhIdentifier of the current user
  * @param body - the request body to perform the request with
  *
  * @returns The promise of type T
  */
 export const deleteRequestAsync = async <T>(
     endpoint: string,
-    currentUserKey: string,
     body?: object | string | string[],
     contentType = 'application/json'
-): Promise<T> =>
-    await fetch(endpoint, {
+): Promise<T> => {
+    const jwtToken = await generateJWT();
+    return await fetch(endpoint, {
         method: HTTPMethod.DELETE,
         headers: {
-            current_user: currentUserKey,
+            Authorization: `Bearer ${jwtToken}`,
             'Content-Type': contentType
         },
         body: stringifyBody(body)
@@ -217,6 +217,7 @@ export const deleteRequestAsync = async <T>(
         .then((res) => handleFetch(res, HTTPMethod.DELETE))
         .then((res) => poll<T>(res))
         .catch((err) => err);
+};
 
 /**
  * Helper function for the .then clause of a fetch promise.
