@@ -39,6 +39,7 @@ import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-mem
 import * as JwtService from '@/lib/jwt-service';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
+const emailBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 const OPT_IN = process.env.NEXT_PUBLIC_OPT_IN as string;
 const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
@@ -783,7 +784,7 @@ describe('actions', () => {
 
         it('should make a POST request at the correct endpoint', async () => {
             await sendFeedback(feedback);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/email/send/feedback`, {
+            expect(fetch).toHaveBeenCalledWith(`${emailBaseUrl}/email/send/feedback`, {
                 body: JSON.stringify(feedback),
                 headers: {
                     Authorization: `Bearer ${authToken}`,
@@ -799,7 +800,7 @@ describe('actions', () => {
 
         it('should make a POST request at the correct endpoint', async () => {
             await sendStackTrace(stackTrace);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/email/send/stack-trace`, {
+            expect(fetch).toHaveBeenCalledWith(`${emailBaseUrl}/email/send/stack-trace`, {
                 body: stackTrace,
                 headers: {
                     Authorization: `Bearer ${authToken}`,

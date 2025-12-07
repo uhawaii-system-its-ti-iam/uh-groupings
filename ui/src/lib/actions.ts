@@ -30,6 +30,7 @@ import { z } from 'zod';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
+const baseUrlEmail = process.env.NEXT_PUBLIC_API_BASE_URL as string; // Note that email controller on API has a different from other endpoints URL.
 const OPT_IN = process.env.NEXT_PUBLIC_OPT_IN as string;
 const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
 
@@ -401,7 +402,7 @@ export const resetExcludeGroupAsync = async (groupingPath: string): Promise<Grou
  * @returns The promise of the EmailResult
  */
 export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => {
-    const endpoint = `${baseUrl}/email/send/feedback`;
+    const endpoint = `${baseUrlEmail}/email/send/feedback`;
     return postRequest<EmailResult>(endpoint, feedback);
 };
 
@@ -414,7 +415,7 @@ export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => 
  */
 export const sendStackTrace = async (stackTrace: string): Promise<EmailResult> => {
     z.string().parse(stackTrace);
-    const endpoint = `${baseUrl}/email/send/stack-trace`;
+    const endpoint = `${baseUrlEmail}/email/send/stack-trace`;
     return postRequest<EmailResult>(endpoint, stackTrace, 'text/plain');
 };
 
