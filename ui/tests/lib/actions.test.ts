@@ -36,8 +36,10 @@ import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
 import { Feedback } from '@/lib/types';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
+import * as JwtService from '@/lib/jwt-service';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
+const emailBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 const OPT_IN = process.env.NEXT_PUBLIC_OPT_IN as string;
 const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
@@ -46,6 +48,7 @@ vi.mock('next-cas-client/app');
 
 describe('actions', () => {
     const currentUser = testUser;
+    let authToken: string;
 
     const uhIdentifier = 'testiwta';
     const uhIdentifiers = ['testiwta', 'testiwtb'];
@@ -73,8 +76,11 @@ describe('actions', () => {
         resultCode: 'FAILURE'
     };
 
-    beforeAll(() => {
+    beforeAll(async () => {
         vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+        authToken = await JwtService.generateJWT();
+        // Mock generateJWT to always return the same token for consistent test assertions
+        vi.spyOn(JwtService, 'generateJWT').mockResolvedValue(authToken);
     });
 
     describe('updateSyncDest', () => {
@@ -89,7 +95,7 @@ describe('actions', () => {
                 {
                     method: 'PUT',
                     headers: {
-                        current_user: currentUser.uid,
+                        Authorization: `Bearer ${authToken}`,
                         'Content-Type': 'application/json',
                     },
                 },
@@ -118,7 +124,7 @@ describe('actions', () => {
                 {
                     method: 'PUT',
                     headers: {
-                        current_user: currentUser.uid,
+                        Authorization: `Bearer ${authToken}`,
                         'Content-Type': 'application/json',
                     },
                 },
@@ -147,7 +153,7 @@ describe('actions', () => {
                 {
                     method: 'PUT',
                     headers: {
-                        current_user: currentUser.uid,
+                        Authorization: `Bearer ${authToken}`,
                         'Content-Type': 'application/json',
                     },
                 },
@@ -173,7 +179,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/description`, {
                 body: description,
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'PUT'
@@ -197,7 +203,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'PUT'
@@ -229,7 +235,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members/async`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'PUT'
@@ -266,7 +272,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'PUT'
@@ -298,7 +304,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members/async`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'PUT'
@@ -333,7 +339,9 @@ describe('actions', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingOwners(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/owners`, {
-                headers: { current_user: currentUser.uid }
+                headers: { 
+                    Authorization: `Bearer ${authToken}`
+                }
             });
         });
 
@@ -353,7 +361,7 @@ describe('actions', () => {
             await addOwners(uhIdentifiers, groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -376,7 +384,7 @@ describe('actions', () => {
             await addAdmin(uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins/${uhIdentifier}`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -399,7 +407,7 @@ describe('actions', () => {
             await removeFromGroups(uhIdentifier, groupPaths);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins/${groupPaths}/${uhIdentifier}`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -423,7 +431,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include-members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -447,7 +455,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude-members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -470,7 +478,7 @@ describe('actions', () => {
             await removeOwners(uhIdentifiers, groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -493,7 +501,7 @@ describe('actions', () => {
             await removeAdmin(uhIdentifier);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/admins/${uhIdentifier}`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -517,7 +525,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -549,7 +557,7 @@ describe('actions', () => {
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/async`, {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -587,7 +595,7 @@ describe('actions', () => {
                 `${baseUrl}/groupings/${groupingPath}/include-members/${currentUser.uid}/self`,
                 {
                     headers: {
-                        current_user: currentUser.uid,
+                        Authorization: `Bearer ${authToken}`,
                         'Content-Type': 'application/json'
                     },
                     method: 'PUT'
@@ -613,7 +621,7 @@ describe('actions', () => {
                 `${baseUrl}/groupings/${groupingPath}/exclude-members/${currentUser.uid}/self`,
                 {
                     headers: {
-                        current_user: currentUser.uid,
+                        Authorization: `Bearer ${authToken}`,
                         'Content-Type': 'application/json'
                     },
                     method: 'PUT'
@@ -637,7 +645,7 @@ describe('actions', () => {
             await resetIncludeGroup(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -668,7 +676,7 @@ describe('actions', () => {
             await resetIncludeGroupAsync(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/include/async`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -704,7 +712,7 @@ describe('actions', () => {
             await resetExcludeGroup(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -735,7 +743,7 @@ describe('actions', () => {
             await resetExcludeGroupAsync(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/exclude/async`, {
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'DELETE'
@@ -776,10 +784,10 @@ describe('actions', () => {
 
         it('should make a POST request at the correct endpoint', async () => {
             await sendFeedback(feedback);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/email/send/feedback`, {
+            expect(fetch).toHaveBeenCalledWith(`${emailBaseUrl}/email/send/feedback`, {
                 body: JSON.stringify(feedback),
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'POST'
@@ -792,10 +800,10 @@ describe('actions', () => {
 
         it('should make a POST request at the correct endpoint', async () => {
             await sendStackTrace(stackTrace);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/email/send/stack-trace`, {
+            expect(fetch).toHaveBeenCalledWith(`${emailBaseUrl}/email/send/stack-trace`, {
                 body: stackTrace,
                 headers: {
-                    current_user: currentUser.uid,
+                    Authorization: `Bearer ${authToken}`,
                     'Content-Type': 'text/plain'
                 },
                 method: 'POST'
@@ -817,7 +825,7 @@ describe('actions', () => {
                     `page=${page}&size=${size}&sortBy=${sortBy}&isAscending=${isAscending}`,
                 {
                     headers: {
-                        current_user: currentUser.uid
+                        Authorization: `Bearer ${authToken}`
                     }
                 }
             );
@@ -838,7 +846,7 @@ describe('actions', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getNumberOfGroupingMembers(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/count`, {
-                headers: { current_user: currentUser.uid }
+                headers: { Authorization: `Bearer ${authToken}` }
             });
         });
 
@@ -860,7 +868,7 @@ describe('actions', () => {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
                     'Content-Type': 'application/json',
-                    current_user: currentUser.uid
+                    Authorization: `Bearer ${authToken}`
                 },
                 method: 'POST'
             });
@@ -884,7 +892,7 @@ describe('actions', () => {
                 body: JSON.stringify(uhIdentifiers),
                 headers: {
                     'Content-Type': 'application/json',
-                    current_user: currentUser.uid
+                    Authorization: `Bearer ${authToken}`
                 },
                 method: 'POST'
             });
@@ -905,7 +913,9 @@ describe('actions', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await getNumberOfDirectOwners(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${groupingPath}/owners/count`, {
-                headers: { current_user: currentUser.uid }
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
             });
         });
 

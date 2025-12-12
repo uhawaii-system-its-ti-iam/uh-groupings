@@ -30,6 +30,7 @@ import { z } from 'zod';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
+const baseUrlEmail = process.env.NEXT_PUBLIC_API_BASE_URL as string; // Note that email controller on API has a different from other endpoints URL.
 const OPT_IN = process.env.NEXT_PUBLIC_OPT_IN as string;
 const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
 
@@ -52,9 +53,8 @@ export const updateSyncDest = async (
         syncDestId,
         status
     });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/sync-destination/${syncDestId}/${status}`;
-    return putRequest<GroupingUpdatedAttributeResult>(endpoint, currentUser.uid);
+    return putRequest<GroupingUpdatedAttributeResult>(endpoint);
 };
 
 /**
@@ -65,14 +65,10 @@ export const updateSyncDest = async (
  *
  * @returns The promise of the result of updating the opt-in status or ApiError type
  */
-export const updateOptIn = async (
-    groupingPath: string,
-    status: boolean
-): Promise<GroupingUpdateOptAttributeResult> => {
+export const updateOptIn = async (groupingPath: string, status: boolean): Promise<GroupingUpdateOptAttributeResult> => {
     z.object({ groupingPath: z.string(), status: z.boolean() }).parse({ groupingPath, status });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_IN}/${status}`;
-    return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
+    return putRequest<GroupingUpdateOptAttributeResult>(endpoint);
 };
 
 /**
@@ -88,11 +84,9 @@ export const updateOptOut = async (
     status: boolean
 ): Promise<GroupingUpdateOptAttributeResult> => {
     z.object({ groupingPath: z.string(), status: z.boolean() }).parse({ groupingPath, status });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/opt-attribute/${OPT_OUT}/${status}`;
-    return putRequest<GroupingUpdateOptAttributeResult>(endpoint, currentUser.uid);
+    return putRequest<GroupingUpdateOptAttributeResult>(endpoint);
 };
-
 
 /**
  * Update the description of grouping at path.
@@ -107,9 +101,8 @@ export const updateDescription = async (
     groupingPath: string
 ): Promise<GroupingUpdateDescriptionResult> => {
     z.object({ description: z.string(), groupingPath: z.string() }).parse({ description, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/description`;
-    return putRequest<GroupingUpdateDescriptionResult>(endpoint, currentUser.uid, description);
+    return putRequest<GroupingUpdateDescriptionResult>(endpoint, description);
 };
 
 /**
@@ -125,9 +118,8 @@ export const addIncludeMembers = async (
     groupingPath: string
 ): Promise<GroupingMoveMembersResult> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members`;
-    return putRequest<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
+    return putRequest<GroupingMoveMembersResult>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -143,9 +135,8 @@ export const addIncludeMembersAsync = async (
     groupingPath: string
 ): Promise<GroupingMoveMembersResult> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members/async`;
-    return putRequestAsync<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
+    return putRequestAsync<GroupingMoveMembersResult>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -161,9 +152,8 @@ export const addExcludeMembers = async (
     groupingPath: string
 ): Promise<GroupingMoveMembersResult> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members`;
-    return putRequest<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
+    return putRequest<GroupingMoveMembersResult>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -179,9 +169,8 @@ export const addExcludeMembersAsync = async (
     groupingPath: string
 ): Promise<GroupingMoveMembersResult> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members/async`;
-    return putRequestAsync<GroupingMoveMembersResult>(endpoint, currentUser.uid, uhIdentifiers);
+    return putRequestAsync<GroupingMoveMembersResult>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -192,9 +181,8 @@ export const addExcludeMembersAsync = async (
  * @returns The promise of the grouping group members or ApiError type
  */
 export const groupingOwners = async (groupingPath: string): Promise<GroupingGroupMembers> => {
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/grouping/${groupingPath}/owners`;
-    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
+    return getRequest<GroupingGroupMembers>(endpoint);
 };
 
 /**
@@ -207,9 +195,8 @@ export const groupingOwners = async (groupingPath: string): Promise<GroupingGrou
  */
 export const addOwners = async (uhIdentifiers: string[], groupingPath: string): Promise<GroupingAddResults> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`;
-    return postRequest<GroupingAddResults>(endpoint, currentUser.uid);
+    return postRequest<GroupingAddResults>(endpoint);
 };
 
 /**
@@ -221,9 +208,8 @@ export const addOwners = async (uhIdentifiers: string[], groupingPath: string): 
  */
 export const addAdmin = async (uhIdentifier: string): Promise<GroupingAddResult> => {
     z.string().parse(uhIdentifier);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/admins/${uhIdentifier}`;
-    return postRequest<GroupingAddResult>(endpoint, currentUser.uid);
+    return postRequest<GroupingAddResult>(endpoint);
 };
 
 /**
@@ -236,9 +222,8 @@ export const addAdmin = async (uhIdentifier: string): Promise<GroupingAddResult>
  */
 export const removeFromGroups = async (uhIdentifier: string, groupPaths: string[]): Promise<GroupingRemoveResults> => {
     z.object({ uhIdentifier: z.string(), groupPaths: z.array(z.string()) }).parse({ uhIdentifier, groupPaths });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/admins/${groupPaths}/${uhIdentifier}`;
-    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid);
+    return deleteRequest<GroupingRemoveResults>(endpoint);
 };
 
 /**
@@ -254,9 +239,8 @@ export const removeIncludeMembers = async (
     groupingPath: string
 ): Promise<GroupingRemoveResults> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members`;
-    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid, uhIdentifiers);
+    return deleteRequest<GroupingRemoveResults>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -272,9 +256,8 @@ export const removeExcludeMembers = async (
     groupingPath: string
 ): Promise<GroupingRemoveResults> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members`;
-    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid, uhIdentifiers);
+    return deleteRequest<GroupingRemoveResults>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -287,9 +270,8 @@ export const removeExcludeMembers = async (
  */
 export const removeOwners = async (uhIdentifiers: string[], groupingPath: string): Promise<GroupingRemoveResults> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/${uhIdentifiers}`;
-    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid);
+    return deleteRequest<GroupingRemoveResults>(endpoint);
 };
 
 /**
@@ -301,9 +283,8 @@ export const removeOwners = async (uhIdentifiers: string[], groupingPath: string
  */
 export const removeAdmin = async (uhIdentifier: string): Promise<GroupingRemoveResult> => {
     z.string().parse(uhIdentifier);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/admins/${uhIdentifier}`;
-    return deleteRequest<GroupingRemoveResult>(endpoint, currentUser.uid);
+    return deleteRequest<GroupingRemoveResult>(endpoint);
 };
 
 /**
@@ -315,9 +296,8 @@ export const removeAdmin = async (uhIdentifier: string): Promise<GroupingRemoveR
  */
 export const memberAttributeResults = async (uhIdentifiers: string[]): Promise<MemberAttributeResults> => {
     z.array(z.string()).parse(uhIdentifiers);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/members`;
-    return postRequest<MemberAttributeResults>(endpoint, currentUser.uid, uhIdentifiers);
+    return postRequest<MemberAttributeResults>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -330,9 +310,8 @@ export const memberAttributeResults = async (uhIdentifiers: string[]): Promise<M
  */
 export const memberAttributeResultsAsync = async (uhIdentifiers: string[]): Promise<MemberAttributeResults> => {
     z.array(z.string()).parse(uhIdentifiers);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/members/async`;
-    return postRequestAsync<MemberAttributeResults>(endpoint, currentUser.uid, uhIdentifiers);
+    return postRequestAsync<MemberAttributeResults>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -346,7 +325,7 @@ export const optIn = async (groupingPath: string): Promise<GroupingMoveMemberRes
     z.string().parse(groupingPath);
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include-members/${currentUser.uid}/self`;
-    return putRequest<GroupingMoveMemberResult>(endpoint, currentUser.uid);
+    return putRequest<GroupingMoveMemberResult>(endpoint);
 };
 
 /**
@@ -360,7 +339,7 @@ export const optOut = async (groupingPath: string): Promise<GroupingMoveMemberRe
     z.string().parse(groupingPath);
     const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude-members/${currentUser.uid}/self`;
-    return putRequest<GroupingMoveMemberResult>(endpoint, currentUser.uid);
+    return putRequest<GroupingMoveMemberResult>(endpoint);
 };
 
 /**
@@ -372,9 +351,8 @@ export const optOut = async (groupingPath: string): Promise<GroupingMoveMemberRe
  */
 export const resetIncludeGroup = async (groupingPath: string): Promise<GroupingRemoveResults> => {
     z.string().parse(groupingPath);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include`;
-    return deleteRequest(endpoint, currentUser.uid);
+    return deleteRequest(endpoint);
 };
 
 /**
@@ -386,9 +364,8 @@ export const resetIncludeGroup = async (groupingPath: string): Promise<GroupingR
  */
 export const resetIncludeGroupAsync = async (groupingPath: string): Promise<GroupingRemoveResults> => {
     z.string().parse(groupingPath);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/include/async`;
-    return deleteRequestAsync<GroupingRemoveResults>(endpoint, currentUser.uid);
+    return deleteRequestAsync<GroupingRemoveResults>(endpoint);
 };
 
 /**
@@ -400,9 +377,8 @@ export const resetIncludeGroupAsync = async (groupingPath: string): Promise<Grou
  */
 export const resetExcludeGroup = async (groupingPath: string): Promise<GroupingRemoveResults> => {
     z.string().parse(groupingPath);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude`;
-    return deleteRequest<GroupingRemoveResults>(endpoint, currentUser.uid);
+    return deleteRequest<GroupingRemoveResults>(endpoint);
 };
 
 /**
@@ -414,9 +390,8 @@ export const resetExcludeGroup = async (groupingPath: string): Promise<GroupingR
  */
 export const resetExcludeGroupAsync = async (groupingPath: string): Promise<GroupingRemoveResults> => {
     z.string().parse(groupingPath);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/exclude/async`;
-    return deleteRequestAsync<GroupingRemoveResults>(endpoint, currentUser.uid);
+    return deleteRequestAsync<GroupingRemoveResults>(endpoint);
 };
 
 /**
@@ -427,9 +402,8 @@ export const resetExcludeGroupAsync = async (groupingPath: string): Promise<Grou
  * @returns The promise of the EmailResult
  */
 export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => {
-    const currentUser = await getUser();
-    const endpoint = `${baseUrl}/email/send/feedback`;
-    return postRequest<EmailResult>(endpoint, currentUser.uid, feedback);
+    const endpoint = `${baseUrlEmail}/email/send/feedback`;
+    return postRequest<EmailResult>(endpoint, feedback);
 };
 
 /**
@@ -441,9 +415,8 @@ export const sendFeedback = async (feedback: Feedback): Promise<EmailResult> => 
  */
 export const sendStackTrace = async (stackTrace: string): Promise<EmailResult> => {
     z.string().parse(stackTrace);
-    const currentUser = await getUser();
-    const endpoint = `${baseUrl}/email/send/stack-trace`;
-    return postRequest<EmailResult>(endpoint, currentUser.uid, stackTrace, 'text/plain');
+    const endpoint = `${baseUrlEmail}/email/send/stack-trace`;
+    return postRequest<EmailResult>(endpoint, stackTrace, 'text/plain');
 };
 
 /**
@@ -481,7 +454,6 @@ export const getGroupingMembers = async (
         isAscending,
         searchString
     });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}?${new URLSearchParams({
         ...(page && { page: page.toString() }),
         ...(size && { size: size.toString() }),
@@ -489,7 +461,7 @@ export const getGroupingMembers = async (
         isAscending: isAscending.toString(),
         ...(searchString && { searchString })
     })}`;
-    return getRequest<GroupingGroupMembers>(endpoint, currentUser.uid);
+    return getRequest<GroupingGroupMembers>(endpoint);
 };
 
 /**
@@ -501,9 +473,8 @@ export const getGroupingMembers = async (
  */
 export const getNumberOfGroupingMembers = async (groupingPath: string): Promise<number> => {
     z.string().parse(groupingPath);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/count`;
-    return getRequest<number>(endpoint, currentUser.uid);
+    return getRequest<number>(endpoint);
 };
 
 /**
@@ -519,9 +490,8 @@ export const getGroupingMembersIsBasis = async (
     uhIdentifiers: string[]
 ): Promise<GroupingMembers> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/is-basis`;
-    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
+    return postRequest<GroupingMembers>(endpoint, uhIdentifiers);
 };
 
 /**
@@ -537,14 +507,12 @@ export const getGroupingMembersWhereListed = async (
     uhIdentifiers: string[]
 ): Promise<GroupingMembers> => {
     z.object({ uhIdentifiers: z.array(z.string()), groupingPath: z.string() }).parse({ uhIdentifiers, groupingPath });
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/groupings/${groupingPath}/where-listed`;
-    return postRequest<GroupingMembers>(endpoint, currentUser.uid, uhIdentifiers);
+    return postRequest<GroupingMembers>(endpoint, uhIdentifiers);
 };
 
 export async function getNumberOfDirectOwners(groupingPath: string) {
     z.string().parse(groupingPath);
-    const currentUser = await getUser();
     const endpoint = `${baseUrl}/members/${groupingPath}/owners/count`;
-    return getRequest<number>(endpoint, currentUser.uid);
+    return getRequest<number>(endpoint);
 }
