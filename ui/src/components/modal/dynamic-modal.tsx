@@ -13,14 +13,14 @@ import { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 
 const DynamicModal = ({
-    open,
-    title,
-    body,
-    warning,
-    buttons,
-    closeText,
-    onClose
-}: {
+                          open,
+                          title,
+                          body,
+                          warning,
+                          buttons,
+                          closeText,
+                          onClose
+                      }: {
     open: boolean;
     title: string;
     body: React.ReactNode;
@@ -34,22 +34,36 @@ const DynamicModal = ({
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
-                    <AlertDialogDescription className="newline">{body}</AlertDialogDescription>
+
+                    <AlertDialogDescription className="newline">
+                        {body}
+                    </AlertDialogDescription>
+
                     {warning && (
-                        <AlertDialogDescription asChild>
+                        <AlertDialogDescription>
                             <div className="bg-yellow-100 border border-yellow-200 p-3 rounded-md ml-2.5 mr-2.5">
                                 {warning}
                             </div>
                         </AlertDialogDescription>
                     )}
                 </AlertDialogHeader>
+
                 <AlertDialogFooter>
                     {buttons?.map((button, index) => (
-                        <Button key={index} onClick={onClose} className="bg-uh-teal text-white hover:bg-uh-teal/90">
+                        <Button
+                            key={index}
+                            onClick={onClose}
+                            className="bg-uh-teal text-white hover:bg-uh-teal/90"
+                        >
                             {button}
                         </Button>
                     ))}
-                    {closeText && (<AlertDialogCancel onClick={onClose}>{closeText}</AlertDialogCancel>)}
+
+                    {closeText && (
+                        <AlertDialogCancel onClick={onClose}>
+                            {closeText}
+                        </AlertDialogCancel>
+                    )}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

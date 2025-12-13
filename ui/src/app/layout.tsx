@@ -3,8 +3,8 @@ import { Source_Sans_3 } from 'next/font/google';
 import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer';
 import type { Metadata } from 'next';
+import { BlockNavigationProvider } from '@/components/hook/useBlockNavigation';
 
-// FontAwesome configuration.
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 
@@ -14,27 +14,29 @@ const sourceSans3 = Source_Sans_3({
     subsets: ['latin'],
     weight: ['400', '600', '700', '900'],
     style: ['normal', 'italic'],
-    variable: '--font-source-sans-3'
+    variable: '--font-source-sans-3',
 });
 
 export const metadata: Metadata = {
-    title: 'UH Groupings'
+    title: 'UH Groupings',
 };
 
 const RootLayout = ({
     children,
-    error
-}: Readonly<{
+    error,
+    }: Readonly<{
     children?: React.ReactNode;
     error?: React.ReactNode;
 }>) => (
     <html lang="en">
-        <body className={`${sourceSans3.variable} min-h-screen flex flex-col`}>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            {error}
-            <Footer />
-        </body>
+    <body className={`${sourceSans3.variable} min-h-screen flex flex-col`}>
+    <BlockNavigationProvider>
+        <Navbar />
+        <main className="flex-grow">{children}</main>
+        {error}
+        <Footer />
+    </BlockNavigationProvider>
+    </body>
     </html>
 );
 
