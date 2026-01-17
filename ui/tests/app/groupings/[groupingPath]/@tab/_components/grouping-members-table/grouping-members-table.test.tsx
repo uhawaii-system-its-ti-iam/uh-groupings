@@ -662,4 +662,88 @@ describe('GroupingMembersTable', () => {
             expect(event.options.history).toBe('replace');
         });
     });
+
+    //     list management
+    describe('List Management', () => {
+        //   should display input box, add button and remove button in include, exclude, and owners tab
+        //     should display import file button in include and exclude tab
+
+        test.each(['include', 'exclude', 'owners'])(
+            'should display ListManagement inputbox, add, and remove buttons in the %s tab',
+            async (tab) => {
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group={tab}
+                    />,
+                    {
+                        wrapper: createMockProviders()
+                    }
+                );
+
+                // Verify presence of ListManagement component elements
+                expect(screen.getByPlaceholderText(/UH Username or UH Number/i)).toBeInTheDocument();
+                expect(screen.getByTestId('add-member-button')).toBeInTheDocument();
+                expect(screen.getByTestId('remove-member-button')).toBeInTheDocument();
+            }
+        );
+
+        //Include and exclude tabs should have import file button
+        test.each(['include', 'exclude'])(
+            'should display ListManagement import file button in the %s tab',
+            async (tab) => {
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group={tab}
+                    />,
+                    {
+                        wrapper: createMockProviders()
+                    }
+                );
+
+                //Verify presence of import file button
+                expect(screen.getByTestId('import-file-button')).toBeInTheDocument();
+            }
+        );
+
+        // Owners tab should NOT have import file button
+        it('should NOT display ListManagement import file button in the owners tab', async () => {
+            render(
+                <GroupingMembersTable
+                    groupingGroupMembers={mockGroupingGroupMembers}
+                    groupingPath={groupingPath}
+                    group="owners"
+                />,
+                {
+                    wrapper: createMockProviders()
+                }
+            );
+
+            //Verify absence of import file button
+            expect(screen.queryByTestId('import-file-button')).not.toBeInTheDocument();
+        });
+
+        // Absence of ListManagement component in All Members and Basis tabs
+        test.each(['allMembers', 'basis'])('should NOT display ListManagement component in the %s tab', async (tab) => {
+            render(
+                <GroupingMembersTable
+                    groupingGroupMembers={mockGroupingGroupMembers}
+                    groupingPath={groupingPath}
+                    group={tab}
+                />,
+                {
+                    wrapper: createMockProviders()
+                }
+            );
+
+            // Verify absence of ListManagement component elements
+            expect(screen.queryByPlaceholderText(/UH Username or UH Number/i)).not.toBeInTheDocument();
+            expect(screen.queryByTestId('add-member-button')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('remove-member-button')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('import-file-button')).not.toBeInTheDocument();
+        });
+    });
 });

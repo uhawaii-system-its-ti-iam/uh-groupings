@@ -268,6 +268,7 @@ const ListManagement = ({
                                     alt="Add Member"
                                     size="default"
                                     aria-label="add-member-button"
+                                    data-testid="add-member-button"
                                     onClick={() => {
                                         void handleAddClick();
                                     }}
@@ -281,8 +282,10 @@ const ListManagement = ({
                                 </Button>
                                 <Button
                                     variant="removal"
+                                    alt="Remove Member"
                                     size="default"
                                     aria-label="remove-member-button"
+                                    data-testid="remove-member-button"
                                     onClick={() => {
                                         void handleRemoveClick();
                                     }}
@@ -299,6 +302,7 @@ const ListManagement = ({
                                         variant="default"
                                         size="default"
                                         aria-label="Import File"
+                                        data-testid="import-file-button"
                                         onClick={() => console.log(`Import file for ${list}`)}
                                         className="ml-[4px] h-[44px]"
                                     >

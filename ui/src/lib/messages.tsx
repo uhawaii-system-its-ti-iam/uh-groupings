@@ -7,7 +7,7 @@ export const message = {
         OPT_OUT_LABEL: 'Allow people to remove themselves from this group',
         MODAL_TITLE: 'Preferences Information',
         MODAL_CLOSE: 'OK',
-        MODAL_CANCEL: 'Cancel',
+        MODAL_CANCEL: 'Cancel'
     },
 
     Tooltip: {
@@ -41,16 +41,12 @@ export const message = {
         MODAL_TITLE: 'Reset Grouping',
         MODAL_BODY: (isInclude: boolean, isExclude: boolean, groupName: string) => {
             const target =
-                isInclude && isExclude
-                    ? 'Exclude and Include lists'
-                    : isInclude
-                        ? 'Include list'
-                        : 'Exclude list';
+                isInclude && isExclude ? 'Exclude and Include lists' : isInclude ? 'Include list' : 'Exclude list';
             return `Are you sure you want to remove all members from the ${target} in the ${groupName} grouping?`;
         },
         MODAL_CONFIRM: 'Yes',
         MODAL_INFO_TITLE: 'Actions Information',
-        MODAL_SUCCESS_TITLE: 'Grouping Reset Completion',
+        MODAL_SUCCESS_TITLE: 'Grouping Reset Completion'
     },
 
     ApiError: {
@@ -78,7 +74,7 @@ export const message = {
 
     ListManagement: {
         ERROR: {
-            EMPTY_INPUT: 'You must enter UH member to add or remove.',
+            EMPTY_INPUT: 'You must enter a UH member to add or remove.',
             INVALID_TEXT_INPUTS: 'Input must contain only alphanumeric characters, separated by commas or spaces.',
             CONTAINS_MEMBERS_NOT_IN_LIST: `Member(s) not in the list: `,
             DUPLICATE_MEMBERS_INPUT: `Duplicate member(s) in the input: `,
