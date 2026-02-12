@@ -13,3 +13,4 @@
 -   [ ] Unit Tests Passed
 -   [ ] Integration Tests Passed
 -   [ ] General Visual Inspection
+-   [ ] Checked For ADA Compliance
