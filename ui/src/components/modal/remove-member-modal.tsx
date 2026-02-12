@@ -37,7 +37,7 @@ const RemoveMemberModal = ({
             <AlertDialogTrigger asChild>
                 <Trash2Icon
                     data-testid="remove-member-icon"
-                    className="h-4 w-4 text-red-600"
+                    className="h-5 w-5 text-red-600 cursor-pointer"
                     onClick={() => setOpen(true)}
                 />
             </AlertDialogTrigger>

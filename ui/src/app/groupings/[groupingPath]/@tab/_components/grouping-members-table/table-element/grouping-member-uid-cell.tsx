@@ -1,6 +1,7 @@
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import {message} from "@/lib/messages";
 
 const GroupingMemberUidCell = ({ uid }: { uid: string }) => {
     return (
@@ -16,8 +17,7 @@ const GroupingMemberUidCell = ({ uid }: { uid: string }) => {
                                 <FontAwesomeIcon icon={faQuestionCircle} color="black" />
                             </TooltipTrigger>
                             <TooltipContent className="max-w-48 text-center whitespace-normal" side="right">
-                                UH Username not available. Either it has not yet been assigned, or the subject is no
-                                longer with UH.
+                                {message.Tooltip.UID_NOT_APPLICABLE}
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>

@@ -11,10 +11,46 @@ vi.mock('next/navigation', () => ({
 
 describe('RemoveMemberModal', () => {
     let mockAction: ReturnType<typeof vi.fn>;
+    let mockRefresh: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
         mockAction = vi.fn();
+        mockRefresh = vi.fn();
         vi.clearAllMocks();
+    });
+
+    it('should render trash icon with tooltip', () => {
+        render(
+            <RemoveMemberModal
+                uid="test-uid"
+                name="test-user"
+                uhUuid="test-uhUuid"
+                group="test-group"
+                action={mockAction}
+            />
+        );
+
+        const trashIcon = screen.getByTestId('remove-member-icon');
+        expect(trashIcon).toBeInTheDocument();
+        expect(trashIcon).toHaveClass('h-5', 'w-5', 'text-red-600', 'cursor-pointer');
+    });
+
+    it('should open modal when trash icon is clicked', async () => {
+        const user = userEvent.setup();
+        render(
+            <RemoveMemberModal
+                uid="test-uid"
+                name="test-user"
+                uhUuid="test-uhUuid"
+                group="test-group"
+                action={mockAction}
+            />
+        );
+
+        await user.click(screen.getByTestId('remove-member-icon'));
+
+        expect(screen.getByText('Remove Member')).toBeInTheDocument();
+        expect(screen.getByText(/You are about to remove the following member/)).toBeInTheDocument();
     });
 
     it('should render and open the modal when trash icon is clicked', async () => {
@@ -41,7 +77,7 @@ describe('RemoveMemberModal', () => {
         expect(screen.getAllByText('test-group')).toHaveLength(2);
     });
 
-    it('should call action and close modal when "Yes" is clicked', async () => {
+    it('should call action with uid and refresh router when Yes is clicked', async () => {
         const user = userEvent.setup();
         render(
             <RemoveMemberModal
@@ -54,12 +90,13 @@ describe('RemoveMemberModal', () => {
         );
 
         await user.click(screen.getByTestId('remove-member-icon'));
-        await user.click(await screen.findByRole('button', { name: 'Yes' }));
+        await user.click(screen.getByRole('button', { name: 'Yes' }));
 
         expect(mockAction).toHaveBeenCalledWith('test-uid');
+        expect(mockAction).toHaveBeenCalledTimes(1);
     });
 
-    it('should close modal when "Cancel" is clicked', async () => {
+    it('should close modal after confirming removal', async () => {
         const user = userEvent.setup();
         render(
             <RemoveMemberModal
@@ -72,11 +109,45 @@ describe('RemoveMemberModal', () => {
         );
 
         await user.click(screen.getByTestId('remove-member-icon'));
-        const cancelButton = await screen.findByRole('button', { name: 'Cancel' });
-
-        expect(cancelButton).toBeInTheDocument();
-        await user.click(cancelButton);
+        await user.click(screen.getByRole('button', { name: 'Yes' }));
 
         expect(screen.queryByText('Remove Member')).not.toBeInTheDocument();
+    });
+
+    it('should close modal when Cancel is clicked', async () => {
+        const user = userEvent.setup();
+        render(
+            <RemoveMemberModal
+                uid="test-uid"
+                name="test-user"
+                uhUuid="test-uhUuid"
+                group="test-group"
+                action={mockAction}
+            />
+        );
+
+        await user.click(screen.getByTestId('remove-member-icon'));
+        await user.click(screen.getByRole('button', { name: 'Cancel' }));
+
+        expect(screen.queryByText('Remove Member')).not.toBeInTheDocument();
+        expect(mockAction).not.toHaveBeenCalled();
+    });
+
+    it('should display warning alert about membership delay', async () => {
+        const user = userEvent.setup();
+        render(
+            <RemoveMemberModal
+                uid="test-uid"
+                name="test-user"
+                uhUuid="test-uhUuid"
+                group="test-group"
+                action={mockAction}
+            />
+        );
+
+        await user.click(screen.getByTestId('remove-member-icon'));
+
+        expect(screen.getByText(/Membership changes made may not take effect immediately/)).toBeInTheDocument();
+        expect(screen.getByText(/3-5 minutes/)).toBeInTheDocument();
     });
 });

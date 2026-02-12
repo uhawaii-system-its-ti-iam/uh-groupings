@@ -2,6 +2,10 @@ import { ColumnDef } from '@tanstack/react-table';
 import { GroupingGroupMember } from '@/lib/types';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
 import { removeAdmin } from '@/lib/actions';
+import { message } from '@/lib/messages';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
     {
@@ -18,18 +22,52 @@ const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
     {
         header: 'UH Username',
         accessorKey: 'uid',
-        cell: ({ row }) => <div className="pl-2 leading-relaxed">{row.getValue('uid')}</div>
+        cell: ({ row }) => {
+            const uid = row.getValue('uid') as string | undefined | null;
+
+            if (!uid || uid.trim() === '') {
+                return (
+                    <span className="text-text-color pl-2 leading-relaxed">
+                     N/A{' '}
+                        <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <FontAwesomeIcon icon={faQuestionCircle} color="black" size="lg" className="ml-1" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-48 text-center whitespace-normal" side="right">
+                                {message.Tooltip.UID_NOT_APPLICABLE}
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </span>
+                );
+            }
+
+
+            return <div className="pl-2 leading-relaxed">{uid}</div>;
+        }
     },
     {
         header: 'Remove',
         cell: ({ row }) => (
-            <RemoveMemberModal
-                uid={row.getValue('uid')}
-                name={row.getValue('name')}
-                uhUuid={row.getValue('uhUuid')}
-                group={'admins'}
-                action={removeAdmin}
-            />
+            <div className="flex justify-center w-1/3">
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <RemoveMemberModal
+                                uid={row.getValue('uid')}
+                                name={row.getValue('name')}
+                                uhUuid={row.getValue('uhUuid')}
+                                group={'admins'}
+                                action={() => removeAdmin(row.getValue('uid') as string)}
+                            />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-48 text-center whitespace-normal" side="top">
+                            {message.Tooltip.REMOVE_ADMIN}
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
         )
     }
 ];

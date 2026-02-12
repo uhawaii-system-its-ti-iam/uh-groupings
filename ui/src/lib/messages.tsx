@@ -16,6 +16,8 @@ export const message = {
         OPT_OUT: 'Enable the opt-out self-service so that members can leave at any time.',
         SYNC_DEST: (description: string) =>
             `This option syncs destinations to ${description}`,
+        UID_NOT_APPLICABLE: 'This person does not have a UH Username.',
+        REMOVE_ADMIN: 'Remove this administrator (there must be at least 1 remaining).',
     },
 
     SyncDestinations: {
