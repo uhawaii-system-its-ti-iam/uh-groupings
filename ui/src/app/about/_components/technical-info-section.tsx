@@ -6,7 +6,7 @@ const TechnicalInfoSection = () => {
         { name: 'Next.js', url: 'https://nextjs.org/docs', description: '(Introduction)' },
         {
             name: 'Tanstack Table',
-            url: 'https://tanstack.com/table/v8/docs/introduction',
+            url: 'https://tanstack.com/table/latest/docs/introduction',
             description: '(Introduction)'
         },
         { name: 'React Testing Library', url: 'https://testing-library.com/', description: '(Documentation)' },
