@@ -2,6 +2,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { GroupingGroupMember } from '@/lib/types';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
 import { removeAdmin } from '@/lib/actions';
+import RemoveMemberTrashcan from '@/components/ui/remove-member-trashcan';
 
 const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
     {
@@ -23,7 +24,7 @@ const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
     {
         header: 'Remove',
         cell: ({ row }) => (
-            <RemoveMemberModal
+            <RemoveMemberTrashcan
                 uid={row.getValue('uid')}
                 name={row.getValue('name')}
                 uhUuid={row.getValue('uhUuid')}
