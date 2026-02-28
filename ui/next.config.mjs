@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
 
 import dotenv from 'dotenv';
+import fs from 'fs';
 import os from 'os';
 
-// Define path to overrides file 
-// TODO: Rename uh-groupings-ui-3-0-overrides to uh-groupings-ui-overrides once 3.0 is complete
-dotenv.config({path: `${os.homedir()}/.${os.userInfo().username}-conf/uh-groupings-ui-3-0-overrides.properties`})
+const dockerOverridePath = '/overrides/uh-groupings-ui-3-0-overrides.properties';
+const localOverridePath = `${os.homedir()}/.${os.userInfo().username}-conf/uh-groupings-ui-3-0-overrides.properties`;
+const overridePath = fs.existsSync(dockerOverridePath) ? dockerOverridePath : localOverridePath;
+dotenv.config({ path: overridePath });
 
 const nextConfig = {
     basePath: '/uhgroupings',
