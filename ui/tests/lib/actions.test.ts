@@ -30,7 +30,8 @@ import {
     sendStackTrace,
     updateDescription,
     getGroupingMembers,
-    getNumberOfDirectOwners
+    getNumberOfDirectOwners,
+    getDuplicateOwners
 } from '@/lib/actions';
 import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
@@ -927,6 +928,70 @@ describe('actions', () => {
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
             expect(await getNumberOfDirectOwners(groupingPath)).toEqual(mockError);
+        });
+    });
+
+    describe('getDuplicateOwners', () => {
+        const mockDuplicateOwners = {
+            'uuid-123': {
+                uhUuid: 'uuid-123',
+                name: 'John Doe',
+                uid: 'jdoe',
+                paths: ['direct', 'owner-grouping:owners']
+            },
+            'uuid-456': {
+                uhUuid: 'uuid-456',
+                name: 'Jane Smith',
+                uid: 'jsmith',
+                paths: ['owner-grouping-1:owners', 'owner-grouping-2:owners']
+            }
+        };
+
+        it('should make a GET request at the correct endpoint', async () => {
+            await getDuplicateOwners(groupingPath);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/compare`, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            });
+        });
+
+        it('should return duplicate owners when they exist', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockDuplicateOwners));
+            const result = await getDuplicateOwners(groupingPath);
+            expect(result).toEqual(mockDuplicateOwners);
+            expect(Object.keys(result).length).toBe(2);
+        });
+
+        it('should return empty object when no duplicates exist', async () => {
+            fetchMock.mockResponse(JSON.stringify({}));
+            const result = await getDuplicateOwners(groupingPath);
+            expect(result).toEqual({});
+            expect(Object.keys(result).length).toBe(0);
+        });
+
+        it('should handle each duplicate owner with correct structure', async () => {
+            fetchMock.mockResponse(JSON.stringify(mockDuplicateOwners));
+            const result = await getDuplicateOwners(groupingPath);
+
+            Object.values(result).forEach(owner => {
+                expect(owner).toHaveProperty('uhUuid');
+                expect(owner).toHaveProperty('name');
+                expect(owner).toHaveProperty('uid');
+                expect(owner).toHaveProperty('paths');
+                expect(Array.isArray(owner.paths)).toBe(true);
+                expect(owner.paths.length).toBeGreaterThan(0);
+            });
+        });
+
+        it('should handle the error response', async () => {
+            fetchMock.mockReject(() => Promise.reject(mockError));
+            expect(await getDuplicateOwners(groupingPath)).toEqual(mockError);
+        });
+
+        it('should validate input groupingPath as string', async () => {
+            const invalidPath = 123 as unknown as string;
+            await expect(getDuplicateOwners(invalidPath)).rejects.toThrow();
         });
     });
 });

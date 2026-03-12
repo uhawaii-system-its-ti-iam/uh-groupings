@@ -15,10 +15,21 @@ import {
     resetExcludeGroupAsync
 } from '@/lib/actions';
 
-const Actions = ({ groupingPath }: { groupingPath: string }) => {
+interface ActionsProps {
+    groupingPath: string;
+    initialDuplicateOwners?: Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>;
+    initialDuplicateOwnersCount?: number;
+}
+
+const Actions = ({
+    groupingPath,
+    initialDuplicateOwners = {},
+    initialDuplicateOwnersCount = 0
+}: ActionsProps) => {
     const router = useRouter();
     const decodedGroupingPath = decodeURIComponent(groupingPath);
     const groupName = decodedGroupingPath.split(':').pop() as string;
+
 
     const [isIncludeChecked, setIsIncludeChecked] = useState(false);
     const [isExcludeChecked, setIsExcludeChecked] = useState(false);
@@ -30,6 +41,9 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
+    const [compareLoading] = useState(false);
+    const [compareOwnerGroupingsResults] = useState<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>>(initialDuplicateOwners);
+    const [compareOwnerGroupingsResultsCount] = useState(initialDuplicateOwnersCount);
 
     const toggleIncludeCheck = () => {
         setIsIncludeChecked(prev => !prev);
@@ -60,21 +74,25 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
         setIsLoading(true);
         closeResetGroupModal();
         await new Promise(resolve => setTimeout(resolve, 0));
-        const requests: Promise<string>[] = [];
+        const requests: Promise<unknown>[] = [];
         const successMessages: string[] = [];
 
         if (isIncludeChecked) {
             setIsIncludeDisabled(true);
             requests.push(
-                (
-                    decodedGroupingPath.length <= 750
+                (decodedGroupingPath.length <= 750
                         ? resetIncludeGroup(decodedGroupingPath)
                         : resetIncludeGroupAsync(decodedGroupingPath)
-                ).then(result => {
-                    if (result.resultCode === 'SUCCESS') {
-                        setIsIncludeChecked(false);
-                        successMessages.push('The Include list has successfully been reset.');
-                    }
+                )
+                    .then((result) => {
+                        if (result.resultCode === 'SUCCESS') {
+                            setIsIncludeChecked(false);
+                            successMessages.push('The Include list has successfully been reset.');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Failed to reset the Exclude list.', error);
+                    }).finally(() => {
                     setIsIncludeDisabled(false);
                 })
             );
@@ -92,6 +110,9 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                         setIsExcludeChecked(false);
                         successMessages.push('The Exclude list has successfully been reset.');
                     }
+                }).catch(error => {
+                    console.error('Failed to reset the Exclude list.', error);
+                }).finally(() => {
                     setIsExcludeDisabled(false);
                 })
             );
@@ -191,6 +212,87 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                     </div>
                 </div>
 
+                <div className='flex flex-wrap pt-4 pb-5'>
+                    <div className='w-full pr-4 pl-4 relative'>
+                        <h3 className='text-xl text-cyan-800 mt-2 ml-0.5 mb-4'>
+                            Diagnostics
+                        </h3>
+
+                        <div className='mb-6'>
+                            <div className='pt-2 mb-2'>
+                                <h4 className='font-bold text-gray-900 mb-1'>
+                                    Duplicate Owners ({compareOwnerGroupingsResultsCount || 0})
+                                </h4>
+                            </div>
+
+                            {compareLoading && (
+                                <div className='ml-1 inline-block'>
+                                    <Spinner size='sm' />
+                                </div>
+                            )}
+                        </div>
+
+                        {!compareLoading && compareOwnerGroupingsResultsCount > 0 && (
+                            <div className='overflow-x-auto'>
+                                <table className='w-full' aria-atomic='true'>
+                                    <thead>
+                                    <tr className='border-b-2 border-gray-300 bg-white'>
+                                        <th scope='col' className='text-left font-semibold text-gray-900 py-2 px-3'>
+                                            NAME
+                                        </th>
+                                        <th scope='col' className='text-left font-semibold text-gray-900 py-2 px-3'>
+                                            UH USERNAME
+                                        </th>
+                                        <th scope='col' className='text-left font-semibold text-gray-900 py-2 px-3'>
+                                            SOURCES OF OWNERSHIP
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {Object.entries(compareOwnerGroupingsResults).map(([uhUuid, data]) => (
+                                        <tr
+                                            key={uhUuid}
+                                            className={`border-b border-gray-200 hover:bg-gray-200 transition-colors bg-gray-50`}
+                                        >
+                                            <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
+                                                {data.name}
+                                            </td>
+                                            <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
+                                                {data.uid}
+                                            </td>
+                                            <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
+                                                {data.paths && data.paths.length > 0 ? (
+                                                    (() => {
+                                                        const filteredPaths = data.paths.filter((path) => path.trim() !== 'DIRECT');
+                                                        return filteredPaths.length > 0 ? (
+                                                            <ul className='mb-0 pl-5 list-disc'>
+                                                                {filteredPaths.map((path, idx) => (
+                                                                    <li key={idx} className='text-sm'>
+                                                                        {path}
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        ) : (
+                                                            <span className='text-gray-400'>—</span>
+                                                        );
+                                                    })()
+                                                ) : (
+                                                    <span className='text-gray-400'>—</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {!compareLoading && compareOwnerGroupingsResultsCount === 0 && (
+                            <p className='text-gray-600'>No duplicate owners found.</p>
+                        )}
+                    </div>
+                </div>
+
                 {isResetGroupModalOpen && (
                     <DynamicModal
                         open={isResetGroupModalOpen}
@@ -216,7 +318,7 @@ const Actions = ({ groupingPath }: { groupingPath: string }) => {
                         data-testid='loading-spinner'
                         className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'
                     >
-                        <Spinner size='lg' data-testid='spinner' role='presentation' />
+                        <Spinner size='lg' />
                     </div>
                 )}
 

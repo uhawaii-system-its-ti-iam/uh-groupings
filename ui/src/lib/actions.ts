@@ -516,3 +516,17 @@ export async function getNumberOfDirectOwners(groupingPath: string) {
     const endpoint = `${baseUrl}/members/${groupingPath}/owners/count`;
     return getRequest<number>(endpoint);
 }
+
+/**
+ * Fetch duplicate owners for a grouping (server action).
+ * This is a server action because it requires authentication via JWT.
+ *
+ * @param groupingPath - The path of the grouping
+ *
+ * @returns The promise of duplicate owners map
+ */
+export async function getDuplicateOwners(groupingPath: string): Promise<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>> {
+    z.string().parse(groupingPath);
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/compare`;
+    return getRequest<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>>(endpoint);
+}
