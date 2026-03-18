@@ -15,9 +15,10 @@ interface DuplicateOwnersData {
  * @returns Object containing duplicateOwners and duplicateOwnersCount
  */
 export async function getDuplicateOwnersData(encodedGroupingPath: string): Promise<DuplicateOwnersData> {
-    const decodedGroupingPath = decodeURIComponent(encodedGroupingPath);
 
     try {
+        const decodedGroupingPath = decodeURIComponent(encodedGroupingPath);
+
         const result = await getDuplicateOwners(decodedGroupingPath);
 
         if (result && typeof result === 'object') {

@@ -214,19 +214,3 @@ export const groupingPathIsValid = async (groupingPath: string): Promise<boolean
     const endpoint = `${baseUrl}/grouping/${groupingPath}/is-valid`;
     return getRequest<boolean>(endpoint);
 };
-
-/**
- * Compare owner groupings to find duplicate owners.
- *
- * @param groupingPath - The path of the grouping
- *
- * @returns The promise of the compare owner groupings result
- */
-export const compareOwnerGroupings = async (groupingPath: string): Promise<
-    Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>
-> => {
-    const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/compare`;
-    return await getRequest<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>>(endpoint);
-};
-
-

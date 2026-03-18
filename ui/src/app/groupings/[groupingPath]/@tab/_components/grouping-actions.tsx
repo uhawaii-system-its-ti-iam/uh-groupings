@@ -41,9 +41,9 @@ const Actions = ({
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
-    const [compareLoading] = useState(false);
-    const [compareOwnerGroupingsResults] = useState<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>>(initialDuplicateOwners);
-    const [compareOwnerGroupingsResultsCount] = useState(initialDuplicateOwnersCount);
+    const compareLoading = false;
+    const compareOwnerGroupingsResults: Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }> = initialDuplicateOwners;
+    const compareOwnerGroupingsResultsCount = initialDuplicateOwnersCount;
 
     const toggleIncludeCheck = () => {
         setIsIncludeChecked(prev => !prev);
@@ -91,7 +91,7 @@ const Actions = ({
                         }
                     })
                     .catch((error) => {
-                        console.error('Failed to reset the Exclude list.', error);
+                        console.error('Failed to reset the Include list.', error);
                     }).finally(() => {
                     setIsIncludeDisabled(false);
                 })
@@ -263,7 +263,7 @@ const Actions = ({
                                             <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
                                                 {data.paths && data.paths.length > 0 ? (
                                                     (() => {
-                                                        const filteredPaths = data.paths.filter((path) => path.trim() !== 'DIRECT');
+                                                        const filteredPaths = data.paths.filter((path) => path.trim().toUpperCase() !== 'DIRECT');
                                                         return filteredPaths.length > 0 ? (
                                                             <ul className='mb-0 pl-5 list-disc'>
                                                                 {filteredPaths.map((path, idx) => (
