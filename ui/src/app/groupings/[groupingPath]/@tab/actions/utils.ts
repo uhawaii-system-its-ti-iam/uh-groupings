@@ -7,6 +7,51 @@ interface DuplicateOwnersData {
     duplicateOwnersCount: number;
 }
 
+function isDuplicateOwnersRecord(
+    value: unknown
+): value is DuplicateOwnersData['duplicateOwners'] {
+    if (!value || typeof value !== 'object') {
+        return false;
+    }
+
+    const record = value as Record<string, unknown>;
+
+    for (const key of Object.keys(record)) {
+        const entry = record[key] as {
+            uhUuid?: unknown;
+            name?: unknown;
+            uid?: unknown;
+            paths?: unknown;
+        };
+
+        if (!entry || typeof entry !== 'object') {
+            return false;
+        }
+
+        if (typeof entry.uhUuid !== 'string') {
+            return false;
+        }
+
+        if (typeof entry.name !== 'string') {
+            return false;
+        }
+
+        if (typeof entry.uid !== 'string') {
+            return false;
+        }
+
+        if (!Array.isArray(entry.paths)) {
+            return false;
+        }
+
+        if (!entry.paths.every((p) => typeof p === 'string')) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 /**
  * Fetches duplicate owners data for a grouping path.
  * Handles decoding the grouping path and error handling.
@@ -21,7 +66,7 @@ export async function getDuplicateOwnersData(encodedGroupingPath: string): Promi
 
         const result = await getDuplicateOwners(decodedGroupingPath);
 
-        if (result && typeof result === 'object') {
+        if (isDuplicateOwnersRecord(result)) {
             const duplicateOwnersCount = Object.keys(result).length;
 
             return {
