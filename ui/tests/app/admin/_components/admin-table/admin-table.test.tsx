@@ -9,18 +9,18 @@ const memberAttributeResultsMock = vi.hoisted(() => vi.fn());
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
-        refresh: refreshMock,
-    }),
+        refresh: refreshMock
+    })
 }));
 
 vi.mock('@/lib/actions', () => ({
     addAdmin: addAdminMock,
     removeAdmin: removeAdminMock,
-    memberAttributeResults: memberAttributeResultsMock,
+    memberAttributeResults: memberAttributeResultsMock
 }));
 
 vi.mock('@/components/ui/spinner', () => ({
-    Spinner: () => <div data-testid="spinner" />,
+    Spinner: () => <div data-testid="spinner" />
 }));
 
 vi.mock('@/components/modal/dynamic-modal', () => ({
@@ -31,20 +31,33 @@ vi.mock('@/components/modal/dynamic-modal', () => ({
                 <div>{body}</div>
                 <button onClick={onClose}>{closeText}</button>
             </div>
-        ) : null,
+        ) : null
 }));
 
 vi.mock('@/components/modal/remove-member-modal', () => ({
-    default: ({ open, member, group, onConfirm, onClose }: any) =>
-        open ? (
+    default: ({ isOpen, memberToRemove, group, groupingPath, onClose, onSuccess, onProcessing }: any) =>
+        isOpen ? (
             <div data-testid="remove-member-modal">
                 <div>Remove Member</div>
                 <div>{group}</div>
-                <div>{member.name}</div>
-                <button onClick={onConfirm}>Yes</button>
+                <div>{memberToRemove.name}</div>
+                <button
+                    onClick={async () => {
+                        onProcessing();
+                        try {
+                            await removeAdminMock(memberToRemove.uid);
+                            onSuccess();
+                            onClose();
+                        } catch (error) {
+                            console.error('Error removing member:', error);
+                        }
+                    }}
+                >
+                    Yes
+                </button>
                 <button onClick={onClose}>Cancel</button>
             </div>
-        ) : null,
+        ) : null
 }));
 
 vi.mock('@/components/modal/add-member-modal', () => ({
@@ -59,7 +72,7 @@ vi.mock('@/components/modal/add-member-modal', () => ({
                 <button onClick={onConfirm}>Yes</button>
                 <button onClick={onClose}>Cancel</button>
             </div>
-        ) : null,
+        ) : null
 }));
 
 vi.mock('@/lib/messages', () => ({
@@ -69,10 +82,10 @@ vi.mock('@/lib/messages', () => ({
                 ADD_TITLE: 'Add Success',
                 ADD_BODY: (name: string) => `Added ${name}`,
                 REMOVE_TITLE: 'Remove Success',
-                REMOVE_BODY: (name: string) => `Removed ${name}`,
-            },
-        },
-    },
+                REMOVE_BODY: (name: string) => `Removed ${name}`
+            }
+        }
+    }
 }));
 
 function deferred<T = void>() {
@@ -97,8 +110,8 @@ const mockData = {
         uhUuid: `uhUuid-example-${i}`,
         uid: `uid-example-${i}`,
         firstName: `firstName-example-${i}`,
-        lastName: `lastName-example-${i}`,
-    })),
+        lastName: `lastName-example-${i}`
+    }))
 };
 
 beforeEach(() => {
@@ -121,7 +134,6 @@ describe('AdminTable', () => {
         await waitFor(() => {
             expect(screen.getByTestId('chevron-down-icon')).toBeInTheDocument();
         });
-
 
         expect(screen.getAllByRole('row').length).toBeLessThanOrEqual(mockData.members.length);
 
@@ -154,59 +166,43 @@ describe('AdminTable', () => {
         expect(screen.queryByText(mockData.members[1].name)).not.toBeInTheDocument();
     });
 
-    it(
-        'sorts data when header is clicked',
-        async () => {
-            const clickAndWaitForSorting = async (
-                headerText: string,
-                expectedOrder: string[],
-                isAscending = true
-            ) => {
-                fireEvent.click(screen.getByText(headerText));
-                await waitFor(() => {
-                    const chevronIcon = screen.getByTestId(
-                        isAscending ? 'chevron-down-icon' : 'chevron-up-icon'
-                    );
-                    expect(chevronIcon).toBeInTheDocument();
-                });
-                const rows = screen.getAllByRole('row');
-                expectedOrder.forEach((item, index) => {
-                    expect(rows[index + 1]).toHaveTextContent(item);
-                });
-            };
+    it('sorts data when header is clicked', async () => {
+        const clickAndWaitForSorting = async (headerText: string, expectedOrder: string[], isAscending = true) => {
+            fireEvent.click(screen.getByText(headerText));
+            await waitFor(() => {
+                const chevronIcon = screen.getByTestId(isAscending ? 'chevron-down-icon' : 'chevron-up-icon');
+                expect(chevronIcon).toBeInTheDocument();
+            });
+            const rows = screen.getAllByRole('row');
+            expectedOrder.forEach((item, index) => {
+                expect(rows[index + 1]).toHaveTextContent(item);
+            });
+        };
 
-            render(<AdminTable groupingGroupMembers={mockData} />);
-            await clickAndWaitForSorting(
-                'Admin Name',
-                [
-                    mockData.members[mockData.members.length - 1].name,
-                    mockData.members[mockData.members.length - 2].name,
-                ],
-                false
-            );
-            await clickAndWaitForSorting('Admin Name', [mockData.members[0].name, mockData.members[1].name], true);
-            await clickAndWaitForSorting('UH Number', [mockData.members[0].uhUuid, mockData.members[1].uhUuid], true);
-            await clickAndWaitForSorting(
-                'UH Number',
-                [
-                    mockData.members[mockData.members.length - 1].uhUuid,
-                    mockData.members[mockData.members.length - 2].uhUuid,
-                ],
-                false
-            );
-            await clickAndWaitForSorting('UH Username', [mockData.members[0].uid, mockData.members[1].uid], true);
+        render(<AdminTable groupingGroupMembers={mockData} />);
+        await clickAndWaitForSorting(
+            'Admin Name',
+            [mockData.members[mockData.members.length - 1].name, mockData.members[mockData.members.length - 2].name],
+            false
+        );
+        await clickAndWaitForSorting('Admin Name', [mockData.members[0].name, mockData.members[1].name], true);
+        await clickAndWaitForSorting('UH Number', [mockData.members[0].uhUuid, mockData.members[1].uhUuid], true);
+        await clickAndWaitForSorting(
+            'UH Number',
+            [
+                mockData.members[mockData.members.length - 1].uhUuid,
+                mockData.members[mockData.members.length - 2].uhUuid
+            ],
+            false
+        );
+        await clickAndWaitForSorting('UH Username', [mockData.members[0].uid, mockData.members[1].uid], true);
 
-            await clickAndWaitForSorting(
-                'UH Username',
-                [
-                    mockData.members[mockData.members.length - 1].uid,
-                    mockData.members[mockData.members.length - 2].uid,
-                ],
-                false
-            );
-        },
-        10000
-    );
+        await clickAndWaitForSorting(
+            'UH Username',
+            [mockData.members[mockData.members.length - 1].uid, mockData.members[mockData.members.length - 2].uid],
+            false
+        );
+    }, 10000);
 
     it('should paginate correctly', async () => {
         render(<AdminTable groupingGroupMembers={mockData} />);
@@ -222,7 +218,11 @@ describe('AdminTable', () => {
         await checkPageContent('First', 0, pageSize - 1);
         await checkPageContent('Next', pageSize, pageSize * 2 - 1);
         await checkPageContent('Last', mockData.members.length - pageSize, mockData.members.length - 1);
-        await checkPageContent('Previous', mockData.members.length - pageSize * 2, mockData.members.length - pageSize - 1);
+        await checkPageContent(
+            'Previous',
+            mockData.members.length - pageSize * 2,
+            mockData.members.length - pageSize - 1
+        );
     });
 
     it('remove flow: click trash -> open modal -> Yes calls API -> spinner -> success modal -> rerender updates table', async () => {
@@ -231,14 +231,21 @@ describe('AdminTable', () => {
         const members = [
             { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' },
             { resultCode: 'SUCCESS', uid: 'uid-2', uhUuid: '222', name: 'Bob B', firstName: 'Bob', lastName: 'B' },
-            { resultCode: 'SUCCESS', uid: 'uid-3', uhUuid: '333', name: 'Charlie C', firstName: 'Charlie', lastName: 'C' },
+            {
+                resultCode: 'SUCCESS',
+                uid: 'uid-3',
+                uhUuid: '333',
+                name: 'Charlie C',
+                firstName: 'Charlie',
+                lastName: 'C'
+            }
         ];
 
         const initialData = {
             resultCode: 'SUCCESS',
             size: members.length,
             groupPath: 'example:groupingAdmins',
-            members,
+            members
         };
 
         const { rerender } = render(<AdminTable groupingGroupMembers={initialData as any} />);
@@ -268,7 +275,7 @@ describe('AdminTable', () => {
         expect(refreshMock).toHaveBeenCalled();
         const afterRemoveData = {
             ...initialData,
-            members: members.filter((m) => m.uid !== 'uid-2'),
+            members: members.filter((m) => m.uid !== 'uid-2')
         };
 
         rerender(<AdminTable groupingGroupMembers={afterRemoveData as any} />);
@@ -285,14 +292,14 @@ describe('AdminTable', () => {
 
         const members = [
             { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' },
-            { resultCode: 'SUCCESS', uid: 'uid-2', uhUuid: '222', name: 'Bob B', firstName: 'Bob', lastName: 'B' },
+            { resultCode: 'SUCCESS', uid: 'uid-2', uhUuid: '222', name: 'Bob B', firstName: 'Bob', lastName: 'B' }
         ];
 
         const initialData = {
             resultCode: 'SUCCESS',
             size: members.length,
             groupPath: 'example:groupingAdmins',
-            members,
+            members
         };
 
         const newUser = {
@@ -301,10 +308,10 @@ describe('AdminTable', () => {
             name: 'David D',
             firstName: 'David',
             lastName: 'D',
-            resultCode: 'SUCCESS',
+            resultCode: 'SUCCESS'
         };
         memberAttributeResultsMock.mockResolvedValueOnce({
-            results: [newUser],
+            results: [newUser]
         });
         const { rerender } = render(<AdminTable groupingGroupMembers={initialData as any} />);
         expect(await screen.findByText('Manage Admins')).toBeInTheDocument();
@@ -338,7 +345,7 @@ describe('AdminTable', () => {
         expect(refreshMock).toHaveBeenCalled();
         const afterAddData = {
             ...initialData,
-            members: [...members, newUser],
+            members: [...members, newUser]
         };
 
         rerender(<AdminTable groupingGroupMembers={afterAddData as any} />);
@@ -351,17 +358,19 @@ describe('AdminTable', () => {
         const user = userEvent.setup();
 
         const members = [
-            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' },
+            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' }
         ];
 
         render(
             <AdminTable
-                groupingGroupMembers={{
-                    resultCode: 'SUCCESS',
-                    size: 1,
-                    groupPath: 'example:groupingAdmins',
-                    members,
-                } as any}
+                groupingGroupMembers={
+                    {
+                        resultCode: 'SUCCESS',
+                        size: 1,
+                        groupPath: 'example:groupingAdmins',
+                        members
+                    } as any
+                }
             />
         );
 
@@ -382,17 +391,19 @@ describe('AdminTable', () => {
         const user = userEvent.setup();
 
         const members = [
-            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' },
+            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' }
         ];
 
         const { rerender } = render(
             <AdminTable
-                groupingGroupMembers={{
-                    resultCode: 'SUCCESS',
-                    size: 1,
-                    groupPath: 'example:groupingAdmins',
-                    members,
-                } as any}
+                groupingGroupMembers={
+                    {
+                        resultCode: 'SUCCESS',
+                        size: 1,
+                        groupPath: 'example:groupingAdmins',
+                        members
+                    } as any
+                }
             />
         );
 
@@ -415,12 +426,14 @@ describe('AdminTable', () => {
 
         rerender(
             <AdminTable
-                groupingGroupMembers={{
-                    resultCode: 'SUCCESS',
-                    size: 0,
-                    groupPath: 'example:groupingAdmins',
-                    members: [],
-                } as any}
+                groupingGroupMembers={
+                    {
+                        resultCode: 'SUCCESS',
+                        size: 0,
+                        groupPath: 'example:groupingAdmins',
+                        members: []
+                    } as any
+                }
             />
         );
     });
@@ -430,17 +443,19 @@ describe('AdminTable', () => {
         const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
         const members = [
-            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' },
+            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' }
         ];
 
         render(
             <AdminTable
-                groupingGroupMembers={{
-                    resultCode: 'SUCCESS',
-                    size: 1,
-                    groupPath: 'example:groupingAdmins',
-                    members,
-                } as any}
+                groupingGroupMembers={
+                    {
+                        resultCode: 'SUCCESS',
+                        size: 1,
+                        groupPath: 'example:groupingAdmins',
+                        members
+                    } as any
+                }
             />
         );
 
@@ -464,7 +479,7 @@ describe('AdminTable', () => {
         const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
         const members = [
-            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' },
+            { resultCode: 'SUCCESS', uid: 'uid-1', uhUuid: '111', name: 'Alice A', firstName: 'Alice', lastName: 'A' }
         ];
 
         const newUser = {
@@ -473,21 +488,23 @@ describe('AdminTable', () => {
             name: 'Bob B',
             firstName: 'Bob',
             lastName: 'B',
-            resultCode: 'SUCCESS',
+            resultCode: 'SUCCESS'
         };
 
         memberAttributeResultsMock.mockResolvedValueOnce({
-            results: [newUser],
+            results: [newUser]
         });
 
         render(
             <AdminTable
-                groupingGroupMembers={{
-                    resultCode: 'SUCCESS',
-                    size: 1,
-                    groupPath: 'example:groupingAdmins',
-                    members,
-                } as any}
+                groupingGroupMembers={
+                    {
+                        resultCode: 'SUCCESS',
+                        size: 1,
+                        groupPath: 'example:groupingAdmins',
+                        members
+                    } as any
+                }
             />
         );
 
@@ -528,6 +545,4 @@ describe('AdminTable', () => {
 
         expect(removeAdminMock).not.toHaveBeenCalled();
     });
-
-
 });

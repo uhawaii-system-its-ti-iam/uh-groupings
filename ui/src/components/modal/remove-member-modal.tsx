@@ -67,6 +67,8 @@ const RemoveMemberModal = ({
         }
     };
 
+    if (!memberToRemove) return null;
+
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
             <AlertDialogContent
