@@ -8,7 +8,7 @@ vi.mock('@/app/groupings/[groupingPath]/@tab/_components/grouping-actions', () =
     ),
 }));
 
-vi.mock('@/app/groupings/[groupingPath]/@tab/actions/utils', () => ({
+vi.mock('./utils', () => ({
     getDuplicateOwnersData: vi.fn().mockResolvedValue({
         duplicateOwners: {},
         duplicateOwnersCount: 0,
