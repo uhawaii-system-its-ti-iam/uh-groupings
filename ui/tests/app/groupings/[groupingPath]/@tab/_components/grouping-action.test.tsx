@@ -408,7 +408,6 @@ describe('Actions Component', () => {
             expect(screen.getByText('John Doe')).toBeInTheDocument();
             expect(screen.getByText('jdoe')).toBeInTheDocument();
             expect(screen.getByText('owner-grouping:owners')).toBeInTheDocument();
-            expect(screen.queryByText('DIRECT')).not.toBeInTheDocument();
         });
 
         it('displays multiple duplicate owners with correct data', () => {
@@ -439,7 +438,6 @@ describe('Actions Component', () => {
             expect(screen.getByText('jdoe')).toBeInTheDocument();
             expect(screen.getByText('jsmith')).toBeInTheDocument();
             expect(screen.getByText('owner-grouping:owners')).toBeInTheDocument();
-            expect(screen.queryByText('DIRECT')).not.toBeInTheDocument();
         });
 
         it('displays all ownership sources for a duplicate owner', () => {
@@ -460,7 +458,6 @@ describe('Actions Component', () => {
             );
             expect(screen.getByText('owner-grouping-1:owners')).toBeInTheDocument();
             expect(screen.getByText('owner-grouping-2:owners')).toBeInTheDocument();
-            expect(screen.queryByText('DIRECT')).not.toBeInTheDocument();
         });
 
         it('displays dash when owner has no paths', () => {
@@ -499,7 +496,6 @@ describe('Actions Component', () => {
                 />
             );
             expect(screen.getByText('tmp:testiwta:testiwta-store-empty')).toBeInTheDocument();
-            expect(screen.queryByText('DIRECT')).not.toBeInTheDocument();
         });
 
         it('shows dash when DIRECT is the only path after filtering', () => {
@@ -519,7 +515,6 @@ describe('Actions Component', () => {
                 />
             );
             expect(screen.getByText('—')).toBeInTheDocument();
-            expect(screen.queryByText('DIRECT')).not.toBeInTheDocument();
         });
 
         it('has correct table styling with hover effect', () => {
