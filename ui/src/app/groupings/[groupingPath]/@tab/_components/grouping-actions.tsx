@@ -263,10 +263,10 @@ const Actions = ({
                                             <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
                                                 {data.paths && data.paths.length > 0 ? (
                                                     (() => {
-                                                        const filteredPaths = data.paths.filter((path) => path.trim().toUpperCase() !== 'DIRECT');
-                                                        return filteredPaths.length > 0 ? (
+                                                        const paths = data.paths;
+                                                        return paths.length > 0 ? (
                                                             <ul className='mb-0 pl-5 list-disc'>
-                                                                {filteredPaths.map((path, idx) => (
+                                                                {paths.map((path, idx) => (
                                                                     <li key={idx} className='text-sm'>
                                                                         {path}
                                                                     </li>
