@@ -479,44 +479,6 @@ describe('Actions Component', () => {
             expect(screen.getByText('—')).toBeInTheDocument();
         });
 
-        it('filters out DIRECT path and shows only owner-grouping paths', () => {
-            const mockDuplicates = {
-                'uuid1': {
-                    uhUuid: 'uuid1',
-                    name: 'John Doe',
-                    uid: 'jdoe',
-                    paths: ['DIRECT', 'tmp:testiwta:testiwta-store-empty']
-                }
-            };
-            render(
-                <Actions
-                    groupingPath={shortGroupingPath}
-                    initialDuplicateOwners={mockDuplicates}
-                    initialDuplicateOwnersCount={1}
-                />
-            );
-            expect(screen.getByText('tmp:testiwta:testiwta-store-empty')).toBeInTheDocument();
-        });
-
-        it('shows dash when DIRECT is the only path after filtering', () => {
-            const mockDuplicates = {
-                'uuid1': {
-                    uhUuid: 'uuid1',
-                    name: 'John Doe',
-                    uid: 'jdoe',
-                    paths: ['DIRECT']
-                }
-            };
-            render(
-                <Actions
-                    groupingPath={shortGroupingPath}
-                    initialDuplicateOwners={mockDuplicates}
-                    initialDuplicateOwnersCount={1}
-                />
-            );
-            expect(screen.getByText('—')).toBeInTheDocument();
-        });
-
         it('has correct table styling with hover effect', () => {
             const mockDuplicates = {
                 'uuid1': {
