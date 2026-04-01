@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
     `inline-flex items-center justify-center whitespace-nowrap rounded text-base font-normal ring-offset-white
-    transition-colors focus-visible:border-blue-300 focus-visible:outline-none focus-visible:ring-[3px] 
+    focus-visible:border-blue-300 focus-visible:outline-none focus-visible:ring-[3px] 
     focus-visible:ring-blue-200 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950
     dark:focus-visible:ring-slate-300 focus:border-blue-300 focus:outline-none focus:ring-[2.5px] focus:ring-blue-200
     transition ease-in-out duration-150`,
@@ -26,8 +26,7 @@ const buttonVariants = cva(
                 link: `text-slate-900 underline-offset-4 hover:underline dark:text-slate-50`,
                 light: `border border-solid border-gray-300 rounded-md bg-white text-text-color`,
                 removal:
-                    'bg-[#b05b54] text-slate-50 hover:bg-[darkred] dark:bg-red-900 dark:text-slate-50\n' +
-                    '                    dark:hover:bg-red-900/90`'
+                    'bg-[#b05b54] text-slate-50 hover:bg-[darkred] dark:bg-red-900 dark:text-slate-50 dark:hover:bg-red-900/90'
             },
             size: {
                 default: 'h-10 px-2.5 py-2',

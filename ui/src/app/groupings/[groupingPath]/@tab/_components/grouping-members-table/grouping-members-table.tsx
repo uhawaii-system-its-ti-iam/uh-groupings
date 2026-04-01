@@ -55,7 +55,7 @@ const GroupingMembersTable = ({
     groupingPath: string;
     group?: Group;
 }) => {
-    const { members } = groupingGroupMembers;
+    const { members, size } = groupingGroupMembers;
     const queryStateOptions: Omit<UseQueryStateOptions<string>, 'parse'> = {
         history: 'replace',
         scroll: false,
@@ -270,7 +270,7 @@ const GroupingMembersTable = ({
             !group ? isWhereListedPending : isBasisPending
         ),
         data: !group ? groupingMembersWhereListed : groupingMembersIsBasis,
-        rowCount: rowCount,
+        rowCount: globalFilter ? size : rowCount,
         getCoreRowModel: getCoreRowModel(),
         onPaginationChange,
         onSortingChange,
@@ -437,6 +437,7 @@ const GroupingMembersTable = ({
                     groupingPath={groupingPath}
                     onSuccess={handleManageMemberSuccess}
                     onProcessing={() => setIsPerformingRemoval(true)}
+                    onError={() => setIsPerformingRemoval(false)}
                 />
             )}
             {membersToManage && (
@@ -450,6 +451,7 @@ const GroupingMembersTable = ({
                     groupingPath={groupingPath}
                     onSuccess={handleManageMemberSuccess}
                     onProcessing={() => setIsPerformingRemoval(true)}
+                    onError={() => setIsPerformingRemoval(false)}
                 />
             )}
             {/*addMembersModal :*/}

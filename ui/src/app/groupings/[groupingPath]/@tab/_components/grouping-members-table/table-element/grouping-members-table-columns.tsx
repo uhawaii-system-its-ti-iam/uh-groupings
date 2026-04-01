@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { message } from '@/lib/messages';
 
 const GroupingMembersTableColumns = (
-    onOpenManageMemberModal: (manageType: string, membersInList: GroupingGroupMembers['members']) => void,
+    onOpenManageMemberModal: (manageType: string, membersInList: GroupingGroupMembers['members']) => void = () => {},
     group?: Group,
     isPending?: boolean
 ): ColumnDef<GroupingGroupMember | GroupingMember>[] => {
@@ -133,7 +133,7 @@ const GroupingMembersTableColumns = (
             accessorKey: 'whereListed',
             enableSorting: false,
             cell: ({ row }) => (
-                <div className="!whitepsace-normal !break-words !overflow-visible">
+                <div className="!whitespace-normal !break-words !overflow-visible">
                     <GroupingMemberIsBasisCell whereListed={row.getValue('whereListed')} isPending={isPending} />
                 </div>
             )

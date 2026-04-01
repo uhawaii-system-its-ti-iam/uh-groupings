@@ -290,7 +290,7 @@ describe('GroupingMembersTable', () => {
                     // Query updated row checkboxes
                     const uncheckRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
                     uncheckRowCheckboxes.forEach((checkbox) => {
-                        expect(checkbox).toBeChecked();
+                        expect(checkbox).not.toBeChecked();
                     });
                 });
 

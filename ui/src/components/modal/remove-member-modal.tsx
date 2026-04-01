@@ -1,3 +1,5 @@
+'use client';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,7 +26,8 @@ const RemoveMemberModal = ({
     group,
     groupingPath,
     onSuccess,
-    onProcessing
+    onProcessing,
+    onError
 }: {
     isOpen: boolean;
     onClose: () => void;
@@ -33,12 +36,13 @@ const RemoveMemberModal = ({
     groupingPath: string;
     onSuccess: () => void;
     onProcessing: () => void;
+    onError?: () => void;
 }) => {
     const handleRemoveMember = async () => {
         onProcessing();
         try {
-            if (memberToRemove && memberToRemove.uid && memberToRemove.name && memberToRemove.uhUuid) {
-                const membersToRemoveFinal = [memberToRemove.uid, memberToRemove.name, memberToRemove.uhUuid];
+            if (memberToRemove && memberToRemove.uhUuid) {
+                const membersToRemoveFinal = [memberToRemove.uhUuid];
 
                 switch (group) {
                     case 'include':
@@ -61,9 +65,11 @@ const RemoveMemberModal = ({
                 onClose();
             } else {
                 console.error('Error: memberToRemove is undefined or missing properties.');
+                onError?.();
             }
         } catch (error) {
             console.error('Error removing member:', error);
+            onError?.();
         }
     };
 

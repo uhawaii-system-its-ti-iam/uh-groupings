@@ -40,12 +40,12 @@ const SuccessModal = ({
     const getDescription = () => {
         if (manageType === 'removeMembers') {
             return memberCount > 1
-                ? `All members have been successfully removed from the ${groupCapitalized} list`
+                ? `All members have been successfully removed from the ${groupCapitalized} list.`
                 : `${name} has been successfully removed from the ${groupCapitalized} list.`;
         } else if (manageType === 'addMembers') {
             return memberCount > 1
-                ? `All members have been successfully added to the ${groupCapitalized} list`
-                : `${name} has been successfully added to the ${groupCapitalized}</> list.`;
+                ? `All members have been successfully added to the ${groupCapitalized} list.`
+                : `${name} has been successfully added to the ${groupCapitalized} list.`;
         } else {
             return 'Operation completed successfully.';
         }

@@ -1,3 +1,5 @@
+'use client';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,7 +25,8 @@ const RemoveMembersModal = ({
     group,
     groupingPath,
     onSuccess,
-    onProcessing
+    onProcessing,
+    onError
 }: {
     isOpen: boolean;
     onClose: () => void;
@@ -32,6 +35,7 @@ const RemoveMembersModal = ({
     groupingPath: string;
     onSuccess: () => void;
     onProcessing: () => void;
+    onError?: () => void;
 }) => {
     const handleRemoveMembers = async () => {
         onProcessing();
@@ -58,9 +62,11 @@ const RemoveMembersModal = ({
                 onClose();
             } else {
                 console.error('Error: membersToRemove is undefined or empty.');
+                onError?.();
             }
         } catch (error) {
             console.error('Error removing members:', error);
+            onError?.();
         }
     };
 

@@ -74,10 +74,7 @@ describe('RemoveMemberModal', () => {
             await user.click(await screen.findByRole('button', { name: 'Yes' }));
 
             expect(mockOnProcessing).toHaveBeenCalled();
-            expect(removeIncludeMembers).toHaveBeenCalledWith(
-                [testMember.uid, testMember.name, testMember.uhUuid],
-                testGroupingPath
-            );
+            expect(removeIncludeMembers).toHaveBeenCalledWith([testMember.uhUuid], testGroupingPath);
             expect(mockOnSuccess).toHaveBeenCalled();
             expect(mockOnClose).toHaveBeenCalled();
 
@@ -128,10 +125,7 @@ describe('RemoveMemberModal', () => {
             await user.click(await screen.findByRole('button', { name: 'Yes' }));
 
             expect(mockOnProcessing).toHaveBeenCalled();
-            expect(removeExcludeMembers).toHaveBeenCalledWith(
-                [testMember.uid, testMember.name, testMember.uhUuid],
-                testGroupingPath
-            );
+            expect(removeExcludeMembers).toHaveBeenCalledWith([testMember.uhUuid], testGroupingPath);
             expect(mockOnSuccess).toHaveBeenCalled();
             expect(mockOnClose).toHaveBeenCalled();
 
