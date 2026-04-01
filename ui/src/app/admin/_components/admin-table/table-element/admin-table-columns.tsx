@@ -6,18 +6,27 @@ import { message } from '@/lib/messages';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { Trash2Icon } from 'lucide-react';
 
-const AdminTableColumns: ColumnDef<GroupingGroupMember>[] = [
+const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void): ColumnDef<GroupingGroupMember>[] => [
     {
         header: 'Admin Name',
         accessorKey: 'name',
         sortDescFirst: true,
-        cell: ({ row }) => <div className="pl-2 leading-relaxed">{row.getValue('name')}</div>
+        cell: ({ row }) => (
+            <div className="pl-2 leading-relaxed">
+                {row.original.name}
+            </div>
+        ),
     },
     {
         header: 'UH Number',
         accessorKey: 'uhUuid',
-        cell: ({ row }) => <div className="pl-2 leading-relaxed">{row.getValue('uhUuid')}</div>
+        cell: ({ row }) => (
+            <div className="pl-2 leading-relaxed">
+                {row.original.uhUuid}
+            </div>
+        ),
     },
     {
         header: 'UH Username',

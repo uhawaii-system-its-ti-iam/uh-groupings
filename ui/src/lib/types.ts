@@ -1,8 +1,5 @@
 export type Announcement = {
     message: string;
-    start: string;
-    end: string;
-    state: string;
 };
 
 export type Announcements = {

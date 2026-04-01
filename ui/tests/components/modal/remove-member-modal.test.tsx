@@ -2,12 +2,7 @@ import { describe, it, vi, beforeEach, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
-
-vi.mock('next/navigation', () => ({
-    useRouter: () => ({
-        refresh: vi.fn()
-    })
-}));
+import { GroupingGroupMember } from '@/lib/types';
 
 describe('RemoveMemberModal', () => {
     let mockAction: ReturnType<typeof vi.fn>;
@@ -57,20 +52,15 @@ describe('RemoveMemberModal', () => {
         const user = userEvent.setup();
         render(
             <RemoveMemberModal
-                uid="test-uid"
-                name="test-user"
-                uhUuid="test-uhUuid"
+                open={true}
+                member={member}
                 group="test-group"
-                action={mockAction}
+                onConfirm={mockConfirm}
+                onClose={mockClose}
             />
         );
 
-        const trashIcon = screen.getByTestId('remove-member-icon');
-        expect(trashIcon).toBeInTheDocument();
-
-        await user.click(trashIcon);
-
-        expect(await screen.findByText('Remove Member')).toBeInTheDocument();
+        expect(screen.getByText('Remove Member')).toBeInTheDocument();
         expect(screen.getAllByText('test-user')).toHaveLength(2);
         expect(screen.getByText('test-uid')).toBeInTheDocument();
         expect(screen.getByText('test-uhUuid')).toBeInTheDocument();
@@ -79,13 +69,14 @@ describe('RemoveMemberModal', () => {
 
     it('should call action with uid and refresh router when Yes is clicked', async () => {
         const user = userEvent.setup();
+
         render(
             <RemoveMemberModal
-                uid="test-uid"
-                name="test-user"
-                uhUuid="test-uhUuid"
+                open={true}
+                member={member}
                 group="test-group"
-                action={mockAction}
+                onConfirm={mockConfirm}
+                onClose={mockClose}
             />
         );
 
@@ -98,13 +89,14 @@ describe('RemoveMemberModal', () => {
 
     it('should close modal after confirming removal', async () => {
         const user = userEvent.setup();
+
         render(
             <RemoveMemberModal
-                uid="test-uid"
-                name="test-user"
-                uhUuid="test-uhUuid"
+                open={true}
+                member={member}
                 group="test-group"
-                action={mockAction}
+                onConfirm={mockConfirm}
+                onClose={mockClose}
             />
         );
 
