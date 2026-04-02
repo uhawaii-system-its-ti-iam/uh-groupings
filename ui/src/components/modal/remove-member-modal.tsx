@@ -29,14 +29,7 @@ const RemoveMemberModal = ({
     onClose: () => void;
 }) => {
     return (
-        <AlertDialog open={open} onOpenChange={setOpen}>
-            <AlertDialogTrigger asChild>
-                <Trash2Icon
-                    data-testid="remove-member-icon"
-                    className="h-5 w-5 text-red-600 cursor-pointer"
-                    onClick={() => setOpen(true)}
-                />
-            </AlertDialogTrigger>
+        <AlertDialog open={open} onOpenChange={onClose}>
             <AlertDialogContent className="sm:max-w-[500px]">
                 <AlertDialogHeader>
                     <AlertDialogTitle className="text-[1.4rem] text-text-color">

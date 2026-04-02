@@ -1,7 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GroupingGroupMember } from '@/lib/types';
-import RemoveMemberModal from '@/components/modal/remove-member-modal';
-import { removeAdmin } from '@/lib/actions';
 import { message } from '@/lib/messages';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -52,7 +50,6 @@ const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void):
                 );
             }
 
-
             return <div className="pl-2 leading-relaxed">{uid}</div>;
         }
     },
@@ -62,14 +59,15 @@ const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void):
             <div className="flex justify-center w-1/3">
                 <TooltipProvider>
                     <Tooltip>
-                        <TooltipTrigger>
-                            <RemoveMemberModal
-                                uid={row.getValue('uid')}
-                                name={row.getValue('name')}
-                                uhUuid={row.getValue('uhUuid')}
-                                group={'admins'}
-                                action={() => removeAdmin(row.getValue('uid') as string)}
-                            />
+                        <TooltipTrigger asChild>
+                            <button
+                                data-testid={`remove-user-${row.original.uid}`}
+                                aria-label={`Remove admin ${row.original.name}`}
+                                onClick={() => onOpenRemove(row.original)}
+                                className="text-red-600 hover:text-red-800"
+                            >
+                                <Trash2Icon className="h-5 w-5" />
+                            </button>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-48 text-center whitespace-normal" side="top">
                             {message.Tooltip.REMOVE_ADMIN}

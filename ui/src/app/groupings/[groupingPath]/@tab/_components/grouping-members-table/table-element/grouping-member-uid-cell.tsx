@@ -1,7 +1,7 @@
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import {message} from "@/lib/messages";
+import { message } from '@/lib/messages';
 
 const GroupingMemberUidCell = ({ uid }: { uid: string }) => {
     return (
