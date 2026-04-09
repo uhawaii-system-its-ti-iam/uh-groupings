@@ -53,6 +53,7 @@ export const message = {
         MODAL_CONFIRM: 'Yes',
         MODAL_INFO_TITLE: 'Actions Information',
         MODAL_SUCCESS_TITLE: 'Grouping Reset Completion',
+        Trashcan_Admin: 'Remove this administrator',
     },
 
     ApiError: {

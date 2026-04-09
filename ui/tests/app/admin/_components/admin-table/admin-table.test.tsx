@@ -62,6 +62,13 @@ vi.mock('@/components/modal/add-member-modal', () => ({
         ) : null,
 }));
 
+vi.mock('@/components/ui/tooltip', () => ({
+    TooltipProvider: ({ children }: never) => <>{children}</>,
+    Tooltip: ({ children }: never) => <>{children}</>,
+    TooltipTrigger: ({ children, asChild }: never) => (asChild ? children : <div>{children}</div>),
+    TooltipContent: ({ children }: never) => <div data-testid="tooltip-content">{children}</div>,
+}));
+
 vi.mock('@/lib/messages', () => ({
     message: {
         AdminTable: {
@@ -72,12 +79,21 @@ vi.mock('@/lib/messages', () => ({
                 REMOVE_BODY: (name: string) => `Removed ${name}`,
             },
         },
+        Actions: {
+            Trashcan_Admin: 'Remove this admin',
+        },
+        RemoveMemberModals: {
+            TOOLTIP: {
+                NO_UID_SINGLE: 'This member does not have a UH username.',
+                NO_UID_MULTIPLE: 'This person does not have a UH username.',
+            },
+        },
     },
 }));
 
 function deferred<T = void>() {
     let resolve!: (value: T) => void;
-    let reject!: (reason?: any) => void;
+    let reject!: (reason?: never) => void;
     const promise = new Promise<T>((res, rej) => {
         resolve = res;
         reject = rej;
