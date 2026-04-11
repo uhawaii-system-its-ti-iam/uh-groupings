@@ -262,7 +262,7 @@ describe('GroupingMembersTable', () => {
 
                 // Passing using fireEvent
                 it('should select all row checkboxes when select-all gets checked (fireEvent)', async () => {
-                    // use fireEvent.click instead of user.click
+                    // Use fireEvent.click instead of user.click
                     fireEvent.click(selectAllCheckbox);
 
                     expect(selectAllCheckbox).toBeChecked();
@@ -277,20 +277,24 @@ describe('GroupingMembersTable', () => {
                 it('should unselect all row checkboxes when select-all gets unchecked (fireEvent)', async () => {
                     fireEvent.click(selectAllCheckbox);
 
-                    expect(selectAllCheckbox).toBeChecked();
-
-                    const rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
-                    rowCheckboxes.forEach((checkbox) => {
-                        expect(checkbox).toBeChecked();
+                    await waitFor(() => {
+                        expect(selectAllCheckbox).toBeChecked();
+                        const rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                        rowCheckboxes.forEach((checkbox) => {
+                            expect(checkbox).toBeChecked();
+                        });
                     });
 
-                    // Now Uncheck select-all
-                    fireEvent.click(selectAllCheckbox);
+                    // Now Uncheck select-all — re-query to avoid stale reference
+                    const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
+                    fireEvent.click(updatedSelectAll);
 
                     // Query updated row checkboxes
-                    const uncheckRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
-                    uncheckRowCheckboxes.forEach((checkbox) => {
-                        expect(checkbox).not.toBeChecked();
+                    await waitFor(() => {
+                        const uncheckRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                        uncheckRowCheckboxes.forEach((checkbox) => {
+                            expect(checkbox).not.toBeChecked();
+                        });
                     });
                 });
 
