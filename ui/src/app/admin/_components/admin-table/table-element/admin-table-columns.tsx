@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GroupingGroupMember } from '@/lib/types';
-import { Trash2Icon } from 'lucide-react';
+import RemoveMemberTrashcan from '@/components/ui/trashcan-icon';
 
 const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void): ColumnDef<GroupingGroupMember>[] => [
     {
@@ -34,14 +34,11 @@ const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void):
     {
         header: 'Remove',
         cell: ({ row }) => (
-            <button
-                data-testid={`remove-user-${row.original.uid}`}
-                aria-label={`Remove admin ${row.original.name}`}
+            <RemoveMemberTrashcan
+                dataTestId={`remove-user-${row.original.uid}`}
+                ariaLabel={`Remove admin ${row.original.name}`}
                 onClick={() => onOpenRemove(row.original)}
-                className="text-red-600 hover:text-red-800"
-            >
-                <Trash2Icon className="h-4 w-4" />
-            </button>
+            />
         ),
     },
 ];
