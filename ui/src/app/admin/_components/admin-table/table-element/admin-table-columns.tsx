@@ -31,15 +31,16 @@ const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void):
         accessorKey: 'uid',
         cell: ({ row }) => (
             <div className="pl-2 leading-relaxed">
-                {row.original.uid}
-                {!row.original.uid && (
-                    <div className="inline-block ml-2">
-                        <span>N/A</span>
-                        {' '}
+                {row.original.uid ? (
+                    row.original.uid
+                ) : (
+                    <span className="text-text-color">
+                        N/A{' '}
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <button
+                                        type="button"
                                         className="text-black cursor-pointer inline"
                                         aria-label="UH Username not available"
                                     >
@@ -51,7 +52,7 @@ const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void):
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
-                    </div>
+                    </span>
                 )}
             </div>
         ),
@@ -63,7 +64,8 @@ const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void):
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <button
-                            data-testid={`remove-user-${row.original.uid}`}
+                            type="button"
+                            data-testid={`remove-user-${row.original.uhUuid}`}
                             aria-label={`Remove ${row.original.name} as admin. There must be at least one admin remaining.`}
                             onClick={() => onOpenRemove(row.original)}
                             className="text-red-600 hover:text-red-800 cursor-pointer pt-1"

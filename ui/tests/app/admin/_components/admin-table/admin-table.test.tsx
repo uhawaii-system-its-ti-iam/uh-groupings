@@ -63,7 +63,7 @@ vi.mock('@/components/modal/add-member-modal', () => ({
 }));
 
 vi.mock('@/components/ui/tooltip', () => ({
-    TooltipProvider: ({ children }: never) => <>{children}</>,
+    TooltipProvider: ({ children }: any) => <>{children}</>,
     Tooltip: ({ children }: never) => <>{children}</>,
     TooltipTrigger: ({ children, asChild }: never) => (asChild ? children : <div>{children}</div>),
     TooltipContent: ({ children }: never) => <div data-testid="tooltip-content">{children}</div>,

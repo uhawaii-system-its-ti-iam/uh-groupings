@@ -17,7 +17,8 @@ export const message = {
         SYNC_DEST: (description: string) => `This option syncs destinations to ${description}`,
         SELECT_ALL_LIST: 'See tools tab to remove entire list',
         TRASH_ICON_REMOVAL: (group: string) =>
-            `Remove member from the ${group.charAt(0).toUpperCase() + group.slice(1)} list`
+            `Remove member from the ${group.charAt(0).toUpperCase() + group.slice(1)} list`,
+        Trashcan_Admin: 'Remove this administrator',
     },
 
     SyncDestinations: {
@@ -53,7 +54,6 @@ export const message = {
         MODAL_CONFIRM: 'Yes',
         MODAL_INFO_TITLE: 'Actions Information',
         MODAL_SUCCESS_TITLE: 'Grouping Reset Completion',
-        Trashcan_Admin: 'Remove this administrator',
     },
 
     ApiError: {

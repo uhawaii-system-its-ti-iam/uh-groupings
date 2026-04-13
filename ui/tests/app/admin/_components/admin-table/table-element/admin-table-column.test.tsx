@@ -33,7 +33,7 @@ vi.mock('@/lib/messages', () => ({
 
 describe('AdminTableColumns', () => {
     afterEach(() => {
-        // cleanup is handled automatically by vitest
+        cleanup();
     });
 
     it('calls onOpenModal with the full member when trash icon is clicked', async () => {
@@ -58,7 +58,7 @@ describe('AdminTableColumns', () => {
         };
 
         render(<>{flexRender(removeColumn.cell, { row: mockRow } as never)}</>);
-        await user.click(screen.getByTestId('remove-user-test-uid'));
+        await user.click(screen.getByTestId('remove-user-11111111'));
 
         expect(onOpenModal).toHaveBeenCalledTimes(1);
         expect(onOpenModal).toHaveBeenCalledWith(member);
