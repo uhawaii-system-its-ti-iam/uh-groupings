@@ -176,7 +176,7 @@ export const putRequestAsync = async <T>(
  */
 export const deleteRequest = async <T>(
     endpoint: string,
-     body?: object | string | string[],
+    body?: object | string | string[],
     contentType = 'application/json'
 ): Promise<T> => {
     const jwtToken = await generateJWT();

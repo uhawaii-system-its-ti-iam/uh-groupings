@@ -7,7 +7,7 @@ const GroupingMemberNameCell = ({ name, uid, uhUuid }: { name: string; uid: stri
     return (
         <>
             {name}{' '}
-            {isDepartmental(uid, uhUuid) && (
+            {uhUuid && isDepartmental(uid, uhUuid) && (
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>

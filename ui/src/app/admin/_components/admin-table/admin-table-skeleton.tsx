@@ -1,10 +1,9 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import AdminTableColumns from '@/app/admin/_components/admin-table/table-element/admin-table-columns';
 
 const AdminTableSkeleton = () => {
-    const pageSize = 7; // Average number of rows
-
+    const pageSize = 7;
+    const columns = ['Admin Name', 'UH Number', 'UH Username', 'Remove'];
     return (
         <div className="mb-12">
             <div className="h-full flex flex-col md:flex-row md:justify-between pt-5 mb-4">
@@ -19,18 +18,18 @@ const AdminTableSkeleton = () => {
             <Table className="mb-4">
                 <TableHeader>
                     <TableRow>
-                        {AdminTableColumns.map((column) => (
-                            <TableHead key={`header-${column}`} className={`pl-[0.5rem]`}>
+                        {columns.map((col) => (
+                            <TableHead key={col}>
                                 <Skeleton className="h-5 w-36 rounded-[0.25rem]" />
                             </TableHead>
                         ))}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {Array.from(Array(pageSize), (_, index) => (
+                    {Array.from({ length: pageSize }).map((_, index) => (
                         <TableRow key={index}>
-                            {AdminTableColumns.map((column) => (
-                                <TableCell key={`header-${column}`} className={`p-[0.5rem]`}>
+                            {columns.map((col) => (
+                                <TableCell key={col}>
                                     <Skeleton className="h-5 w-72 rounded-[0.25rem]" />
                                 </TableCell>
                             ))}
