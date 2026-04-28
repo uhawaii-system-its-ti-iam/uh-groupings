@@ -66,7 +66,9 @@ export const message = {
 
     RemoveMemberModals: {
         ALERT_DESCRIPTION:
-            'Membership changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases changes may take several hours to be fully processed, depending on the number of members and the synchronization destination.',
+            'Membership changes made may not take effect immediately. Usually, 3-5 minutes ' +
+            'should be anticipated. In extreme cases changes may take several hours to be fully ' +
+            'processed, depending on the number of members and the synchronization destination.',
         TOOLTIP: {
             NO_UID_SINGLE: 'This member does not have a UH username.',
             NO_UID_MULTIPLE: 'This person does not have a UH username.'
