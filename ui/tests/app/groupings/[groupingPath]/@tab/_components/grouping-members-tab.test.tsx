@@ -7,6 +7,15 @@ import * as Actions from '@/lib/actions';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
 vi.mock('@/lib/actions');
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        refresh: vi.fn(),
+        push: vi.fn(),
+        replace: vi.fn(),
+        back: vi.fn(),
+        forward: vi.fn()
+    })
+}));
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -50,6 +59,8 @@ describe('GroupingMembersTab', () => {
     });
 
     it('should parse the searchParams', async () => {
+        vi.spyOn(Actions, 'getGroupingMembers').mockResolvedValue(mockGroupingMembers);
+        vi.spyOn(Actions, 'getNumberOfGroupingMembers').mockResolvedValue(pageSize * 3);
         render(
             await GroupingMembersTab({
                 params: { groupingPath },
@@ -63,7 +74,7 @@ describe('GroupingMembersTab', () => {
         );
 
         // Verify pagination bar is on page 1.
-        expect(screen.getByText('1')).toBeInTheDocument();
+        expect(await screen.findByText('1')).toBeInTheDocument();
         expect(screen.getByText('2')).toBeInTheDocument();
         expect(screen.getByText('3')).toBeInTheDocument();
         expect(screen.queryByText('4')).not.toBeInTheDocument();

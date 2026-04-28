@@ -1,11 +1,21 @@
 import GroupingMembersTable from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/grouping-members-table';
 import { GroupingGroupMember, GroupingGroupMembers } from '@/lib/types';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { createMockProviders } from 'tests/vitest.setup';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as Actions from '@/lib/actions';
 import userEvent from '@testing-library/user-event';
 import { type OnUrlUpdateFunction } from 'nuqs/adapters/testing';
+
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        refresh: vi.fn(),
+        push: vi.fn(),
+        replace: vi.fn(),
+        back: vi.fn(),
+        forward: vi.fn()
+    })
+}));
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -146,9 +156,283 @@ describe('GroupingMembersTable', () => {
                 );
             });
         });
+
+        describe('Checkbox Column', () => {
+            it.each(['include', 'exclude'] as const)(
+                'should display the checkbox column in the %s tab',
+                async (tab) => {
+                    render(
+                        <GroupingMembersTable
+                            groupingGroupMembers={mockGroupingGroupMembers}
+                            groupingPath={groupingPath}
+                            group={tab}
+                        />,
+                        {
+                            wrapper: createMockProviders()
+                        }
+                    );
+
+                    // Verify presence of "select all rows" checkbox.
+                    expect(screen.getByRole('checkbox', { name: /select all rows/i })).toBeInTheDocument();
+                    // Verify presence of row checkboxes.
+                    const rowCheckBoxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                    expect(rowCheckBoxes).toHaveLength(mockGroupingGroupMembers.members.length);
+                }
+            );
+
+            it.each([
+                { name: 'allMembers', group: undefined },
+                { name: 'basis', group: 'basis' as const },
+                { name: 'owners', group: 'owners' as const }
+            ])('should NOT display the checkbox column in the $name tab', async ({ group }) => {
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group={group}
+                    />,
+                    {
+                        wrapper: createMockProviders()
+                    }
+                );
+
+                // Verify absence of select all rows checkbox.
+                expect(screen.queryByRole('checkbox', { name: /select all rows/i })).not.toBeInTheDocument();
+
+                // Verify Absence of row checkboxes.
+                const rowCheckBoxes = screen.queryAllByRole('checkbox', { name: /select row/i });
+                expect(rowCheckBoxes).toHaveLength(0);
+            });
+
+            describe('Checkbox Selection Behavior', () => {
+                let user: ReturnType<typeof userEvent.setup>;
+                let selectAllCheckbox: HTMLElement;
+                let rowCheckboxes: HTMLElement[];
+                beforeEach(() => {
+                    user = userEvent.setup();
+                    render(
+                        <GroupingMembersTable
+                            groupingGroupMembers={mockGroupingGroupMembers}
+                            groupingPath={groupingPath}
+                            group="include"
+                        />,
+                        {
+                            wrapper: createMockProviders()
+                        }
+                    );
+                    selectAllCheckbox = screen.getByRole('checkbox', { name: /select all rows/i });
+                    rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                });
+
+                it('should show initial unchecked state for all checkboxes', async () => {
+                    expect(selectAllCheckbox).not.toBeChecked();
+                    rowCheckboxes.forEach((checkbox) => {
+                        expect(checkbox).not.toBeChecked();
+                    });
+                });
+
+                it('should select a single checkbox when clicked', async () => {
+                    await user.click(rowCheckboxes[0]);
+
+                    expect(rowCheckboxes[0]).toBeChecked();
+                    // other checkboxes should remain unchecked
+                    for (let i = 1; i < rowCheckboxes.length; i++) {
+                        expect(rowCheckboxes[i]).not.toBeChecked();
+                    }
+                    expect(selectAllCheckbox).not.toBeChecked();
+                });
+
+                it('should unselect a single checkbox when clicked again', async () => {
+                    await user.click(rowCheckboxes[0]);
+                    expect(rowCheckboxes[0]).toBeChecked();
+
+                    await user.click(rowCheckboxes[0]);
+                    expect(rowCheckboxes[0]).not.toBeChecked();
+                });
+
+                it('should check the select-all checkbox it is clicked and uncheck when clicked again', async () => {
+                    expect(selectAllCheckbox).not.toBeChecked();
+                    await user.click(selectAllCheckbox);
+
+                    expect(selectAllCheckbox).toBeChecked();
+
+                    await user.click(selectAllCheckbox);
+                    expect(selectAllCheckbox).not.toBeChecked();
+                });
+
+                // Passing using fireEvent
+                it('should select all row checkboxes when select-all gets checked (fireEvent)', async () => {
+                    // Use fireEvent.click instead of user.click
+                    fireEvent.click(selectAllCheckbox);
+
+                    expect(selectAllCheckbox).toBeChecked();
+
+                    // Query fresh rowCheckboxes
+                    const rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                    rowCheckboxes.forEach((checkbox) => {
+                        expect(checkbox).toBeChecked();
+                    });
+                });
+
+                it('should unselect all row checkboxes when select-all gets unchecked (fireEvent)', async () => {
+                    fireEvent.click(selectAllCheckbox);
+
+                    await waitFor(() => {
+                        expect(selectAllCheckbox).toBeChecked();
+                        const rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                        rowCheckboxes.forEach((checkbox) => {
+                            expect(checkbox).toBeChecked();
+                        });
+                    });
+
+                    // Now Uncheck select-all — re-query to avoid stale reference
+                    const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
+                    fireEvent.click(updatedSelectAll);
+
+                    // Query updated row checkboxes
+                    await waitFor(() => {
+                        const uncheckRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                        uncheckRowCheckboxes.forEach((checkbox) => {
+                            expect(checkbox).not.toBeChecked();
+                        });
+                    });
+                });
+
+                it('should uncheck select-all when any individual checkbox gets unchecked', async () => {
+                    // First select all
+                    fireEvent.click(selectAllCheckbox);
+                    expect(selectAllCheckbox).toBeChecked();
+
+                    // Verify all row checkboxes are checked
+                    const rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                    rowCheckboxes.forEach((checkbox) => {
+                        expect(checkbox).toBeChecked();
+                    });
+
+                    // Then uncheck one individual checkbox
+                    fireEvent.click(rowCheckboxes[0]);
+                    const selectAllCheckboxUnchecked = screen.getByRole('checkbox', { name: /select all rows/i });
+                    expect(selectAllCheckboxUnchecked).not.toBeChecked();
+
+                    const updatedRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                    expect(rowCheckboxes[0]).not.toBeChecked();
+
+                    // Other checkboxes should remain checked
+                    for (let i = 1; i < rowCheckboxes.length; i++) {
+                        expect(rowCheckboxes[i]).toBeChecked();
+                    }
+                });
+            });
+        });
+
+        // Check for trash icon
+        describe('Trash Icon', () => {
+            const tabsWithTrashIcon = ['include', 'exclude', 'owners'] as const;
+
+            it.each(tabsWithTrashIcon)('should display trash icon in the %s tab', async (tab) => {
+                const user = userEvent.setup();
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group={tab}
+                    />,
+                    {
+                        wrapper: createMockProviders()
+                    }
+                );
+
+                const trashIcons = screen.getAllByRole('button', { name: /remove member/i });
+                // Check if the number of trash icons is equal to the number of grouping members
+                expect(trashIcons).toHaveLength(mockGroupingGroupMembers.members.length);
+            });
+
+            // Absence of trash icons in All Members and Basis tabs
+            it.each([
+                { name: 'allMembers', group: undefined },
+                { name: 'basis', group: 'basis' as const }
+            ])('should not display trash icon in the $name tab', async ({ group }) => {
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group={group}
+                    />,
+                    {
+                        wrapper: createMockProviders()
+                    }
+                );
+
+                const trashIcons = screen.queryAllByRole('button', { name: /remove member/i });
+                // Check if there are no trash icons
+                expect(trashIcons).toHaveLength(0);
+            });
+
+            it('should open RemoveMemberModal with correct member when trash icon is clicked', async () => {
+                const user = userEvent.setup();
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group="include"
+                    />,
+                    { wrapper: createMockProviders() }
+                );
+
+                // click the trash icon
+                const trashIconButton = screen.getAllByRole('button', { name: /remove member/i })[0];
+                await fireEvent.click(trashIconButton);
+
+                // Expect modal to show
+                await waitFor(() => {
+                    const modal = screen.getByTestId('remove-member-modal');
+                    expect(modal).toBeInTheDocument();
+
+                    //expect title:
+                    expect(within(modal).getByText('Remove Member')).toBeInTheDocument();
+
+                    // Expect matching names of member to remove
+                    const firstMember = mockGroupingGroupMembers.members[0];
+                    expect(within(modal).getAllByText(firstMember.name)[0]).toBeInTheDocument();
+                    expect(within(modal).getAllByText(firstMember.uhUuid)[0]).toBeInTheDocument();
+                    expect(within(modal).getAllByText(firstMember.uid)[0]).toBeInTheDocument();
+                });
+            });
+        });
+    });
+
+    describe('RemoveMemberModal', () => {
+        it('should close the remove member modal when cancel action is triggered', async () => {
+            //open remove member modal through click of trash icon
+            const user = userEvent.setup();
+            render(
+                <GroupingMembersTable
+                    groupingGroupMembers={mockGroupingGroupMembers}
+                    groupingPath={groupingPath}
+                    group="include"
+                />,
+                { wrapper: createMockProviders() }
+            );
+
+            const trashIconButton = screen.getAllByRole('button', { name: /remove member/i })[0];
+            await fireEvent.click(trashIconButton);
+
+            await waitFor(() => {
+                const modal = screen.getByTestId('remove-member-modal');
+                expect(modal).toBeInTheDocument();
+
+                // Click the modal close button
+                fireEvent.click(within(modal).getByTestId('modal-close-button'));
+
+                // Expect the modal to be closed
+                expect(screen.queryByTestId('remove-member-modal')).not.toBeInTheDocument();
+            });
+        });
     });
 
     describe('Pagination', () => {
+        vi.spyOn(Actions, 'getNumberOfGroupingMembers').mockResolvedValue(100);
+
         it('should match the page searchParam to the table', async () => {
             const user = userEvent.setup();
             const onUrlUpdate = vi.fn<OnUrlUpdateFunction>();
@@ -164,7 +448,8 @@ describe('GroupingMembersTable', () => {
                 }
             );
 
-            expect(screen.getByText('5')).toBeInTheDocument();
+            expect(await screen.findByText('5')).toBeInTheDocument();
+            // expect(screen.getByText('5')).toBeInTheDocument();
             expect(screen.queryByText('2')).not.toBeInTheDocument();
 
             await user.click(screen.getByText('3'));
@@ -296,6 +581,92 @@ describe('GroupingMembersTable', () => {
             expect(event.queryString).toBe('');
             expect(event.searchParams.get('search')).toBeNull();
             expect(event.options.history).toBe('replace');
+        });
+    });
+
+    describe('List Management', () => {
+        //   Should display input box, add button and remove button in include, exclude, and owners tab
+        //   Should display import file button in include and exclude tab
+
+        it.each(['include', 'exclude', 'owners'] as const)(
+            'should display ListManagement inputbox, add, and remove buttons in the %s tab',
+            async (tab) => {
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group={tab}
+                    />,
+                    {
+                        wrapper: createMockProviders()
+                    }
+                );
+
+                // Verify presence of ListManagement component elements
+                expect(screen.getByPlaceholderText(/UH Username or UH Number/i)).toBeInTheDocument();
+                expect(screen.getByTestId('add-member-button')).toBeInTheDocument();
+                expect(screen.getByTestId('remove-member-button')).toBeInTheDocument();
+            }
+        );
+
+        //Include and exclude tabs should have import file button
+        it.each(['include', 'exclude'] as const)(
+            'should display ListManagement import file button in the %s tab',
+            async (tab) => {
+                render(
+                    <GroupingMembersTable
+                        groupingGroupMembers={mockGroupingGroupMembers}
+                        groupingPath={groupingPath}
+                        group={tab}
+                    />,
+                    {
+                        wrapper: createMockProviders()
+                    }
+                );
+
+                //Verify presence of import file button
+                expect(screen.getByTestId('import-file-button')).toBeInTheDocument();
+            }
+        );
+
+        // Owners tab should NOT have import file button
+        it('should NOT display ListManagement import file button in the owners tab', async () => {
+            render(
+                <GroupingMembersTable
+                    groupingGroupMembers={mockGroupingGroupMembers}
+                    groupingPath={groupingPath}
+                    group="owners"
+                />,
+                {
+                    wrapper: createMockProviders()
+                }
+            );
+
+            //Verify absence of import file button
+            expect(screen.queryByTestId('import-file-button')).not.toBeInTheDocument();
+        });
+
+        // Absence of ListManagement component in All Members and Basis tabs
+        it.each([
+            { name: 'allMembers', group: undefined },
+            { name: 'basis', group: 'basis' as const }
+        ])('should NOT display ListManagement component in the $name tab', async ({ group }) => {
+            render(
+                <GroupingMembersTable
+                    groupingGroupMembers={mockGroupingGroupMembers}
+                    groupingPath={groupingPath}
+                    group={group}
+                />,
+                {
+                    wrapper: createMockProviders()
+                }
+            );
+
+            // Verify absence of ListManagement component elements
+            expect(screen.queryByPlaceholderText(/UH Username or UH Number/i)).not.toBeInTheDocument();
+            expect(screen.queryByTestId('add-member-button')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('remove-member-button')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('import-file-button')).not.toBeInTheDocument();
         });
     });
 });

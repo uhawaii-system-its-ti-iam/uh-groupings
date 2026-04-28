@@ -7,16 +7,9 @@ import {
     getPaginationRowModel,
     getFilteredRowModel,
     getSortedRowModel,
-    SortingState,
+    SortingState
 } from '@tanstack/react-table';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AdminTableColumns from './table-element/admin-table-columns';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
@@ -27,15 +20,15 @@ import dynamic from 'next/dynamic';
 import AdminTableSkeleton from './admin-table-skeleton';
 import AddAdmin from './table-element/add-admin';
 import { useRouter } from 'next/navigation';
-import { addAdmin, removeAdmin } from '@/lib/actions';
+import { addAdmin } from '@/lib/actions';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
 import { Spinner } from '@/components/ui/spinner';
 import DynamicModal from '@/components/modal/dynamic-modal';
-import {message} from '@/lib/messages';
+import { message } from '@/lib/messages';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
-const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGroupMembers; }) => {
+const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGroupMembers }) => {
     const router = useRouter();
     const [data, setData] = useState<GroupingGroupMember[]>(groupingGroupMembers.members);
     const [globalFilter, setGlobalFilter] = useState('');
@@ -43,8 +36,7 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
     const [isPending, setIsPending] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedMember, setSelectedMember] =
-        useState<GroupingGroupMember | null>(null);
+    const [selectedMember, setSelectedMember] = useState<GroupingGroupMember | null>(null);
 
     const [isSuccessOpen, setIsSuccessOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
@@ -60,9 +52,7 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
             try {
                 await addAdmin(newAdmin.uid);
                 setSuccessTitle(message.AdminTable.SUCCESS.ADD_TITLE);
-                setSuccessMessage(
-                    message.AdminTable.SUCCESS.ADD_BODY(newAdmin.name)
-                );
+                setSuccessMessage(message.AdminTable.SUCCESS.ADD_BODY(newAdmin.name));
                 setIsSuccessOpen(true);
                 router.refresh();
             } catch (err) {
@@ -74,41 +64,17 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
         [router]
     );
 
-    const handleOpenRemoveModal = useCallback(
-        (member: GroupingGroupMember) => {
-            setSelectedMember(member);
-            setIsModalOpen(true);}, []
-    );
+    const handleOpenRemoveModal = useCallback((member: GroupingGroupMember) => {
+        setSelectedMember(member);
+        setIsModalOpen(true);
+    }, []);
 
-    const handleRemoveAdmin = async () => {
-        setIsModalOpen(false);
-        setIsPending(true);
-
-        try {
-            await removeAdmin(selectedMember!.uid);
-            setSuccessTitle(message.AdminTable.SUCCESS.REMOVE_TITLE);
-            setSuccessMessage(
-                message.AdminTable.SUCCESS.REMOVE_BODY(selectedMember!.name)
-            );
-            setIsSuccessOpen(true);
-            router.refresh();
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setIsPending(false);
-            setSelectedMember(null);
-        }
-    };
-
-    const columns = useMemo(
-        () => AdminTableColumns(handleOpenRemoveModal),
-        [handleOpenRemoveModal]
-    );
+    const columns = useMemo(() => AdminTableColumns(handleOpenRemoveModal), [handleOpenRemoveModal]);
 
     const table = useReactTable<GroupingGroupMember>({
         data,
         columns,
-        getRowId: row => row.uid,
+        getRowId: (row) => row.uid,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
@@ -118,7 +84,7 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
         onGlobalFilterChange: setGlobalFilter,
         onSortingChange: setSorting,
         enableMultiSort: true,
-        enableSortingRemoval: false,
+        enableSortingRemoval: false
     });
 
     useEffect(() => {
@@ -134,30 +100,25 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
             )}
 
             <div className="flex flex-col md:flex-row md:justify-between pt-5 mb-4">
-                <h1 className="text-[2rem] font-medium text-text-color pt-3">
-                    Manage Admins
-                </h1>
+                <h1 className="text-[2rem] font-medium text-text-color pt-3">Manage Admins</h1>
                 <div className="flex items-center space-x-2 md:w-60 lg:w-72">
-                    <GlobalFilter
-                        placeholder="Filter Admins..."
-                        filter={globalFilter}
-                        setFilter={setGlobalFilter}
-                    />
+                    <GlobalFilter placeholder="Filter Admins..." filter={globalFilter} setFilter={setGlobalFilter} />
                 </div>
             </div>
 
             <Table className="table-fixed">
                 <TableHeader>
-                    {table.getHeaderGroups().map(headerGroup => (
+                    {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map(header => (
-                                <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()} className="w-1/3">
+                            {headerGroup.headers.map((header) => (
+                                <TableHead
+                                    key={header.id}
+                                    onClick={header.column.getToggleSortingHandler()}
+                                    className="w-1/3"
+                                >
                                     <div className="flex items-center">
-                                        {flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext()
-                                        )}
-                                        <SortArrow direction={header.column.getIsSorted()}/>
+                                        {flexRender(header.column.columnDef.header, header.getContext())}
+                                        <SortArrow direction={header.column.getIsSorted()} />
                                     </div>
                                 </TableHead>
                             ))}
@@ -166,15 +127,15 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
                 </TableHeader>
 
                 <TableBody>
-                    {table.getRowModel().rows.map(row => (
+                    {table.getRowModel().rows.map((row) => (
                         <TableRow key={row.id}>
-                            {row.getVisibleCells().map(cell => (
-                                <TableCell key={cell.id} className={cell.column.getIndex() > 0 ? 'hidden sm:table-cell' : ''}>
+                            {row.getVisibleCells().map((cell) => (
+                                <TableCell
+                                    key={cell.id}
+                                    className={cell.column.getIndex() > 0 ? 'hidden sm:table-cell' : ''}
+                                >
                                     <div className="flex items-center px-2 py-1 whitespace-nowrap overflow-hidden">
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        )}
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </div>
                                 </TableCell>
                             ))}
@@ -185,8 +146,8 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
 
             <div className="grid grid-cols-1 md:grid-cols-2 items-start mt-5 gap-4">
                 <AddAdmin
-                    uids={data.map(m => m.uid)}
-                    uhUuids={data.map(m => m.uhUuid)}
+                    uids={data.map((m) => m.uid)}
+                    uhUuids={data.map((m) => m.uhUuid)}
                     onAddAdmin={handleAddAdmin}
                 />
                 <div className="flex justify-end">
@@ -196,13 +157,27 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
 
             {selectedMember && (
                 <RemoveMemberModal
-                    open={isModalOpen}
-                    member={selectedMember}
-                    group="admins"
-                    onConfirm={handleRemoveAdmin}
+                    isOpen={isModalOpen}
                     onClose={() => {
                         setIsModalOpen(false);
                         setSelectedMember(null);
+                    }}
+                    memberToRemove={{
+                        uid: selectedMember.uid,
+                        name: selectedMember.name,
+                        uhUuid: selectedMember.uhUuid
+                    }}
+                    group="admins"
+                    groupingPath=""
+                    onSuccess={() => {
+                        setIsPending(false);
+                        setSuccessTitle(message.AdminTable.SUCCESS.REMOVE_TITLE);
+                        setSuccessMessage(message.AdminTable.SUCCESS.REMOVE_BODY(selectedMember.name));
+                        setIsSuccessOpen(true);
+                        router.refresh();
+                    }}
+                    onProcessing={() => {
+                        setIsPending(true);
                     }}
                 />
             )}
@@ -220,5 +195,5 @@ const AdminTable = ({groupingGroupMembers,}: { groupingGroupMembers: GroupingGro
 
 export default dynamic(() => Promise.resolve(AdminTable), {
     ssr: false,
-    loading: () => <AdminTableSkeleton />,
+    loading: () => <AdminTableSkeleton />
 });

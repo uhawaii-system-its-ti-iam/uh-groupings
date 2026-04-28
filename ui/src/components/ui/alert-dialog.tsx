@@ -31,7 +31,7 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 const AlertDialogContent = React.forwardRef<
     React.ElementRef<typeof AlertDialogPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => (
     <AlertDialogPortal>
         <AlertDialogOverlay />
         <AlertDialogPrimitive.Content
@@ -48,7 +48,9 @@ const AlertDialogContent = React.forwardRef<
                 className
             )}
             {...props}
-        />
+        >
+            {children}
+        </AlertDialogPrimitive.Content>
     </AlertDialogPortal>
 ));
 AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
@@ -60,7 +62,7 @@ AlertDialogHeader.displayName = 'AlertDialogHeader';
 
 const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
     <div
-        className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 px-4 pt-4 border-t', className)}
+        className={cn('flex flex-col-reverse sm:flex-row justify-end sm:space-x-2 px-4 pt-4 border-t', className)}
         {...props}
     />
 );
@@ -96,11 +98,13 @@ AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 
 const AlertDialogCancel = React.forwardRef<
     React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
-    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
->(({ className, ...props }, ref) => (
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel> & {
+        variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'light' | 'removal';
+    }
+>(({ className, variant = 'secondary', ...props }, ref) => (
     <AlertDialogPrimitive.Cancel
         ref={ref}
-        className={cn(buttonVariants({ variant: 'secondary' }), 'mt-2 sm:mt-0', className)}
+        className={cn(buttonVariants({ variant }), 'mt-2 sm:mt-0', className)}
         {...props}
     />
 ));
