@@ -18,7 +18,7 @@ export const message = {
         SELECT_ALL_LIST: 'See tools tab to remove entire list',
         TRASH_ICON_REMOVAL: (group: string) =>
             `Remove member from the ${group.charAt(0).toUpperCase() + group.slice(1)} list`,
-        Trashcan_Admin: 'Remove this administrator',
+        Trashcan_Admin: 'Remove this admin',
     },
 
     SyncDestinations: {
