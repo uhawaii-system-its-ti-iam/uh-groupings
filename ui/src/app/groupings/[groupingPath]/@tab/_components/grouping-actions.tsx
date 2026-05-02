@@ -41,9 +41,10 @@ const Actions = ({
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
-    const compareLoading = false;
-    const compareOwnerGroupingsResults: Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }> = initialDuplicateOwners;
-    const compareOwnerGroupingsResultsCount = initialDuplicateOwnersCount;
+    const duplicatesLoading = false;
+    const duplicateOwnerResults: Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }> =
+        initialDuplicateOwners;
+    const duplicateOwnersCount = initialDuplicateOwnersCount;
 
     const toggleIncludeCheck = () => {
         setIsIncludeChecked(prev => !prev);
@@ -129,62 +130,50 @@ const Actions = ({
 
     return (
         <TooltipProvider>
-            <div id='actions-display' className='block relative'>
-                <div className='flex flex-wrap'>
-                    <div className='w-full pr-4 pl-4 relative'>
-                        <h1 className='font-bold text-3xl text-gray-900 mt-2 ml-0.5'>
-                            {message.Actions.TITLE}
-                        </h1>
-                        <p className='text-gray-900 mb-2 w-full mt-5 ml-0.5'>
-                            {message.Preferences.INFO}
-                        </p>
+            <div id="actions-display" className="block relative">
+                <div className="flex flex-wrap">
+                    <div className="w-full pr-4 pl-4 relative">
+                        <h1 className="font-bold text-3xl text-gray-900 mt-2 ml-0.5">{message.Actions.TITLE}</h1>
+                        <p className="text-gray-900 mb-2 w-full mt-5 ml-0.5">{message.Preferences.INFO}</p>
                     </div>
                 </div>
 
-                <div className='flex flex-wrap pt-4 pb-5'>
-                    <div className='w-full pr-4 pl-4 relative'>
-                        <h3 className='text-xl text-cyan-800 mt-2 ml-0.5 mb-2'>
-                            {message.Actions.SECTION_TITLE}
-                        </h3>
-                        <form onSubmit={e => e.preventDefault()}>
-                            <div className='flex items-center mb-1 relative'>
+                <div className="flex flex-wrap pt-4 pb-5">
+                    <div className="w-full pr-4 pl-4 relative">
+                        <h3 className="text-xl text-cyan-800 mt-2 ml-0.5 mb-2">{message.Actions.SECTION_TITLE}</h3>
+                        <form onSubmit={(e) => e.preventDefault()}>
+                            <div className="flex items-center mb-1 relative">
                                 <input
-                                    type='checkbox'
-                                    id='include-check'
+                                    type="checkbox"
+                                    id="include-check"
                                     checked={isIncludeChecked}
                                     onChange={toggleIncludeCheck}
                                     disabled={isIncludeDisabled || isLoading}
-                                    className='ml-5 h-4 w-4 text-cyan-600 border-gray-300 rounded'
+                                    className="ml-5 h-4 w-4 text-cyan-600 border-gray-300 rounded"
                                 />
-                                <label
-                                    htmlFor='include-check'
-                                    className='text-base text-gray-900 pl-2 mb-0'
-                                >
+                                <label htmlFor="include-check" className="text-base text-gray-900 pl-2 mb-0">
                                     {message.Actions.INCLUDE_LABEL}
                                 </label>
                             </div>
 
-                            <div className='flex items-center mb-1 relative'>
+                            <div className="flex items-center mb-1 relative">
                                 <input
-                                    type='checkbox'
-                                    id='exclude-check'
+                                    type="checkbox"
+                                    id="exclude-check"
                                     checked={isExcludeChecked}
                                     onChange={toggleExcludeCheck}
                                     disabled={isExcludeDisabled || isLoading}
-                                    className='ml-5 h-4 w-4 text-cyan-600 border-gray-300 rounded'
+                                    className="ml-5 h-4 w-4 text-cyan-600 border-gray-300 rounded"
                                 />
-                                <label
-                                    htmlFor='exclude-check'
-                                    className='text-base text-gray-900 pl-2 mb-0'
-                                >
+                                <label htmlFor="exclude-check" className="text-base text-gray-900 pl-2 mb-0">
                                     {message.Actions.EXCLUDE_LABEL}
                                 </label>
                             </div>
 
-                            <div className='flex items-center space-x-2'>
+                            <div className="flex items-center space-x-2">
                                 <button
-                                    className='bg-cyan-600 hover:bg-cyan-700 text-white py-1 px-2 rounded text-xs'
-                                    type='button'
+                                    className="bg-cyan-600 hover:bg-cyan-700 text-white py-1 px-2 rounded text-xs"
+                                    type="button"
                                     disabled={(!isIncludeChecked && !isExcludeChecked) || isLoading}
                                     onClick={openResetGroupModal}
                                 >
@@ -194,7 +183,7 @@ const Actions = ({
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div
-                                            className='relative ml-2 cursor-pointer'
+                                            className="relative ml-2 cursor-pointer"
                                             onClick={() => openDynamicModal(message.Actions.TOOLTIP)}
                                             data-testid="actions-tooltip-icon"
                                         >
@@ -203,92 +192,88 @@ const Actions = ({
                                             </span>
                                         </div>
                                     </TooltipTrigger>
-                                    <TooltipContent sideOffset={5}>
-                                        {message.Actions.TOOLTIP}
-                                    </TooltipContent>
+                                    <TooltipContent sideOffset={5}>{message.Actions.TOOLTIP}</TooltipContent>
                                 </Tooltip>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                <div className='flex flex-wrap pt-4 pb-5'>
-                    <div className='w-full pr-4 pl-4 relative'>
-                        <h3 className='text-xl text-cyan-800 mt-2 ml-0.5 mb-4'>
-                            Diagnostics
-                        </h3>
+                <div className="flex flex-wrap pt-4 pb-5">
+                    <div className="w-full pr-4 pl-4 relative">
+                        <h3 className="text-xl text-cyan-800 mt-2 ml-0.5 mb-4">Diagnostics</h3>
 
-                        <div className='mb-6'>
-                            <div className='pt-2 mb-2'>
-                                <h4 className='font-bold text-gray-900 mb-1'>
-                                    Duplicate Owners ({compareOwnerGroupingsResultsCount || 0})
+                        <div className="mb-6">
+                            <div className="pt-2 mb-2">
+                                <h4 className="font-bold text-gray-900 mb-1">
+                                    Duplicate Owners ({duplicateOwnersCount || 0})
                                 </h4>
                             </div>
 
-                            {compareLoading && (
-                                <div className='ml-1 inline-block'>
-                                    <Spinner size='sm' />
+                            {duplicatesLoading && (
+                                <div className="ml-1 inline-block">
+                                    <Spinner size="sm" />
                                 </div>
                             )}
                         </div>
 
-                        {!compareLoading && compareOwnerGroupingsResultsCount > 0 && (
-                            <div className='overflow-x-auto'>
-                                <table className='w-full' aria-atomic='true'>
+                        {!duplicatesLoading && duplicateOwnersCount > 0 && (
+                            <div className="overflow-x-auto">
+                                <table className="w-full" aria-atomic="true">
                                     <thead>
-                                    <tr className='border-b-2 border-gray-300 bg-white'>
-                                        <th scope='col' className='text-left font-semibold text-gray-900 py-2 px-3'>
-                                            NAME
-                                        </th>
-                                        <th scope='col' className='text-left font-semibold text-gray-900 py-2 px-3'>
-                                            UH USERNAME
-                                        </th>
-                                        <th scope='col' className='text-left font-semibold text-gray-900 py-2 px-3'>
-                                            SOURCES OF OWNERSHIP
-                                        </th>
-                                    </tr>
+                                        <tr className="border-b-2 border-gray-300 bg-white">
+                                            <th scope="col" className="text-left font-semibold text-gray-900 py-2 px-3">
+                                                NAME
+                                            </th>
+                                            <th scope="col" className="text-left font-semibold text-gray-900 py-2 px-3">
+                                                UH USERNAME
+                                            </th>
+                                            <th scope="col" className="text-left font-semibold text-gray-900 py-2 px-3">
+                                                SOURCES OF OWNERSHIP
+                                            </th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    {Object.entries(compareOwnerGroupingsResults).map(([uhUuid, data]) => (
-                                        <tr
-                                            key={uhUuid}
-                                            className={`border-b border-gray-200 hover:bg-gray-200 transition-colors bg-gray-50`}
-                                        >
-                                            <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
-                                                {data.name}
-                                            </td>
-                                            <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
-                                                {data.uid}
-                                            </td>
-                                            <td className='overflow-auto py-2 px-3 text-gray-900 text-sm'>
-                                                {data.paths && data.paths.length > 0 ? (
-                                                    (() => {
-                                                        const paths = data.paths;
-                                                        return paths.length > 0 ? (
-                                                            <ul className='mb-0 pl-5 list-disc'>
-                                                                {paths.map((path, idx) => (
-                                                                    <li key={idx} className='text-sm'>
-                                                                        {path}
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        ) : (
-                                                            <span className='text-gray-400'>—</span>
-                                                        );
-                                                    })()
-                                                ) : (
-                                                    <span className='text-gray-400'>—</span>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                        {Object.entries(duplicateOwnerResults).map(([uhUuid, data]) => (
+                                            <tr
+                                                key={uhUuid}
+                                                className={`border-b border-gray-200 hover:bg-gray-200 transition-colors bg-gray-50`}
+                                            >
+                                                <td className="overflow-auto py-2 px-3 text-gray-900 text-sm">
+                                                    {data.name}
+                                                </td>
+                                                <td className="overflow-auto py-2 px-3 text-gray-900 text-sm">
+                                                    {data.uid}
+                                                </td>
+                                                <td className="overflow-auto py-2 px-3 text-gray-900 text-sm">
+                                                    {data.paths && data.paths.length > 0 ? (
+                                                        (() => {
+                                                            const paths = data.paths;
+                                                            return paths.length > 0 ? (
+                                                                <ul className="mb-0 pl-5 list-disc">
+                                                                    {paths.map((path, idx) => (
+                                                                        <li key={idx} className="text-sm">
+                                                                            {path}
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            ) : (
+                                                                <span className="text-gray-400">—</span>
+                                                            );
+                                                        })()
+                                                    ) : (
+                                                        <span className="text-gray-400">—</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
                         )}
 
-                        {!compareLoading && compareOwnerGroupingsResultsCount === 0 && (
-                            <p className='text-gray-600'>No duplicate owners found.</p>
+                        {!duplicatesLoading && duplicateOwnersCount === 0 && (
+                            <p className="text-gray-600">No duplicate owners found.</p>
                         )}
                     </div>
                 </div>
@@ -299,7 +284,7 @@ const Actions = ({
                         title={message.Actions.MODAL_TITLE}
                         body={message.Actions.MODAL_BODY(isIncludeChecked, isExcludeChecked, groupName)}
                         buttons={[
-                            <span key='confirm' role='button' onClick={handleResetConfirm}>
+                            <span key="confirm" role="button" onClick={handleResetConfirm}>
                                 {message.Actions.MODAL_CONFIRM}
                             </span>
                         ]}
@@ -310,15 +295,15 @@ const Actions = ({
 
                 {isLoading && (
                     <div
-                        role='status'
-                        aria-live='assertive'
-                        aria-busy='true'
-                        aria-label='Loading spinner'
-                        id='loading-spinner'
-                        data-testid='loading-spinner'
-                        className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'
+                        role="status"
+                        aria-live="assertive"
+                        aria-busy="true"
+                        aria-label="Loading spinner"
+                        id="loading-spinner"
+                        data-testid="loading-spinner"
+                        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
                     >
-                        <Spinner size='lg' />
+                        <Spinner size="lg" />
                     </div>
                 )}
 
@@ -327,7 +312,11 @@ const Actions = ({
                         open={isDynamicModalOpen}
                         title={message.Actions.MODAL_INFO_TITLE}
                         body={dynamicModalContent}
-                        buttons={[<span key="stay" onClick={close}>OK</span>]}
+                        buttons={[
+                            <span key="stay" onClick={close}>
+                                OK
+                            </span>
+                        ]}
                         onClose={closeDynamicModal}
                     />
                 )}

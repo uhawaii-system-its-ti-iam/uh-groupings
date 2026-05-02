@@ -527,7 +527,7 @@ export async function getNumberOfDirectOwners(groupingPath: string) {
  */
 export async function getDuplicateOwners(groupingPath: string): Promise<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>> {
     z.string().parse(groupingPath);
-    const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/compare`;
+    const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/duplicates`;
     return getRequest<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>>(endpoint);
 }
 /**

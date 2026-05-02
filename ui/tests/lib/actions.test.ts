@@ -949,7 +949,7 @@ describe('actions', () => {
 
         it('should make a GET request at the correct endpoint', async () => {
             await getDuplicateOwners(groupingPath);
-            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/compare`, {
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/owners/duplicates`, {
                 headers: {
                     Authorization: `Bearer ${authToken}`
                 }
