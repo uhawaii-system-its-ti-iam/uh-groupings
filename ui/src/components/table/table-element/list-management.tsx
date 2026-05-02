@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
@@ -16,7 +16,8 @@ const ListManagement = ({
     onOpenManageMemberModal,
     onOpenManageMembersModal,
     checkedMembers,
-    isPerformingRemoval
+    isPerformingRemoval,
+    onInputFocusChange
 }: {
     list: string;
     groupingPath: string;
@@ -24,11 +25,17 @@ const ListManagement = ({
     onOpenManageMembersModal?: (manageType: string, membersInList: MemberResult[]) => void;
     checkedMembers?: MemberResult[];
     isPerformingRemoval: boolean;
+    onInputFocusChange?: (isFocused: boolean) => void;
 }) => {
     const [manageMembers, setManageMembers] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const [isMemSearchFocused, setIsMemSearchFocused] = useState(false);
+
+    // Notify parent when the input has content so checkboxes can be disabled
+    useEffect(() => {
+        onInputFocusChange?.(manageMembers.length > 0);
+    }, [manageMembers, onInputFocusChange]);
 
     // Raw text input guard. Check for empty and invalid text characters (special characters).
     const handleRawTextInput = async () => {

@@ -140,6 +140,7 @@ const GroupingMembersTable = ({
     const router = useRouter();
     const [rowSelection, setRowSelection] = useState({});
     const [isPerformingRemoval, setIsPerformingRemoval] = useState(false);
+    const [isInputFocused, setIsInputFocused] = useState(false);
 
     const handleOpenManageMemberModal = (manageType: string, membersInList: MemberResult[]) => {
         if (membersInList.length === 1) {
@@ -259,7 +260,18 @@ const GroupingMembersTable = ({
     useEffect(() => {
         setRowSelection({});
         setSelectedMembers({});
+
+        setIsInputFocused(false);
     }, [groupingPath, group, globalFilter]);
+
+    // Clear selections the moment the user starts typing in the list-management
+    // input so that disabled but checked checkboxes never remain visible.
+    useEffect(() => {
+        if (isInputFocused) {
+            setRowSelection({});
+            setSelectedMembers({});
+        }
+    }, [isInputFocused]);
 
     const checkedMembers = Object.values(selectedMembers);
 
@@ -267,7 +279,8 @@ const GroupingMembersTable = ({
         columns: GroupingMembersTableColumns(
             handleOpenManageMemberModal,
             group,
-            !group ? isWhereListedPending : isBasisPending
+            !group ? isWhereListedPending : isBasisPending,
+            isInputFocused
         ),
         data: !group ? groupingMembersWhereListed : groupingMembersIsBasis,
         rowCount: globalFilter ? size : rowCount,
@@ -424,6 +437,7 @@ const GroupingMembersTable = ({
                     onOpenManageMembersModal={handleOpenManageMembersModal}
                     checkedMembers={checkedMembers}
                     isPerformingRemoval={isPerformingRemoval}
+                    onInputFocusChange={setIsInputFocused}
                 />
             ) : null}
             {memberToManage && (

@@ -13,7 +13,8 @@ import { message } from '@/lib/messages';
 const GroupingMembersTableColumns = (
     onOpenManageMemberModal: (manageType: string, membersInList: GroupingGroupMembers['members']) => void = () => {},
     group?: Group,
-    isPending?: boolean
+    isPending?: boolean,
+    isInputFocused?: boolean
 ): ColumnDef<GroupingGroupMember | GroupingMember>[] => {
     const columns: ColumnDef<GroupingGroupMember | GroupingMember>[] = [
         ...(['include', 'exclude'].includes(group || '')
@@ -24,11 +25,12 @@ const GroupingMembersTableColumns = (
                           <div className="flex flex-col-reverse md:flex-row items-center justify-center">
                               <input
                                   type="checkbox"
-                                  className="w-3 h-3"
+                                  className="w-3 h-3 disabled:opacity-50 disabled:cursor-not-allowed"
                                   checked={table.getIsAllPageRowsSelected() && !table.getIsSomePageRowsSelected()}
                                   onChange={(event) => {
                                       table.toggleAllPageRowsSelected(event.target.checked);
                                   }}
+                                  disabled={isInputFocused}
                                   aria-label="Select all rows"
                               />
                               <div className="w-3 h-3 flex items-center py-2 md:py-0 justify-center md:mb-0 md:ml-1.5">
@@ -56,7 +58,8 @@ const GroupingMembersTableColumns = (
                                   type="checkbox"
                                   checked={row.getIsSelected()}
                                   onChange={(event) => row.toggleSelected(event.target.checked)}
-                                  className="w-3 h-3"
+                                  className="w-3 h-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                                  disabled={isInputFocused}
                                   aria-label="Select row"
                               />
                           </span>

@@ -1101,4 +1101,146 @@ describe('ListManagement Component', () => {
             expect(mockOnOpenManageMemberModal).not.toHaveBeenCalled();
         });
     });
+
+    // Tests for onInputFocusChange callback – the signal that disables/enables checkboxes
+    describe('onInputFocusChange Callback', () => {
+        const mockOnOpenManageMemberModal = vi.fn();
+        const mockOnInputFocusChange = vi.fn();
+
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        const setup = () => {
+            const user = userEvent.setup();
+            render(
+                <ListManagement
+                    list="include"
+                    groupingPath="/mock/path"
+                    onOpenManageMemberModal={mockOnOpenManageMemberModal}
+                    checkedMembers={[]}
+                    isPerformingRemoval={false}
+                    onInputFocusChange={mockOnInputFocusChange}
+                />
+            );
+            const inputBox = screen.getByPlaceholderText(/UH Username or UH Number/i);
+            return { user, inputBox };
+        };
+
+        it('should call onInputFocusChange(true) when user types valid alphanumeric input', async () => {
+            const { user, inputBox } = setup();
+
+            await user.type(inputBox, 'testiwta');
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true);
+            });
+        });
+
+        it('should call onInputFocusChange(true) when spaces-only input is entered', async () => {
+            const { inputBox } = setup();
+
+            fireEvent.change(inputBox, { target: { value: '   ' } });
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true);
+            });
+        });
+
+        it('should call onInputFocusChange(true) when commas-only input is entered', async () => {
+            const { user, inputBox } = setup();
+
+            await user.type(inputBox, ',,,');
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true);
+            });
+        });
+
+        it('should call onInputFocusChange(true) when a mix of spaces and commas is entered', async () => {
+            const { inputBox } = setup();
+
+            fireEvent.change(inputBox, { target: { value: ' , , ,' } });
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true);
+            });
+        });
+
+        it('should call onInputFocusChange(true) when user pastes text into input', async () => {
+            const { user, inputBox } = setup();
+
+            await user.click(inputBox);
+            fireEvent.change(inputBox, { target: { value: 'testiwta' } });
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true);
+            });
+        });
+
+        it('should call onInputFocusChange(false) when input is cleared after typing', async () => {
+            const { user, inputBox } = setup();
+
+            await user.type(inputBox, 'testiwta');
+            await waitFor(() => expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true));
+
+            await user.clear(inputBox);
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(false);
+            });
+        });
+
+        it('should not call onInputFocusChange(true) when input box is clicked but remains empty', async () => {
+            const { user, inputBox } = setup();
+
+            await user.click(inputBox);
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).not.toHaveBeenCalledWith(true);
+            });
+        });
+
+        it('should call onInputFocusChange(true) for include list input', async () => {
+            const user = userEvent.setup();
+            render(
+                <ListManagement
+                    list="include"
+                    groupingPath="/mock/path"
+                    onOpenManageMemberModal={mockOnOpenManageMemberModal}
+                    checkedMembers={[]}
+                    isPerformingRemoval={false}
+                    onInputFocusChange={mockOnInputFocusChange}
+                />
+            );
+            const inputBox = screen.getByPlaceholderText(/UH Username or UH Number/i);
+
+            await user.type(inputBox, 'testiwta');
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true);
+            });
+        });
+
+        it('should call onInputFocusChange(true) for exclude list input', async () => {
+            const user = userEvent.setup();
+            render(
+                <ListManagement
+                    list="exclude"
+                    groupingPath="/mock/path"
+                    onOpenManageMemberModal={mockOnOpenManageMemberModal}
+                    checkedMembers={[]}
+                    isPerformingRemoval={false}
+                    onInputFocusChange={mockOnInputFocusChange}
+                />
+            );
+            const inputBox = screen.getByPlaceholderText(/UH Username or UH Number/i);
+
+            await user.type(inputBox, 'testiwta');
+
+            await waitFor(() => {
+                expect(mockOnInputFocusChange).toHaveBeenLastCalledWith(true);
+            });
+        });
+    });
 });

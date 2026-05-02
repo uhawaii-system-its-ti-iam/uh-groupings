@@ -285,7 +285,7 @@ describe('GroupingMembersTable', () => {
                         });
                     });
 
-                    // Now Uncheck select-all — re-query to avoid stale reference
+                    // Now Uncheck select-all - re-query to avoid stale reference
                     const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
                     fireEvent.click(updatedSelectAll);
 
@@ -323,6 +323,279 @@ describe('GroupingMembersTable', () => {
                     }
                 });
             });
+
+            // Tests for checkbox being disabled upon input in the inputbox
+
+            describe.each(['include', 'exclude'] as const)(
+                'Checkbox Disabling When Input Box Has Content (%s tab)',
+                (tab) => {
+                    let user: ReturnType<typeof userEvent.setup>;
+                    let selectAllCheckbox: HTMLElement;
+                    let rowCheckboxes: HTMLElement[];
+                    let inputBox: HTMLElement;
+
+                    beforeEach(() => {
+                        user = userEvent.setup();
+                        render(
+                            <GroupingMembersTable
+                                groupingGroupMembers={mockGroupingGroupMembers}
+                                groupingPath={groupingPath}
+                                group={tab}
+                            />,
+                            { wrapper: createMockProviders() }
+                        );
+                        selectAllCheckbox = screen.getByRole('checkbox', { name: /select all rows/i });
+                        rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                        inputBox = screen.getByPlaceholderText(/UH Username or UH Number/i);
+                    });
+
+                    // Basic Cases of Input Box
+
+                    it('should disable and uncheck checkboxes when one row is checked and user types in input', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+
+                        await user.type(inputBox, 'testiwta');
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updated[0]).not.toBeChecked();
+                            expect(updated[0]).toBeDisabled();
+                            expect(screen.getByRole('checkbox', { name: /select all rows/i })).toBeDisabled();
+                        });
+                    });
+
+                    it('should disable and uncheck checkboxes when multiple rows are checked and user types in input', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        await user.click(rowCheckboxes[1]);
+                        await user.click(rowCheckboxes[2]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+                        expect(rowCheckboxes[1]).toBeChecked();
+                        expect(rowCheckboxes[2]).toBeChecked();
+
+                        await user.type(inputBox, 'testiwta');
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updated[0]).not.toBeChecked();
+                            expect(updated[1]).not.toBeChecked();
+                            expect(updated[2]).not.toBeChecked();
+                            updated.forEach((cb) => expect(cb).toBeDisabled());
+                        });
+                    });
+
+                    it('should disable and uncheck all checkboxes when select-all is checked and user types in input', async () => {
+                        fireEvent.click(selectAllCheckbox);
+                        await waitFor(() => expect(selectAllCheckbox).toBeChecked());
+
+                        await user.type(inputBox, 'testiwta');
+
+                        await waitFor(() => {
+                            const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updatedSelectAll).not.toBeChecked();
+                            expect(updatedSelectAll).toBeDisabled();
+                            updated.forEach((cb) => {
+                                expect(cb).not.toBeChecked();
+                                expect(cb).toBeDisabled();
+                            });
+                        });
+                    });
+
+                    it('should disable checkboxes when no rows are checked and user types in input', async () => {
+                        rowCheckboxes.forEach((cb) => expect(cb).not.toBeChecked());
+
+                        await user.type(inputBox, 'testiwta');
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
+                            updated.forEach((cb) => expect(cb).toBeDisabled());
+                            expect(updatedSelectAll).toBeDisabled();
+                        });
+                    });
+
+                    // Clearing Input Re-enables Checkboxes
+
+                    it('should re-enable checkboxes when input is cleared after typing', async () => {
+                        await user.type(inputBox, 'testiwta');
+                        await waitFor(() => {
+                            expect(screen.getAllByRole('checkbox', { name: /select row/i })[0]).toBeDisabled();
+                        });
+
+                        await user.clear(inputBox);
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
+                            updated.forEach((cb) => expect(cb).not.toBeDisabled());
+                            expect(updatedSelectAll).not.toBeDisabled();
+                        });
+                    });
+
+                    // Separator Input Cases
+
+                    it('should disable and uncheck checkboxes when spaces-only input is entered', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+
+                        fireEvent.change(inputBox, { target: { value: '   ' } });
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updated[0]).not.toBeChecked();
+                            expect(updated[0]).toBeDisabled();
+                        });
+                    });
+
+                    it('should disable and uncheck checkboxes when commas-only input is entered', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+
+                        await user.type(inputBox, ',,,');
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updated[0]).not.toBeChecked();
+                            expect(updated[0]).toBeDisabled();
+                        });
+                    });
+
+                    it('should disable and uncheck checkboxes when a mix of spaces and commas is entered', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+
+                        fireEvent.change(inputBox, { target: { value: ' , , ,' } });
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updated[0]).not.toBeChecked();
+                            expect(updated[0]).toBeDisabled();
+                        });
+                    });
+
+                    it('should not disable checkboxes when clicking into an empty input box without typing', async () => {
+                        // Checkboxes start out enabled
+                        rowCheckboxes.forEach((cb) => expect(cb).not.toBeDisabled());
+                        expect(screen.getByRole('checkbox', { name: /select all rows/i })).not.toBeDisabled();
+
+                        // Click the input without typing anything
+                        await user.click(inputBox);
+
+                        // Checkboxes should remain enabled - empty input means no disabling
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
+                            updated.forEach((cb) => expect(cb).not.toBeDisabled());
+                            expect(updatedSelectAll).not.toBeDisabled();
+                        });
+                    });
+
+                    // Paste Cases (simulated a paste using fireEvent.change)
+
+                    it('should disable checkboxes when 0 rows are checked and user pastes input', async () => {
+                        rowCheckboxes.forEach((cb) => expect(cb).not.toBeChecked());
+
+                        await user.click(inputBox);
+                        fireEvent.change(inputBox, { target: { value: 'testiwta' } });
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            updated.forEach((cb) => expect(cb).toBeDisabled());
+                        });
+                    });
+
+                    it('should disable and uncheck checkboxes when some rows are checked and user pastes input', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        await user.click(rowCheckboxes[1]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+                        expect(rowCheckboxes[1]).toBeChecked();
+
+                        await user.click(inputBox);
+                        fireEvent.change(inputBox, { target: { value: 'testiwta' } });
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updated[0]).not.toBeChecked();
+                            expect(updated[1]).not.toBeChecked();
+                            updated.forEach((cb) => expect(cb).toBeDisabled());
+                        });
+                    });
+
+                    it('should disable and uncheck all checkboxes when all are selected and user pastes input', async () => {
+                        fireEvent.click(selectAllCheckbox);
+                        await waitFor(() => expect(selectAllCheckbox).toBeChecked());
+
+                        await user.click(inputBox);
+                        fireEvent.change(inputBox, { target: { value: 'testiwta' } });
+
+                        await waitFor(() => {
+                            const updatedSelectAll = screen.getByRole('checkbox', { name: /select all rows/i });
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            expect(updatedSelectAll).not.toBeChecked();
+                            expect(updatedSelectAll).toBeDisabled();
+                            updated.forEach((cb) => {
+                                expect(cb).not.toBeChecked();
+                                expect(cb).toBeDisabled();
+                            });
+                        });
+                    });
+
+                    // Click Outside Input Box (with content) – checkboxes remain disabled
+
+                    it('should keep checkboxes disabled when user clicks outside the input box while it still has content', async () => {
+                        await user.type(inputBox, 'testiwta');
+                        await waitFor(() => {
+                            expect(screen.getAllByRole('checkbox', { name: /select row/i })[0]).toBeDisabled();
+                        });
+
+                        await user.click(document.body);
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            updated.forEach((cb) => expect(cb).toBeDisabled());
+                        });
+                    });
+
+                    // Different Pages Cases
+                    // Selections accumulated across pages are all cleared once input is entered.
+
+                    it('should clear all current-page selections and disable checkboxes when user types in input (cross-page clearing)', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        await user.click(rowCheckboxes[1]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+                        expect(rowCheckboxes[1]).toBeChecked();
+
+                        await user.type(inputBox, 'testiwta');
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            updated.forEach((cb) => {
+                                expect(cb).not.toBeChecked();
+                                expect(cb).toBeDisabled();
+                            });
+                        });
+                    });
+
+                    it('should clear all current-page selections and disable checkboxes when user pastes input (cross-page clearing)', async () => {
+                        await user.click(rowCheckboxes[0]);
+                        await user.click(rowCheckboxes[1]);
+                        expect(rowCheckboxes[0]).toBeChecked();
+                        expect(rowCheckboxes[1]).toBeChecked();
+
+                        await user.click(inputBox);
+                        fireEvent.change(inputBox, { target: { value: 'testiwta' } });
+
+                        await waitFor(() => {
+                            const updated = screen.getAllByRole('checkbox', { name: /select row/i });
+                            updated.forEach((cb) => {
+                                expect(cb).not.toBeChecked();
+                                expect(cb).toBeDisabled();
+                            });
+                        });
+                    });
+                }
+            );
         });
 
         // Check for trash icon
