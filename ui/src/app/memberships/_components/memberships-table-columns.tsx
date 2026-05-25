@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { GroupingPath } from '@/lib/types';
-import GroupingPathCell from '@/components/table/groupings-table/table-element/grouping-path-cell';
-import GroupingDescriptionCell from '@/components/table/groupings-table/table-element/grouping-description-cell';
+import GroupingPathCell from '@/components/table/groupings-table/parts/grouping-path-cell';
+import GroupingDescriptionCell from '@/components/table/groupings-table/parts/grouping-description-cell';
 import MembershipsOptCell from '@/app/memberships/_components/memberships-table-opt-cell';
 
 const MembershipsTableColumns = (isOptOut: boolean, removeRow: (path: string) => void): ColumnDef<GroupingPath>[] => [

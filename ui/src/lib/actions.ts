@@ -27,7 +27,7 @@ import {
 } from './http-client';
 import { getUser } from '@/lib/access/user';
 import { z } from 'zod';
-import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
+import SortBy from '@/lib/grouping-members-sort';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const baseUrlEmail = process.env.NEXT_PUBLIC_API_BASE_URL as string; // Note that email controller on API has a different from other endpoints URL.

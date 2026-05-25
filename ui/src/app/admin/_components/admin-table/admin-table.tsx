@@ -10,15 +10,15 @@ import {
     SortingState
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import AdminTableColumns from './table-element/admin-table-columns';
-import PaginationBar from '@/components/table/table-element/pagination-bar';
-import GlobalFilter from '@/components/table/table-element/global-filter';
-import SortArrow from '@/components/table/table-element/sort-arrow';
+import AdminTableColumns from './parts/admin-table-columns';
+import PaginationBar from '@/components/table/parts/pagination-bar';
+import GlobalFilter from '@/components/table/parts/global-filter';
+import SortArrow from '@/components/table/parts/sort-arrow';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { GroupingGroupMember, GroupingGroupMembers } from '@/lib/types';
 import dynamic from 'next/dynamic';
 import AdminTableSkeleton from './admin-table-skeleton';
-import AddAdmin from './table-element/add-admin';
+import AddAdmin from './parts/add-admin';
 import { useRouter } from 'next/navigation';
 import { addAdmin } from '@/lib/actions';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';

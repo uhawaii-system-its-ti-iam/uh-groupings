@@ -15,6 +15,14 @@ const mockResults: MembershipResults = {
         path: `tmp:example:example-${i}`,
         name: `example-${i}`,
         description: `Test Description ${i}`,
+        inBasis: false,
+        inInclude: true,
+        inExclude: false,
+        inOwner: false,
+        inBasisAndInclude: false,
+        optOutEnabled: true,
+        optInEnabled: true,
+        selfOpted: false
     }))
 };
 

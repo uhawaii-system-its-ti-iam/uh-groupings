@@ -1,7 +1,61 @@
+/**
+ * Tests for the <AdminTable /> client component.
+ *
+ * Component summary:
+ *   - Renders a paginated, filterable table of grouping admins.
+ *   - Provides "Add Admin" and "Remove Admin" affordances; the heavy lifting
+ *     is delegated to <AddAdmin />, <RemoveMemberModal />, and <DynamicModal />,
+ *     all of which are stubbed below so this suite stays focused on table behavior.
+ *
+ * Testing conventions:
+ *   - `vi.hoisted(() => vi.fn())` is used for shared action/router mocks because
+ *     `vi.mock(...)` factories are evaluated before the file body. Hoisted refs
+ *     can be safely referenced from inside the mock factories AND from the test
+ *     bodies for assertions.
+ *   - The mocked <RemoveMemberModal /> reproduces just enough behavior to drive
+ *     the success/failure flows that <AdminTable /> reacts to (calling
+ *     `onProcessing`, `onSuccess`, and `onClose` in the right order).
+ *   - `deferred<T>()` is used to control async timing so tests can assert
+ *     intermediate states (e.g., the spinner appears, then the success modal).
+ *   - All `as GroupingGroupMembers` casts are intentional shortcuts: the test
+ *     fixtures only populate the fields the component actually reads.
+ */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import AdminTable from '@/app/admin/_components/admin-table/admin-table';
+import { GroupingGroupMembers, MemberResult } from '@/lib/types';
+import type { ReactNode } from 'react';
+
+type DynamicModalMockProps = {
+    open: boolean;
+    title: string;
+    body: ReactNode;
+    closeText?: string;
+    onClose: () => void;
+};
+
+type RemoveMemberModalMockProps = {
+    isOpen: boolean;
+    memberToRemove: MemberResult;
+    group: string;
+    groupingPath: string;
+    onClose: () => void;
+    onSuccess: () => void;
+    onProcessing: () => void;
+};
+
+type AddMemberModalMockProps = {
+    open: boolean;
+    uid: string;
+    name: string;
+    uhUuid: string;
+    group: string;
+    onConfirm: () => void;
+    onClose: () => void;
+};
+
+type ChildrenProps = { children: ReactNode; asChild?: boolean };
 const refreshMock = vi.hoisted(() => vi.fn());
 const addAdminMock = vi.hoisted(() => vi.fn());
 const removeAdminMock = vi.hoisted(() => vi.fn());
@@ -24,7 +78,7 @@ vi.mock('@/components/ui/spinner', () => ({
 }));
 
 vi.mock('@/components/modal/dynamic-modal', () => ({
-    default: ({ open, title, body, closeText = 'OK', onClose }: any) =>
+    default: ({ open, title, body, closeText = 'OK', onClose }: DynamicModalMockProps) =>
         open ? (
             <div data-testid="success-modal">
                 <div>{title}</div>
@@ -35,7 +89,7 @@ vi.mock('@/components/modal/dynamic-modal', () => ({
 }));
 
 vi.mock('@/components/modal/remove-member-modal', () => ({
-    default: ({ isOpen, memberToRemove, group, groupingPath, onClose, onSuccess, onProcessing }: any) =>
+    default: ({ isOpen, memberToRemove, group, onClose, onSuccess, onProcessing }: RemoveMemberModalMockProps) =>
         isOpen ? (
             <div data-testid="remove-member-modal">
                 <div>Remove Member</div>
@@ -61,7 +115,7 @@ vi.mock('@/components/modal/remove-member-modal', () => ({
 }));
 
 vi.mock('@/components/modal/add-member-modal', () => ({
-    default: ({ open, uid, name, uhUuid, group, onConfirm, onClose }: any) =>
+    default: ({ open, uid, name, uhUuid, group, onConfirm, onClose }: AddMemberModalMockProps) =>
         open ? (
             <div data-testid="add-member-modal">
                 <div>Add Member</div>
@@ -76,10 +130,10 @@ vi.mock('@/components/modal/add-member-modal', () => ({
 }));
 
 vi.mock('@/components/ui/tooltip', () => ({
-    TooltipProvider: ({ children }: any) => <>{children}</>,
-    Tooltip: ({ children }: never) => <>{children}</>,
-    TooltipTrigger: ({ children, asChild }: never) => (asChild ? children : <div>{children}</div>),
-    TooltipContent: ({ children }: never) => <div data-testid="tooltip-content">{children}</div>,
+    TooltipProvider: ({ children }: ChildrenProps) => <>{children}</>,
+    Tooltip: ({ children }: ChildrenProps) => <>{children}</>,
+    TooltipTrigger: ({ children, asChild }: ChildrenProps) => (asChild ? children : <div>{children}</div>),
+    TooltipContent: ({ children }: ChildrenProps) => <div data-testid="tooltip-content">{children}</div>,
 }));
 
 vi.mock('@/lib/messages', () => ({
@@ -143,7 +197,7 @@ describe('AdminTable', () => {
         });
         expect(screen.getByText('Admin Name')).toBeInTheDocument();
         expect(screen.getByText('UH Number')).toBeInTheDocument();
-        expect(screen.queryByText('UH Username')).toBeInTheDocument();
+        expect(screen.getByText('UH Username')).toBeInTheDocument();
 
         expect(screen.queryByText('Grouping Path')).not.toBeInTheDocument();
         expect(screen.queryByTestId('chevron-up-icon')).not.toBeInTheDocument();
@@ -241,7 +295,7 @@ describe('AdminTable', () => {
         );
     });
 
-    it('remove flow: click trash -> open modal -> Yes calls API -> spinner -> success modal -> rerender updates table', async () => {
+    it('remove flow: click trash then open modal then Yes calls API then spinner then success modal then rerender updates table', async () => {
         const user = userEvent.setup();
 
         const members = [
@@ -264,7 +318,7 @@ describe('AdminTable', () => {
             members
         };
 
-        const { rerender } = render(<AdminTable groupingGroupMembers={initialData as any} />);
+        const { rerender } = render(<AdminTable groupingGroupMembers={initialData as GroupingGroupMembers} />);
         expect(await screen.findByText('Manage Admins')).toBeInTheDocument();
         expect(screen.getByText('Bob B')).toBeInTheDocument();
         const trash = screen.getByTestId('remove-user-222');
@@ -294,16 +348,16 @@ describe('AdminTable', () => {
             members: members.filter((m) => m.uid !== 'uid-2')
         };
 
-        rerender(<AdminTable groupingGroupMembers={afterRemoveData as any} />);
+        rerender(<AdminTable groupingGroupMembers={afterRemoveData as GroupingGroupMembers} />);
 
         await waitFor(() => {
             expect(screen.queryByText('Bob B')).not.toBeInTheDocument();
-            expect(screen.getByText('Alice A')).toBeInTheDocument();
-            expect(screen.getByText('Charlie C')).toBeInTheDocument();
         });
+        expect(screen.getByText('Alice A')).toBeInTheDocument();
+        expect(screen.getByText('Charlie C')).toBeInTheDocument();
     });
 
-    it('add flow: search -> open add modal -> Yes calls API -> spinner -> success modal -> rerender updates table', async () => {
+    it('add flow: search then open add modal then Yes calls API then spinner then success modal then rerender updates table', async () => {
         const user = userEvent.setup();
 
         const members = [
@@ -329,7 +383,7 @@ describe('AdminTable', () => {
         memberAttributeResultsMock.mockResolvedValueOnce({
             results: [newUser]
         });
-        const { rerender } = render(<AdminTable groupingGroupMembers={initialData as any} />);
+        const { rerender } = render(<AdminTable groupingGroupMembers={initialData as GroupingGroupMembers} />);
         expect(await screen.findByText('Manage Admins')).toBeInTheDocument();
         expect(screen.queryByText('David D')).not.toBeInTheDocument();
         const input = screen.getByPlaceholderText('UH Username or UH Number');
@@ -338,8 +392,8 @@ describe('AdminTable', () => {
         await user.click(addBtn);
         await waitFor(() => {
             expect(memberAttributeResultsMock).toHaveBeenCalledTimes(1);
-            expect(memberAttributeResultsMock).toHaveBeenCalledWith(['uid-4']);
         });
+        expect(memberAttributeResultsMock).toHaveBeenCalledWith(['uid-4']);
         const addModal = await screen.findByTestId('add-member-modal');
         expect(within(addModal).getByText('Add Member')).toBeInTheDocument();
         expect(within(addModal).getByText('David D')).toBeInTheDocument();
@@ -364,7 +418,7 @@ describe('AdminTable', () => {
             members: [...members, newUser]
         };
 
-        rerender(<AdminTable groupingGroupMembers={afterAddData as any} />);
+        rerender(<AdminTable groupingGroupMembers={afterAddData as GroupingGroupMembers} />);
 
         await waitFor(() => {
             expect(screen.getByText('David D')).toBeInTheDocument();
@@ -385,7 +439,7 @@ describe('AdminTable', () => {
                         size: 1,
                         groupPath: 'example:groupingAdmins',
                         members
-                    } as any
+                    } as GroupingGroupMembers
                 }
             />
         );
@@ -418,7 +472,7 @@ describe('AdminTable', () => {
                         size: 1,
                         groupPath: 'example:groupingAdmins',
                         members
-                    } as any
+                    } as GroupingGroupMembers
                 }
             />
         );
@@ -448,7 +502,7 @@ describe('AdminTable', () => {
                         size: 0,
                         groupPath: 'example:groupingAdmins',
                         members: []
-                    } as any
+                    } as GroupingGroupMembers
                 }
             />
         );
@@ -470,7 +524,7 @@ describe('AdminTable', () => {
                         size: 1,
                         groupPath: 'example:groupingAdmins',
                         members
-                    } as any
+                    } as GroupingGroupMembers
                 }
             />
         );
@@ -519,7 +573,7 @@ describe('AdminTable', () => {
                         size: 1,
                         groupPath: 'example:groupingAdmins',
                         members
-                    } as any
+                    } as GroupingGroupMembers
                 }
             />
         );

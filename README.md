@@ -10,3 +10,12 @@ UH Groupings utilizes the Internet2 Grouper project. Grouper is an enterprise ac
 
 [![CI](https://github.com/uhawaii-system-its-ti-iam/uh-groupings/actions/workflows/ci.yml/badge.svg)](https://github.com/uhawaii-system-its-ti-iam/uh-groupings/actions/workflows/ci.yml)
 ![Test coverage](https://github.com/uhawaii-system-its-ti-iam/uh-groupings/blob/badges/badges/ui/coverage-total.svg)
+
+## Contributing
+
+Before adding or moving UI code, please read [`ui/ARCHITECTURE.md`](ui/ARCHITECTURE.md).
+The [Enforcement Summary](ui/ARCHITECTURE.md#enforcement-summary) lists every
+convention that is checked automatically in CI (import boundaries, test-path
+mirroring, coverage thresholds, lint style) so you know which rules will fail
+your build vs. which are reviewer guidance.
+

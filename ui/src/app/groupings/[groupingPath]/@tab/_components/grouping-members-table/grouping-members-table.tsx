@@ -9,17 +9,17 @@ import {
     Updater,
     useReactTable
 } from '@tanstack/react-table';
-import GroupingMembersTableColumns from './table-element/grouping-members-table-columns';
+import GroupingMembersTableColumns from './parts/grouping-members-table-columns';
 import { Group, GroupingGroupMember, GroupingGroupMembers, GroupingMember, MemberResult } from '@/lib/types';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import SortArrow from '@/components/table/table-element/sort-arrow';
-import ListManagement from '@/components/table/table-element/list-management';
-import PaginationBar from '@/components/table/table-element/pagination-bar';
+import SortArrow from '@/components/table/parts/sort-arrow';
+import ListManagement from '@/components/table/parts/list-management';
+import PaginationBar from '@/components/table/parts/pagination-bar';
 import RemoveMemberModal from '@/components/modal/remove-member-modal';
 import RemoveMembersModal from '@/components/modal/remove-members-modal';
 import SuccessModal from '@/components/modal/success-modal';
 import { useEffect, useState, useTransition } from 'react';
-import GlobalFilter from '@/components/table/table-element/global-filter';
+import GlobalFilter from '@/components/table/parts/global-filter';
 import { useQuery } from '@tanstack/react-query';
 import { Spinner } from '@/components/ui/spinner';
 import { getGroupingMembersIsBasis, getGroupingMembersWhereListed, getNumberOfGroupingMembers } from '@/lib/actions';
@@ -34,7 +34,7 @@ import {
 } from 'nuqs';
 import SortBy, {
     findSortBy
-} from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
+} from '@/lib/grouping-members-sort';
 import { useRouter } from 'next/navigation';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);

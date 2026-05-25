@@ -36,7 +36,7 @@ import {
 import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
 import { Feedback } from '@/lib/types';
-import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
+import SortBy from '@/lib/grouping-members-sort';
 import * as JwtService from '@/lib/jwt-service';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;

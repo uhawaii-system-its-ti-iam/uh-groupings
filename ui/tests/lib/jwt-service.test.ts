@@ -1,7 +1,19 @@
-import { vi, describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as jwt from 'jsonwebtoken';
 import * as UserAccess from '@/lib/access/user';
 import User from '@/lib/access/user';
+
+interface DecodedToken {
+    sub: string;
+    roles: string[];
+    iat: number;
+    exp: number;
+}
+
+interface DecodedTokenComplete {
+    header: { alg: string };
+    payload: DecodedToken;
+}
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -32,21 +44,21 @@ describe('jwt-service', () => {
 
         it('should include the user uid in the token payload as sub', async () => {
             const token = await generateJWT();
-            const decoded = jwt.decode(token) as any;
+            const decoded = jwt.decode(token) as DecodedToken;
 
             expect(decoded.sub).toBe(testUser.uid);
         });
 
         it('should include the user roles in the token payload', async () => {
             const token = await generateJWT();
-            const decoded = jwt.decode(token) as any;
+            const decoded = jwt.decode(token) as DecodedToken;
 
             expect(decoded.roles).toEqual(testUser.roles);
         });
 
         it('should set expiration time based on JWT_EXPIRATION_SECONDS', async () => {
             const token = await generateJWT();
-            const decoded = jwt.decode(token) as any;
+            const decoded = jwt.decode(token) as DecodedToken;
 
             expect(decoded.exp).toBeDefined();
             expect(decoded.iat).toBeDefined();
@@ -57,7 +69,7 @@ describe('jwt-service', () => {
 
         it('should use HS256 algorithm', async () => {
             const token = await generateJWT();
-            const decoded = jwt.decode(token, { complete: true }) as any;
+            const decoded = jwt.decode(token, { complete: true }) as unknown as DecodedTokenComplete;
 
             expect(decoded.header.alg).toBe('HS256');
         });
@@ -69,8 +81,8 @@ describe('jwt-service', () => {
 
             expect(token1).not.toBe(token2);
 
-            const decoded1 = jwt.decode(token1) as any;
-            const decoded2 = jwt.decode(token2) as any;
+            const decoded1 = jwt.decode(token1) as DecodedToken;
+            const decoded2 = jwt.decode(token2) as DecodedToken;
 
             expect(decoded1.sub).toBe(decoded2.sub);
             expect(decoded1.roles).toEqual(decoded2.roles);

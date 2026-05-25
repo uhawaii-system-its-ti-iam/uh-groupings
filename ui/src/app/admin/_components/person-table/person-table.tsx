@@ -11,9 +11,9 @@ import {
     useReactTable
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import PaginationBar from '@/components/table/table-element/pagination-bar';
-import GlobalFilter from '@/components/table/table-element/global-filter';
-import SortArrow from '@/components/table/table-element/sort-arrow';
+import PaginationBar from '@/components/table/parts/pagination-bar';
+import GlobalFilter from '@/components/table/parts/global-filter';
+import SortArrow from '@/components/table/parts/sort-arrow';
 import React, { useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -28,7 +28,7 @@ import { MemberResult, MembershipResults } from '@/lib/types';
 import OwnersModal from '@/components/modal/owners-modal';
 import DynamicModal from '@/components/modal/dynamic-modal';
 import PersonTableSkeleton from '@/app/admin/_components/person-table/person-table-skeleton';
-import personTableColumns from '@/app/admin/_components/person-table/table-element/person-table-columns';
+import personTableColumns from '@/app/admin/_components/person-table/parts/person-table-columns';
 import { Spinner } from '@/components/ui/spinner';
 import { Label } from '@/components/ui/label';
 

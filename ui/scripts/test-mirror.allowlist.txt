@@ -1,0 +1,31 @@
+# Allowlist of source files intentionally not co-located with a test file.
+# One path per line, relative to the `ui` directory.
+# Lines starting with `#` are comments.
+#
+# Categories:
+#  - Pure route entry/skeleton files that just compose other tested components.
+#  - Pure type or constants modules.
+#  - Trivial wrappers covered by integration tests of their parent component.
+
+# Type definitions (no runtime logic)
+src/lib/types.ts
+
+# Trivial wrapper / orchestration components covered indirectly via parent tests
+src/app/(home)/page.tsx
+src/app/layout.tsx
+src/app/admin/@tab/manage-admins/page.tsx
+src/app/admin/@tab/manage-groupings/page.tsx
+src/app/admin/@tab/manage-person/page.tsx
+src/components/layout/providers.tsx
+src/components/layout/navbar/navbar-menu-icon.tsx
+src/components/layout/navbar/navbar-links.ts
+
+# Skeleton components (purely visual loading state)
+src/app/admin/_components/admin-table/admin-table-skeleton.tsx
+
+# Static column definitions (data-only, covered by parent table tests)
+src/app/admin/_components/person-table/parts/person-table-columns.tsx
+src/app/memberships/_components/memberships-table-columns.tsx
+src/components/table/groupings-table/parts/groupings-table-columns.tsx
+src/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/parts/grouping-members-table-columns.tsx
+

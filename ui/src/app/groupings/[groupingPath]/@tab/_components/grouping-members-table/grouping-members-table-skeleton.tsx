@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import GroupingMembersTableColumns from './table-element/grouping-members-table-columns';
+import GroupingMembersTableColumns from './parts/grouping-members-table-columns';
 import { Group } from '@/lib/types';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);

@@ -11,14 +11,14 @@ import {
     VisibilityState
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import ColumnSettings from '@/components/table/table-element/column-settings';
-import PaginationBar from '@/components/table/table-element/pagination-bar';
-import GlobalFilter from '@/components/table/table-element/global-filter';
-import SortArrow from '@/components/table/table-element/sort-arrow';
+import ColumnSettings from '@/components/table/parts/column-settings';
+import PaginationBar from '@/components/table/parts/pagination-bar';
+import GlobalFilter from '@/components/table/parts/global-filter';
+import SortArrow from '@/components/table/parts/sort-arrow';
 import { useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
-import GroupingsTableColumns from '@/components/table/groupings-table/table-element/groupings-table-columns';
+import GroupingsTableColumns from '@/components/table/groupings-table/parts/groupings-table-columns';
 import dynamic from 'next/dynamic';
 import GroupingsTableSkeleton from './groupings-table-skeleton';
 

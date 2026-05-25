@@ -1,4 +1,4 @@
-import ImageItem from '@/app/about/_components/image-item';
+import ImageItem from '@/components/content/image-item';
 
 const UHGroupingsInfo = ({ size }: { size?: 'lg' | 'default' }) => {
     const color = size === 'lg' ? 'text-text-color' : 'text-uh-black';

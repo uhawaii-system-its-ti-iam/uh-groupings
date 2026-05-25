@@ -1,3 +1,23 @@
+/**
+ * Tests for the <RemoveMemberModal /> component.
+ *
+ * Component summary:
+ *   - A confirmation modal used in 4 contexts (include / exclude / owners / admins),
+ *     differentiated by the `group` prop. The body text and the action invoked
+ *     on "Yes" depend on `group`.
+ *   - Calls `onProcessing()` before the request, `onSuccess()` after, and
+ *     `onClose()` to dismiss itself.
+ *
+ * Testing conventions:
+ *   - `@/lib/actions` is mocked with explicit `vi.fn()`s so each context can be
+ *     verified against the right action (`removeIncludeMembers`, etc.).
+ *   - Presence assertions use `getBy*` (per testing-library/prefer-presence-queries).
+ *     Absence assertions use `queryBy*` (so missing elements return null
+ *     instead of throwing).
+ *   - `<TestWrapper />` is a tiny stateful wrapper around the modal in each
+ *     `describe` block. It owns an `isOpen` state so the close-on-Yes flow can
+ *     be observed in the DOM rather than mocked.
+ */
 import { describe, it, vi, beforeEach, expect } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -57,7 +77,7 @@ describe('RemoveMemberModal', () => {
 
         it('should render modal with correct member and list info', async () => {
             render(<TestWrapper />);
-            expect(screen.queryByText('Remove Member')).toBeInTheDocument();
+            expect(screen.getByText('Remove Member')).toBeInTheDocument();
             screen.getAllByText((content, element) => {
                 return element?.textContent?.includes('include list') ?? false;
             });
@@ -108,7 +128,7 @@ describe('RemoveMemberModal', () => {
 
         it('should render modal with correct member and list info', async () => {
             render(<TestWrapper />);
-            expect(screen.queryByText('Remove Member')).toBeInTheDocument();
+            expect(screen.getByText('Remove Member')).toBeInTheDocument();
             screen.getAllByText((content, element) => {
                 return element?.textContent?.includes('exclude list') ?? false;
             });
@@ -159,7 +179,7 @@ describe('RemoveMemberModal', () => {
 
         it('should render modal with correct member and list info', async () => {
             render(<TestWrapper />);
-            expect(screen.queryByText('Remove Member')).toBeInTheDocument();
+            expect(screen.getByText('Remove Member')).toBeInTheDocument();
             screen.getAllByText((content, element) => {
                 return element?.textContent?.includes('owners list') ?? false;
             });
@@ -210,7 +230,7 @@ describe('RemoveMemberModal', () => {
 
         it('should render modal with correct member and list info', async () => {
             render(<TestWrapper />);
-            expect(screen.queryByText('Remove Member')).toBeInTheDocument();
+            expect(screen.getByText('Remove Member')).toBeInTheDocument();
             screen.getAllByText((content, element) => {
                 return element?.textContent?.includes('admins') ?? false;
             });
@@ -258,7 +278,7 @@ describe('RemoveMemberModal', () => {
 
         render(<TestWrapper />);
 
-        expect(screen.queryByText('Remove Member')).toBeInTheDocument();
+        expect(screen.getByText('Remove Member')).toBeInTheDocument();
 
         await user.click(screen.getByRole('button', { name: 'Cancel' }));
 

@@ -20,6 +20,7 @@ import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/toolti
 import { Button } from '@/components/ui/button';
 import { getGroupingMembers } from '@/lib/actions';
 import { GroupingGroupMembers } from '@/lib/types';
+import SortBy from '@/lib/grouping-members-sort';
 import { Spinner } from '@/components/ui/spinner';
 
 const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {

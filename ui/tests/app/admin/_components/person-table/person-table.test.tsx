@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import * as Actions from '@/lib/actions';
 import { removeFromGroups, getNumberOfDirectOwners } from '@/lib/actions';
 import User from '@/lib/access/user';
@@ -347,11 +347,11 @@ describe('PersonTable', () => {
         expect(modal).toBeInTheDocument();
         const modalTitle = screen.getByText('Remove Member From Groups');
         expect(modalTitle).toBeInTheDocument();
-        const confirmButton = screen.queryByTestId('yes-button');
+        const confirmButton = screen.getByTestId('yes-button');
         await userEvent.click(confirmButton);
 
         expect(removeFromGroups).toHaveBeenCalled();
-        const [[uid, groups]] = (removeFromGroups as unknown as vi.Mock).mock.calls;
+        const [[uid, groups]] = (removeFromGroups as unknown as Mock).mock.calls;
         expect(uid).toBe(admin.uid);
         expect(groups).toEqual(['tmp:example:example-0:owners', 'tmp:example:example-0:include', 'tmp:example:example-0:exclude']);
     });
@@ -369,7 +369,7 @@ describe('PersonTable', () => {
         const resultCode = mockEmptyGroupingsInfo.resultCode;
         expect(resultCode).toBe('SUCCESS');
         expect(groupingsInfo.length).toBe(0);
-        const removeAllCheckbox = screen.getAllByRole('checkbox', { name: 'Check All Remove' })[0];
+        const removeAllCheckbox = screen.getAllByRole('checkbox', { name: 'Check All Remove' })[0] as HTMLInputElement;
         expect(removeAllCheckbox).toBeDisabled();
         expect(removeAllCheckbox.checked).toBe(false);
     });

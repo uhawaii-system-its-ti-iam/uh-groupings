@@ -11,7 +11,7 @@ import {
 import { GroupingGroupMember } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import GroupingMemberUidCell
-    from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/grouping-member-uid-cell';
+    from '@/components/table/parts/grouping-member-uid-cell';
 
 const OwnersModal = ({
     open,

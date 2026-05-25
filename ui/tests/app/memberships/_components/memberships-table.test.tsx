@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import MembershipsTable from '@/app/memberships/_components/memberships-table';
 import userEvent from '@testing-library/user-event';
@@ -11,7 +11,6 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('next-cas-client/app');
 
-vi.spyOn(global.localStorage, 'getItem').mockReturnValue(JSON.stringify({ description: true, path: true }));
 
 describe('MembershipsTable', () => {
     const mockResults = [
@@ -77,8 +76,10 @@ describe('MembershipsTable', () => {
     it('should toggle the column settings', async () => {
         render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
 
-        const button = screen.getByLabelText('column-settings-button');
+        const button = await screen.findByLabelText('column-settings-button', undefined, { timeout: 5000 });
         const user = userEvent.setup();
+
+        const getHeaderScope = () => within(screen.getAllByRole('row')[0]);
 
         const toggleColumnVisibility = async (columnTestId: string, isVisible: boolean) => {
             await waitFor(
@@ -88,18 +89,22 @@ describe('MembershipsTable', () => {
                 { timeout: 8000 }
             );
 
-            fireEvent.click(screen.getByTestId(columnTestId));
+            const sw = await screen.findByTestId(columnTestId, undefined, { timeout: 5000 });
+            await user.click(sw);
 
+            const columnName = columnTestId.replace(' Switch', '');
             if (isVisible) {
-                expect(screen.getByText(columnTestId.replace(' Switch', ''))).toBeInTheDocument();
+                await waitFor(() => expect(getHeaderScope().getByText(columnName)).toBeInTheDocument());
             } else {
-                expect(screen.queryByText(columnTestId.replace(' Switch', ''))).not.toBeInTheDocument();
+                await waitFor(() => expect(getHeaderScope().queryByText(columnName)).not.toBeInTheDocument());
             }
         };
 
+        // Description starts visible (default).
         await toggleColumnVisibility('Description Switch', false);
         await toggleColumnVisibility('Description Switch', true);
 
+        // Grouping Path starts hidden (default).
         await toggleColumnVisibility('Grouping Path Switch', true);
         await toggleColumnVisibility('Grouping Path Switch', false);
 

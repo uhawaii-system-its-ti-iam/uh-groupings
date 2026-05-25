@@ -15,14 +15,34 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { updateOptIn, updateOptOut } from '@/lib/actions';
 
+/**
+ * Renders the grouping Preferences pane with two toggles:
+ *   - Opt-In  : when ON, anyone can add themselves to the grouping.
+ *   - Opt-Out : when ON, members can remove themselves from the grouping.
+ *
+ * Both toggles call their respective server action and only flip locally if
+ * the response is `{ resultCode: 'SUCCESS' }`; on success the router is
+ * refreshed so any server-rendered data downstream re-fetches.
+ *
+ * Testing hooks (do not remove without updating the test suite):
+ *   - `data-testid="preferences-form"`   — for the form-submit preventDefault test.
+ *   - `data-testid="opt-in-info-icon"`   — opens the opt-in help modal.
+ *   - `data-testid="opt-out-info-icon"`  — opens the opt-out help modal.
+ *
+ * @param groupingPath - URL-encoded grouping path; decoded internally before
+ *                       it is forwarded to the actions layer.
+ * @param allowOptIn - Initial opt-in state (defaults to false for safe rendering
+ *                     in tests that don't care about the starting value).
+ * @param allowOptOut - Initial opt-out state (defaults to false).
+ */
 const Preferences = ({
     groupingPath,
-    allowOptIn,
-    allowOptOut,
+    allowOptIn = false,
+    allowOptOut = false,
 }: {
     groupingPath: string;
-    allowOptIn: boolean;
-    allowOptOut: boolean;
+    allowOptIn?: boolean;
+    allowOptOut?: boolean;
 }) => {
     const router = useRouter();
     const decodedGroupingPath = decodeURIComponent(groupingPath);
@@ -98,6 +118,7 @@ const Preferences = ({
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div
+                                            data-testid="opt-in-info-icon"
                                             className="relative ml-2 cursor-pointer"
                                             onClick={() => openModal(message.Tooltip.OPT_IN)}
                                         >
@@ -131,6 +152,7 @@ const Preferences = ({
                                 <Tooltip>
                                     <TooltipTrigger asChild>
                                         <div
+                                            data-testid="opt-out-info-icon"
                                             className="relative ml-2 cursor-pointer"
                                             onClick={() => openModal(message.Tooltip.OPT_OUT)}
                                         >

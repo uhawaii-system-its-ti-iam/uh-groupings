@@ -4,7 +4,7 @@ import { GroupingGroupMember } from '@/lib/types';
 import GroupingMembersTab from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-tab';
 import { createMockProviders } from 'tests/vitest.setup';
 import * as Actions from '@/lib/actions';
-import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
+import SortBy from '@/lib/grouping-members-sort';
 
 vi.mock('@/lib/actions');
 vi.mock('next/navigation', () => ({

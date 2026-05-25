@@ -20,7 +20,7 @@ describe('AddMemberModal', () => {
                 uid="test-uid"
                 name="test-user"
                 uhUuid="test-uhUuid"
-                group="test-group"
+                group="include"
                 onConfirm={mockConfirm}
                 onClose={mockClose}
             />
@@ -34,7 +34,7 @@ describe('AddMemberModal', () => {
         expect(screen.getAllByText('test-user')).toHaveLength(2);
         expect(screen.getByText('test-uid')).toBeInTheDocument();
         expect(screen.getByText('test-uhUuid')).toBeInTheDocument();
-        expect(screen.getAllByText('test-group')).toHaveLength(2);
+        expect(screen.getAllByText('include')).toHaveLength(2);
     });
 
     it('calls onConfirm when "Yes" is clicked', async () => {

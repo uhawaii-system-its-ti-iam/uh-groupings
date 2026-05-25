@@ -1,8 +1,31 @@
+/**
+ * Tests for the <GroupingMembersTable /> client component.
+ *
+ * Component summary:
+ *   - Renders a paginated, sortable, filterable table of grouping members.
+ *   - The `group` prop ("include" | "exclude" | "owners" | "basis" | undefined)
+ *     drives behavior: only include/exclude/owners show row checkboxes and
+ *     trash-can remove buttons; basis and "all members" are read-only.
+ *   - Reads pagination/sort/filter state from URL search params via `nuqs`.
+ *
+ * Testing conventions:
+ *   - URL state from `nuqs` is exercised through `createMockProviders()` (a
+ *     helper from tests/vitest.setup that wires up nuqs's test adapter).
+ *   - Avoid `render(...)` inside `beforeEach` (it triggers
+ *     `testing-library/no-render-in-lifecycle`). Use a small `renderTable()`
+ *     helper called at the top of each test instead.
+ *   - `fireEvent.click(...)` is *synchronous* — do NOT `await` it. Prefer
+ *     `userEvent` for higher-fidelity interactions; use `fireEvent` only when
+ *     `userEvent` doesn't fit (e.g., when a click handler immediately swaps
+ *     out the element and `userEvent`'s pointer-down/up sequence races).
+ *   - `waitFor` callbacks should contain assertions only — no side effects.
+ *     If you need to fire an event between assertions, do it outside `waitFor`.
+ */
 import GroupingMembersTable from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/grouping-members-table';
 import { GroupingGroupMember, GroupingGroupMembers } from '@/lib/types';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { createMockProviders } from 'tests/vitest.setup';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import * as Actions from '@/lib/actions';
 import userEvent from '@testing-library/user-event';
 import { type OnUrlUpdateFunction } from 'nuqs/adapters/testing';
@@ -208,7 +231,8 @@ describe('GroupingMembersTable', () => {
                 let user: ReturnType<typeof userEvent.setup>;
                 let selectAllCheckbox: HTMLElement;
                 let rowCheckboxes: HTMLElement[];
-                beforeEach(() => {
+
+                const renderTable = () => {
                     user = userEvent.setup();
                     render(
                         <GroupingMembersTable
@@ -222,9 +246,10 @@ describe('GroupingMembersTable', () => {
                     );
                     selectAllCheckbox = screen.getByRole('checkbox', { name: /select all rows/i });
                     rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
-                });
+                };
 
                 it('should show initial unchecked state for all checkboxes', async () => {
+                    renderTable();
                     expect(selectAllCheckbox).not.toBeChecked();
                     rowCheckboxes.forEach((checkbox) => {
                         expect(checkbox).not.toBeChecked();
@@ -232,6 +257,7 @@ describe('GroupingMembersTable', () => {
                 });
 
                 it('should select a single checkbox when clicked', async () => {
+                    renderTable();
                     await user.click(rowCheckboxes[0]);
 
                     expect(rowCheckboxes[0]).toBeChecked();
@@ -243,6 +269,7 @@ describe('GroupingMembersTable', () => {
                 });
 
                 it('should unselect a single checkbox when clicked again', async () => {
+                    renderTable();
                     await user.click(rowCheckboxes[0]);
                     expect(rowCheckboxes[0]).toBeChecked();
 
@@ -251,6 +278,7 @@ describe('GroupingMembersTable', () => {
                 });
 
                 it('should check the select-all checkbox it is clicked and uncheck when clicked again', async () => {
+                    renderTable();
                     expect(selectAllCheckbox).not.toBeChecked();
                     await user.click(selectAllCheckbox);
 
@@ -262,6 +290,7 @@ describe('GroupingMembersTable', () => {
 
                 // Passing using fireEvent
                 it('should select all row checkboxes when select-all gets checked (fireEvent)', async () => {
+                    renderTable();
                     // Use fireEvent.click instead of user.click
                     fireEvent.click(selectAllCheckbox);
 
@@ -275,14 +304,15 @@ describe('GroupingMembersTable', () => {
                 });
 
                 it('should unselect all row checkboxes when select-all gets unchecked (fireEvent)', async () => {
+                    renderTable();
                     fireEvent.click(selectAllCheckbox);
 
                     await waitFor(() => {
                         expect(selectAllCheckbox).toBeChecked();
-                        const rowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
-                        rowCheckboxes.forEach((checkbox) => {
-                            expect(checkbox).toBeChecked();
-                        });
+                    });
+                    const checkedRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                    checkedRowCheckboxes.forEach((checkbox) => {
+                        expect(checkbox).toBeChecked();
                     });
 
                     // Now Uncheck select-all — re-query to avoid stale reference
@@ -291,14 +321,16 @@ describe('GroupingMembersTable', () => {
 
                     // Query updated row checkboxes
                     await waitFor(() => {
-                        const uncheckRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
-                        uncheckRowCheckboxes.forEach((checkbox) => {
-                            expect(checkbox).not.toBeChecked();
-                        });
+                        expect(updatedSelectAll).not.toBeChecked();
+                    });
+                    const uncheckRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
+                    uncheckRowCheckboxes.forEach((checkbox) => {
+                        expect(checkbox).not.toBeChecked();
                     });
                 });
 
                 it('should uncheck select-all when any individual checkbox gets unchecked', async () => {
+                    renderTable();
                     // First select all
                     fireEvent.click(selectAllCheckbox);
                     expect(selectAllCheckbox).toBeChecked();
@@ -314,7 +346,6 @@ describe('GroupingMembersTable', () => {
                     const selectAllCheckboxUnchecked = screen.getByRole('checkbox', { name: /select all rows/i });
                     expect(selectAllCheckboxUnchecked).not.toBeChecked();
 
-                    const updatedRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
                     expect(rowCheckboxes[0]).not.toBeChecked();
 
                     // Other checkboxes should remain checked
@@ -330,7 +361,6 @@ describe('GroupingMembersTable', () => {
             const tabsWithTrashIcon = ['include', 'exclude', 'owners'] as const;
 
             it.each(tabsWithTrashIcon)('should display trash icon in the %s tab', async (tab) => {
-                const user = userEvent.setup();
                 render(
                     <GroupingMembersTable
                         groupingGroupMembers={mockGroupingGroupMembers}
@@ -369,7 +399,6 @@ describe('GroupingMembersTable', () => {
             });
 
             it('should open RemoveMemberModal with correct member when trash icon is clicked', async () => {
-                const user = userEvent.setup();
                 render(
                     <GroupingMembersTable
                         groupingGroupMembers={mockGroupingGroupMembers}
@@ -381,22 +410,20 @@ describe('GroupingMembersTable', () => {
 
                 // click the trash icon
                 const trashIconButton = screen.getAllByRole('button', { name: /remove member/i })[0];
-                await fireEvent.click(trashIconButton);
+                fireEvent.click(trashIconButton);
 
                 // Expect modal to show
-                await waitFor(() => {
-                    const modal = screen.getByTestId('remove-member-modal');
-                    expect(modal).toBeInTheDocument();
+                const modal = await screen.findByTestId('remove-member-modal');
+                expect(modal).toBeInTheDocument();
 
-                    //expect title:
-                    expect(within(modal).getByText('Remove Member')).toBeInTheDocument();
+                //expect title:
+                expect(within(modal).getByText('Remove Member')).toBeInTheDocument();
 
-                    // Expect matching names of member to remove
-                    const firstMember = mockGroupingGroupMembers.members[0];
-                    expect(within(modal).getAllByText(firstMember.name)[0]).toBeInTheDocument();
-                    expect(within(modal).getAllByText(firstMember.uhUuid)[0]).toBeInTheDocument();
-                    expect(within(modal).getAllByText(firstMember.uid)[0]).toBeInTheDocument();
-                });
+                // Expect matching names of member to remove
+                const firstMember = mockGroupingGroupMembers.members[0];
+                expect(within(modal).getAllByText(firstMember.name)[0]).toBeInTheDocument();
+                expect(within(modal).getAllByText(firstMember.uhUuid)[0]).toBeInTheDocument();
+                expect(within(modal).getAllByText(firstMember.uid)[0]).toBeInTheDocument();
             });
         });
     });
@@ -404,7 +431,6 @@ describe('GroupingMembersTable', () => {
     describe('RemoveMemberModal', () => {
         it('should close the remove member modal when cancel action is triggered', async () => {
             //open remove member modal through click of trash icon
-            const user = userEvent.setup();
             render(
                 <GroupingMembersTable
                     groupingGroupMembers={mockGroupingGroupMembers}
@@ -415,16 +441,16 @@ describe('GroupingMembersTable', () => {
             );
 
             const trashIconButton = screen.getAllByRole('button', { name: /remove member/i })[0];
-            await fireEvent.click(trashIconButton);
+            fireEvent.click(trashIconButton);
 
+            const modal = await screen.findByTestId('remove-member-modal');
+            expect(modal).toBeInTheDocument();
+
+            // Click the modal close button
+            fireEvent.click(within(modal).getByTestId('modal-close-button'));
+
+            // Expect the modal to be closed
             await waitFor(() => {
-                const modal = screen.getByTestId('remove-member-modal');
-                expect(modal).toBeInTheDocument();
-
-                // Click the modal close button
-                fireEvent.click(within(modal).getByTestId('modal-close-button'));
-
-                // Expect the modal to be closed
                 expect(screen.queryByTestId('remove-member-modal')).not.toBeInTheDocument();
             });
         });

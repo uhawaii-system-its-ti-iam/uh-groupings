@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import PersonTableColumns from '@/app/admin/_components/person-table/table-element/person-table-columns';
+import PersonTableColumns from '@/app/admin/_components/person-table/parts/person-table-columns';
 
 const PersonTableSkeleton = () => {
     const pageSize = 7; // Average number of rows
@@ -33,7 +33,7 @@ const PersonTableSkeleton = () => {
                 </TableBody>
             </Table>
             <div className="float-end">
-                <Skeleton className="h-10 w-80 rounded-[0.25rem]" />
+                <Skeleton data-testid="loading-button-skeleton" className="h-10 w-80 rounded-[0.25rem]" />
             </div>
         </div>
     );

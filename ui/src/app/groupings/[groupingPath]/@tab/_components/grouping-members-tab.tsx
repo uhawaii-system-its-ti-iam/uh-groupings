@@ -1,7 +1,7 @@
 import GroupingMembersTable, {
     GroupingMembersTableSearchParams
 } from './grouping-members-table/grouping-members-table';
-import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
+import SortBy from '@/lib/grouping-members-sort';
 import { getGroupingMembers } from '@/lib/actions';
 import { Group } from '@/lib/types';
 import { parseAsBoolean, parseAsInteger, parseAsStringEnum } from 'nuqs/server';

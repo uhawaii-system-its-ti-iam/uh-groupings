@@ -1,7 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import GroupingsTable from '@/components/table/groupings-table/groupings-table';
 import userEvent from '@testing-library/user-event';
+
+/**
+ * Helpers to query column headers in the table head only, ignoring dropdown
+ * menu labels that share the same text in the column-settings popover.
+ */
+const getHeaderScope = () => {
+    const headerRow = screen.getAllByRole('row')[0];
+    return within(headerRow);
+};
+const getColumnHeader = (name: string) => getHeaderScope().getByText(name);
+const queryColumnHeader = (name: string) => getHeaderScope().queryByText(name);
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -72,7 +83,7 @@ describe('GroupingsTable', () => {
 
     it('sorts data when header is clicked', async () => {
         const clickAndWaitForSorting = async (headerText: string, expectedOrder: string[], isAscending = true) => {
-            fireEvent.click(screen.getByText(headerText));
+            fireEvent.click(getColumnHeader(headerText));
             await waitFor(() => {
                 const chevronIcon = screen.getByTestId(isAscending ? 'chevron-down-icon' : 'chevron-up-icon');
                 expect(chevronIcon).toBeInTheDocument();
@@ -86,13 +97,9 @@ describe('GroupingsTable', () => {
         render(<GroupingsTable groupingPaths={mockGroupingPaths} />);
         const user = userEvent.setup();
 
-        // Open column settings
-        await waitFor(
-            async () => {
-                await user.click(screen.getByLabelText('column-settings-button'));
-            },
-            { timeout: 2000 }
-        );
+        // Wait for the dynamically-loaded table to render, then open column settings.
+        const settingsButton = await screen.findByLabelText('column-settings-button', undefined, { timeout: 5000 });
+        await user.click(settingsButton);
 
         // Toggle Grouping Path Switch to true
         const groupingPathSwitch = await screen.findByTestId('Grouping Path Switch');
@@ -146,7 +153,7 @@ describe('GroupingsTable', () => {
 
     it('should toggle the column settings correctly', async () => {
         render(<GroupingsTable groupingPaths={mockGroupingPaths} />);
-        const button = screen.getByLabelText('column-settings-button');
+        const button = await screen.findByLabelText('column-settings-button', undefined, { timeout: 5000 });
         const user = userEvent.setup();
 
         const toggleColumnVisibility = async (columnTestId: string, isVisible: boolean) => {
@@ -156,22 +163,24 @@ describe('GroupingsTable', () => {
                 },
                 { timeout: 2000 }
             );
-            fireEvent.click(screen.getByTestId(columnTestId));
+            await user.click(screen.getByTestId(columnTestId));
 
-            // Check getByText('Description') or getByText('Grouping Path') to be in document
+            // Verify visibility by checking the column header itself (not dropdown labels,
+            // which always render in the menu regardless of column visibility).
+            const columnName = columnTestId.replace(' Switch', '');
             if (isVisible) {
-                expect(screen.getByText(columnTestId.replace(' Switch', ''))).toBeInTheDocument();
+                await waitFor(() => expect(getColumnHeader(columnName)).toBeInTheDocument());
             } else {
-                expect(screen.queryByText(columnTestId.replace(' Switch', ''))).not.toBeInTheDocument();
+                await waitFor(() => expect(queryColumnHeader(columnName)).not.toBeInTheDocument());
             }
         };
-        // Toggle description column
+        // Description starts visible (default).
         await toggleColumnVisibility('Description Switch', false);
         await toggleColumnVisibility('Description Switch', true);
 
-        // Toggle grouping path column
-        await toggleColumnVisibility('Grouping Path Switch', false);
+        // Grouping Path starts hidden (default).
         await toggleColumnVisibility('Grouping Path Switch', true);
+        await toggleColumnVisibility('Grouping Path Switch', false);
     });
 
     it('should paginate correctly', async () => {

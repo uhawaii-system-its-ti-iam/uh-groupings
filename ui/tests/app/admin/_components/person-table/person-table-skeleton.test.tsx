@@ -12,8 +12,8 @@ describe('PersonTableSkeleton', () => {
     });
 
     it('renders the loading button skeleton', () => {
-        const { container } = render(<PersonTableSkeleton />);
-        const skeletonButtons = container.querySelectorAll('.h-10.w-80');
-        expect(skeletonButtons.length).toBeGreaterThan(0);
+        render(<PersonTableSkeleton />);
+        const skeletonButton = screen.getByTestId('loading-button-skeleton');
+        expect(skeletonButton).toBeInTheDocument();
     });
 });

@@ -22,10 +22,20 @@ export default defineConfig({
             include: ['**/src/**/*.ts*'],
             exclude: [
                 ...coverageConfigDefaults.exclude,
-                '**/src/components/ui' // Ignore shadcn/ui components
+                '**/src/components/ui', // Ignore shadcn/ui components
+                '**/*-skeleton.tsx',    // Visual loading-state only
+                '**/src/lib/types.ts'    // Type-only module
             ],
             reporter: ['text', 'json-summary', 'html'],
-            reportsDirectory: './coverage'
+            reportsDirectory: './coverage',
+            // Guardrails: keep the team from sliding backward. Set just below
+            // current baseline so safe refactors don't trip CI.
+            thresholds: {
+                statements: 85,
+                branches: 80,
+                functions: 85,
+                lines: 85
+            }
         }
     }
 });

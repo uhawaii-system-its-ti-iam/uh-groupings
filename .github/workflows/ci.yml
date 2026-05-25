@@ -36,7 +36,12 @@ jobs:
           cd ui
           npm run lint
 
-      - name: Run Vitest Tests
+      - name: Verify source/test mirror structure
         run: |
           cd ui
-          npm run test
+          npm run check:structure
+
+      - name: Run Vitest Tests (with coverage thresholds)
+        run: |
+          cd ui
+          npm run test:coverage -- --run

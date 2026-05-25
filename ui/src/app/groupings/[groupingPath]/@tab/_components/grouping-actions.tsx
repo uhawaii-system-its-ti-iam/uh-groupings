@@ -21,6 +21,25 @@ interface ActionsProps {
     initialDuplicateOwnersCount?: number;
 }
 
+/**
+ * Grouping Actions pane.
+ *
+ * Lets a grouping owner reset the Include and/or Exclude lists (with a
+ * confirmation modal) and surfaces any duplicate owners detected upstream.
+ *
+ * Reset flow:
+ *   1. User checks one or both list checkboxes and clicks "Reset Selected".
+ *   2. A confirmation modal lists what will be reset; "Yes" kicks off the API
+ *      call(s) and shows a loading spinner.
+ *   3. On success a completion modal is shown. The Async variants of the
+ *      reset endpoints are used when the grouping path is "long" (the server
+ *      requires them to avoid request timeouts).
+ *
+ * Testing hooks (do not remove without updating the test suite):
+ *   - `data-testid="grouping-actions-form"` — for the form-submit preventDefault test.
+ *   - `data-testid="loading-spinner"`       — for asserting the spinner is shown.
+ *   - `data-testid="actions-tooltip-icon"`  — opens the actions help modal.
+ */
 const Actions = ({
     groupingPath,
     initialDuplicateOwners = {},
@@ -141,7 +160,7 @@ const Actions = ({
                 <div className="flex flex-wrap pt-4 pb-5">
                     <div className="w-full pr-4 pl-4 relative">
                         <h3 className="text-xl text-cyan-800 mt-2 ml-0.5 mb-2">{message.Actions.SECTION_TITLE}</h3>
-                        <form onSubmit={(e) => e.preventDefault()}>
+                        <form onSubmit={(e) => e.preventDefault()} data-testid="grouping-actions-form">
                             <div className="flex items-center mb-1 relative">
                                 <input
                                     type="checkbox"

@@ -4,7 +4,12 @@ import { generateJWT } from './jwt-service'
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
-enum HTTPMethod {
+/**
+ * Supported HTTP methods used by the helpers in this module. Exported so tests
+ * (and any future consumers) can pass the strongly-typed value rather than a
+ * bare string literal.
+ */
+export enum HTTPMethod {
     GET = 'GET',
     POST = 'POST',
     PUT = 'PUT',

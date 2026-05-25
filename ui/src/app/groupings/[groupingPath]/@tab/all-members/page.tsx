@@ -1,5 +1,5 @@
-import GroupingMembersTab from '../_components/grouping-members-tab';
-import { GroupingMembersTableSearchParams } from '../_components/grouping-members-table/grouping-members-table';
+import GroupingMembersTab from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-tab';
+import { GroupingMembersTableSearchParams } from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/grouping-members-table';
 
 const AllMembersTab = ({
     params,

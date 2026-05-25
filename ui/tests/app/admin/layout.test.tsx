@@ -6,7 +6,8 @@ import { withNuqsTestingAdapter } from 'nuqs/adapters/testing';
 describe('GroupingsLayout', () => {
     it('renders the heading with correct props and children correctly', () => {
         const tabContent = <div>Child Content</div>;
-        render(<AdminLayout tab={tabContent}/>, { wrapper: withNuqsTestingAdapter() });
+        const modalsSlot = <div>Modals Slot</div>;
+        render(<AdminLayout tab={tabContent} modals={modalsSlot} />, { wrapper: withNuqsTestingAdapter() });
 
         expect(screen.getByText('UH Groupings Administration')).toBeInTheDocument();
         expect(

@@ -16,7 +16,66 @@
                 "**/__tests__/**/*.[jt]s?(x)",
                 "**/?(*.)+(spec|test).[jt]s?(x)"
             ],
-            "extends": ["plugin:testing-library/react"]
+            "extends": ["plugin:testing-library/react"],
+            "rules": {
+                "no-restricted-syntax": [
+                    "error",
+                    {
+                        "selector": "CallExpression[callee.object.name='vi'][callee.property.name='spyOn'][arguments.0.name='localStorage']",
+                        "message": "Do not spy on localStorage. The vitest setup provides an in-memory shim that is cleared between tests. Spying on getItem with a fixed return value breaks setItem round-trips and produces flaky tests. See ui/ARCHITECTURE.md#test-environment."
+                    },
+                    {
+                        "selector": "CallExpression[callee.object.name='vi'][callee.property.name='spyOn'][arguments.0.object.name='global'][arguments.0.property.name='localStorage']",
+                        "message": "Do not spy on global.localStorage. The vitest setup provides an in-memory shim that is cleared between tests. See ui/ARCHITECTURE.md#test-environment."
+                    },
+                    {
+                        "selector": "CallExpression[callee.object.name='vi'][callee.property.name='spyOn'][arguments.0.object.name='window'][arguments.0.property.name='localStorage']",
+                        "message": "Do not spy on window.localStorage. The vitest setup provides an in-memory shim that is cleared between tests. See ui/ARCHITECTURE.md#test-environment."
+                    }
+                ],
+                "@typescript-eslint/no-explicit-any": "warn",
+                "@typescript-eslint/no-unused-vars": "warn",
+                "testing-library/no-node-access": "warn",
+                "testing-library/no-wait-for-multiple-assertions": "warn",
+                "testing-library/no-wait-for-side-effects": "warn",
+                "testing-library/prefer-presence-queries": "warn",
+                "testing-library/no-manual-cleanup": "warn",
+                "testing-library/no-container": "warn",
+                "testing-library/no-await-sync-events": "warn",
+                "testing-library/no-render-in-lifecycle": "warn"
+            }
+        },
+        {
+            "files": ["src/app/**/*.[jt]s?(x)"],
+            "rules": {
+                "no-restricted-imports": [
+                    "error",
+                    {
+                        "patterns": [
+                            {
+                                "group": ["../*", "../../*", "../../../*", "../../../../*"],
+                                "message": "Use the '@/app/...' alias for cross-directory imports in src/app. Keep relative imports for same-directory files only."
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["src/components/**/*.[jt]s?(x)", "src/lib/**/*.[jt]s?(x)"],
+            "rules": {
+                "no-restricted-imports": [
+                    "error",
+                    {
+                        "patterns": [
+                            {
+                                "group": ["@/app/*"],
+                                "message": "Do not import route-local modules from src/app into shared components/lib. Move shared code to src/components or src/lib."
+                            }
+                        ]
+                    }
+                ]
+            }
         }
     ],
     "parser": "@typescript-eslint/parser",
