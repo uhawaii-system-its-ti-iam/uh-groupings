@@ -1,4 +1,11 @@
+This is an architectural overview and style guide for the `ui` codebase, 
+covering both source layout conventions and React Server/Client Component 
+architecture.
+
+# Table of Contents
+
 <!-- TOC -->
+* [Table of Contents](#table-of-contents)
 * [UI Architecture, part 1](#ui-architecture-part-1)
   * [Goals](#goals)
   * [Enforcement Summary](#enforcement-summary)
@@ -70,17 +77,17 @@ The conventions in this document are not just guidelines — most are enforced
 automatically and fail the build when violated. New contributors and LLM
 agents can rely on these guarantees holding.
 
-| Rule | Enforced by | Fails on |
-|---|---|---|
-| `src/app` cannot use parent-relative imports (`../...`) | ESLint `no-restricted-imports` in `.eslintrc.json` | `npm run lint` |
-| `src/components` and `src/lib` cannot import from `@/app/*` | ESLint `no-restricted-imports` in `.eslintrc.json` | `npm run lint` |
-| Test directories must mirror source directories | `scripts/check-test-mirror.mjs` | `npm run check:structure` |
-| Test files must have a matching source file (no orphans) | `scripts/check-test-mirror.mjs` | `npm run check:structure` |
-| Minimum code coverage (85/80/85/85) | `vitest.config.mts` thresholds | `npm run test:coverage -- --run` |
-| Function-component definition style (arrow functions) | ESLint `react/function-component-definition` | `npm run lint` |
-| Single-quote string style, max line length 170 | ESLint `@stylistic` rules | `npm run lint` |
-| No spying on `localStorage`, `global.localStorage`, or `window.localStorage` in tests | ESLint `no-restricted-syntax` (test files) | `npm run lint` |
-| `tests/` directory is linted alongside `src/` and `scripts/` | `npm run lint` script (`next lint --dir src --dir tests --dir scripts`) | `npm run lint` |
+| Rule                                                                                  | Enforced by                                                             | Fails on                         |
+|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------|----------------------------------|
+| `src/app` cannot use parent-relative imports (`../...`)                               | ESLint `no-restricted-imports` in `.eslintrc.json`                      | `npm run lint`                   |
+| `src/components` and `src/lib` cannot import from `@/app/*`                           | ESLint `no-restricted-imports` in `.eslintrc.json`                      | `npm run lint`                   |
+| Test directories must mirror source directories                                       | `scripts/check-test-mirror.mjs`                                         | `npm run check:structure`        |
+| Test files must have a matching source file (no orphans)                              | `scripts/check-test-mirror.mjs`                                         | `npm run check:structure`        |
+| Minimum code coverage (85/80/85/85)                                                   | `vitest.config.mts` thresholds                                          | `npm run test:coverage -- --run` |
+| Function-component definition style (arrow functions)                                 | ESLint `react/function-component-definition`                            | `npm run lint`                   |
+| Single-quote string style, max line length 170                                        | ESLint `@stylistic` rules                                               | `npm run lint`                   |
+| No spying on `localStorage`, `global.localStorage`, or `window.localStorage` in tests | ESLint `no-restricted-syntax` (test files)                              | `npm run lint`                   |
+| `tests/` directory is linted alongside `src/` and `scripts/`                          | `npm run lint` script (`next lint --dir src --dir tests --dir scripts`) | `npm run lint`                   |
 
 Conventions that are human-enforced (reviewer responsibility, not yet
 automated):
@@ -615,16 +622,16 @@ into Client Components unless absolutely required.
 
 The long-term goal is to maintain:
 
-| Concern | Preferred Location |
-|---|---|
-| Authorization | Server Components |
-| Redirects | Server Components |
-| Data fetching | Server Components |
-| Browser state | Client Components |
-| Forms | Client Components |
-| Modals | Client Components |
-| Tables | Client Components |
-| React Query | Scoped provider boundaries |
+| Concern             | Preferred Location         |
+|---------------------|----------------------------|
+| Authorization       | Server Components          |
+| Redirects           | Server Components          |
+| Data fetching       | Server Components          |
+| Browser state       | Client Components          |
+| Forms               | Client Components          |
+| Modals              | Client Components          |
+| Tables              | Client Components          |
+| React Query         | Scoped provider boundaries |
 | URL synchronization | Scoped provider boundaries |
 
 ---
