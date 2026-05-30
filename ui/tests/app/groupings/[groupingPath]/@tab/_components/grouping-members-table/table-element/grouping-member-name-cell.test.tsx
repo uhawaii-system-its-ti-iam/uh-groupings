@@ -13,10 +13,10 @@ describe('GroupingMemberNameCell', () => {
     });
 
     it('should render the departmental account icon', () => {
-        const { rerender } = render(<GroupingMemberNameCell name={name} uid={''} uhUuid={''} />);
+        const { rerender } = render(<GroupingMemberNameCell name={name} uid={'testiwta'} uhUuid={'testiwta'} />);
         expect(screen.getByLabelText('Departmental Account Icon')).toBeInTheDocument();
 
-        rerender(<GroupingMemberNameCell name={name} uid={'testiwta'} uhUuid={'testiwta'} />);
+        rerender(<GroupingMemberNameCell name={name} uid={'dept123'} uhUuid={'dept123'} />);
         expect(screen.getByLabelText('Departmental Account Icon')).toBeInTheDocument();
     });
 });

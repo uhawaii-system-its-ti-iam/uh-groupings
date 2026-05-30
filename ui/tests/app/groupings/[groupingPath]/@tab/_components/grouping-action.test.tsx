@@ -337,4 +337,169 @@ describe('Actions Component', () => {
         expect(refreshMock).not.toHaveBeenCalled();
     });
 
+    describe('Duplicate Owners Display', () => {
+        it('displays "No duplicate owners found" when duplicateOwnersCount is 0', () => {
+            render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={{}}
+                    initialDuplicateOwnersCount={0}
+                />
+            );
+            expect(screen.getByText('No duplicate owners found.')).toBeInTheDocument();
+        });
+
+        it('displays duplicate owners count in the header', () => {
+            const mockDuplicates = {
+                'uuid1': {
+                    uhUuid: 'uuid1',
+                    name: 'John Doe',
+                    uid: 'jdoe',
+                    paths: ['direct']
+                }
+            };
+            render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={mockDuplicates}
+                    initialDuplicateOwnersCount={1}
+                />
+            );
+            expect(screen.getByText(/Duplicate Owners \(1\)/)).toBeInTheDocument();
+        });
+
+        it('displays duplicate owners table with correct headers', () => {
+            const mockDuplicates = {
+                'uuid1': {
+                    uhUuid: 'uuid1',
+                    name: 'John Doe',
+                    uid: 'jdoe',
+                    paths: ['direct']
+                }
+            };
+            render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={mockDuplicates}
+                    initialDuplicateOwnersCount={1}
+                />
+            );
+            expect(screen.getByText('NAME')).toBeInTheDocument();
+            expect(screen.getByText('UH USERNAME')).toBeInTheDocument();
+            expect(screen.getByText('SOURCES OF OWNERSHIP')).toBeInTheDocument();
+        });
+
+        it('displays single duplicate owner with correct data', () => {
+            const mockDuplicates = {
+                'uuid1': {
+                    uhUuid: 'uuid1',
+                    name: 'John Doe',
+                    uid: 'jdoe',
+                    paths: ['DIRECT', 'owner-grouping:owners']
+                }
+            };
+            render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={mockDuplicates}
+                    initialDuplicateOwnersCount={1}
+                />
+            );
+            expect(screen.getByText('John Doe')).toBeInTheDocument();
+            expect(screen.getByText('jdoe')).toBeInTheDocument();
+            expect(screen.getByText('owner-grouping:owners')).toBeInTheDocument();
+        });
+
+        it('displays multiple duplicate owners with correct data', () => {
+            const mockDuplicates = {
+                'uuid-123': {
+                    uhUuid: 'uuid-123',
+                    name: 'John Doe',
+                    uid: 'jdoe',
+                    paths: ['DIRECT', 'owner-grouping:owners']
+                },
+                'uuid-456': {
+                    uhUuid: 'uuid-456',
+                    name: 'Jane Smith',
+                    uid: 'jsmith',
+                    paths: ['owner-grouping-1:owners', 'owner-grouping-2:owners']
+                }
+            };
+            render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={mockDuplicates}
+                    initialDuplicateOwnersCount={2}
+                />
+            );
+            expect(screen.getByText(/Duplicate Owners \(2\)/)).toBeInTheDocument();
+            expect(screen.getByText('John Doe')).toBeInTheDocument();
+            expect(screen.getByText('Jane Smith')).toBeInTheDocument();
+            expect(screen.getByText('jdoe')).toBeInTheDocument();
+            expect(screen.getByText('jsmith')).toBeInTheDocument();
+            expect(screen.getByText('owner-grouping:owners')).toBeInTheDocument();
+        });
+
+        it('displays all ownership sources for a duplicate owner', () => {
+            const mockDuplicates = {
+                'uuid1': {
+                    uhUuid: 'uuid1',
+                    name: 'John Doe',
+                    uid: 'jdoe',
+                    paths: ['DIRECT', 'owner-grouping-1:owners', 'owner-grouping-2:owners']
+                }
+            };
+            render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={mockDuplicates}
+                    initialDuplicateOwnersCount={1}
+                />
+            );
+            expect(screen.getByText('owner-grouping-1:owners')).toBeInTheDocument();
+            expect(screen.getByText('owner-grouping-2:owners')).toBeInTheDocument();
+        });
+
+        it('displays dash when owner has no paths', () => {
+            const mockDuplicates = {
+                'uuid1': {
+                    uhUuid: 'uuid1',
+                    name: 'John Doe',
+                    uid: 'jdoe',
+                    paths: []
+                }
+            };
+            render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={mockDuplicates}
+                    initialDuplicateOwnersCount={1}
+                />
+            );
+            expect(screen.getByText('—')).toBeInTheDocument();
+        });
+
+        it('has correct table styling with hover effect', () => {
+            const mockDuplicates = {
+                'uuid1': {
+                    uhUuid: 'uuid1',
+                    name: 'John Doe',
+                    uid: 'jdoe',
+                    paths: ['DIRECT', 'owner-grouping:owners']
+                }
+            };
+            const { container } = render(
+                <Actions
+                    groupingPath={shortGroupingPath}
+                    initialDuplicateOwners={mockDuplicates}
+                    initialDuplicateOwnersCount={1}
+                />
+            );
+            const tableRows = container.querySelectorAll('tbody tr');
+            expect(tableRows.length).toBe(1);
+            expect(tableRows[0].className).toContain('hover:bg-gray-200');
+            expect(tableRows[0].className).toContain('bg-gray-50');
+        });
+    });
+
 });

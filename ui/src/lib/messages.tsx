@@ -17,7 +17,8 @@ export const message = {
         SYNC_DEST: (description: string) => `This option syncs destinations to ${description}`,
         SELECT_ALL_LIST: 'See tools tab to remove entire list',
         TRASH_ICON_REMOVAL: (group: string) =>
-            `Remove member from the ${group.charAt(0).toUpperCase() + group.slice(1)} list`
+            `Remove member from the ${group.charAt(0).toUpperCase() + group.slice(1)} list`,
+        Trashcan_Admin: 'Remove this admin',
     },
 
     SyncDestinations: {
@@ -43,16 +44,12 @@ export const message = {
         MODAL_TITLE: 'Reset Grouping',
         MODAL_BODY: (isInclude: boolean, isExclude: boolean, groupName: string) => {
             const target =
-                isInclude && isExclude
-                    ? 'Exclude and Include lists'
-                    : isInclude
-                        ? 'Include list'
-                        : 'Exclude list';
+                isInclude && isExclude ? 'Exclude and Include lists' : isInclude ? 'Include list' : 'Exclude list';
             return `Are you sure you want to remove all members from the ${target} in the ${groupName} grouping?`;
         },
         MODAL_CONFIRM: 'Yes',
         MODAL_INFO_TITLE: 'Actions Information',
-        MODAL_SUCCESS_TITLE: 'Grouping Reset Completion',
+        MODAL_SUCCESS_TITLE: 'Grouping Reset Completion'
     },
 
     ApiError: {
@@ -70,7 +67,9 @@ export const message = {
 
     RemoveMemberModals: {
         ALERT_DESCRIPTION:
-            'Membership changes made may not take effect immediately. Usually, 3-5 minutes should be anticipated. In extreme cases changes may take several hours to be fully processed, depending on the number of members and the synchronization destination.',
+            'Membership changes made may not take effect immediately. Usually, 3-5 minutes ' +
+            'should be anticipated. In extreme cases changes may take several hours to be fully ' +
+            'processed, depending on the number of members and the synchronization destination.',
         TOOLTIP: {
             NO_UID_SINGLE: 'This member does not have a UH username.',
             NO_UID_MULTIPLE: 'This person does not have a UH username.'
