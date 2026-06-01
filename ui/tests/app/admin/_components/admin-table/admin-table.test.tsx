@@ -146,7 +146,7 @@ vi.mock('@/lib/messages', () => ({
                 REMOVE_BODY: (name: string) => `Removed ${name}`,
             },
         },
-        Actions: {
+        Tooltip: {
             Trashcan_Admin: 'Remove this admin',
         },
         RemoveMemberModals: {

@@ -36,9 +36,9 @@ const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {
     const exportCsv = async (group: string) => {
         startTransition(async () => {
             const groupPath = group === '' ? groupingPath : `${groupingPath}:${group}`;
-            const sortString = 'name';
+            const sortBy: SortBy = SortBy.NAME;
             const isAscending = true;
-            const data: GroupingGroupMembers = await getGroupingMembers(groupPath, { sortString, isAscending });
+            const data: GroupingGroupMembers = await getGroupingMembers(groupPath, { sortBy, isAscending });
 
             const members = data.members;
             const groupName = groupingPath.split(':').pop();

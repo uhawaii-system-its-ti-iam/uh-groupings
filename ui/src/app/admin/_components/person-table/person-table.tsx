@@ -24,7 +24,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { getNumberOfDirectOwners, groupingOwners, removeFromGroups } from '@/lib/actions';
-import { MemberResult, MembershipResults } from '@/lib/types';
+import { GroupingGroupMember, MemberResult, Membership, MembershipResults } from '@/lib/types';
 import OwnersModal from '@/components/modal/owners-modal';
 import DynamicModal from '@/components/modal/dynamic-modal';
 import PersonTableSkeleton from '@/app/admin/_components/person-table/person-table-skeleton';
@@ -52,17 +52,17 @@ const PersonTable = ({
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     // Modal states
     const [openOwnersModal, setOpenOwnersModal] = useState(false);
-    const [ownersModalData, setOwnersModalData] = useState([]);
+    const [ownersModalData, setOwnersModalData] = useState<GroupingGroupMember[]>([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [modalBody, setModalBody] = useState(<></>);
     const [modalWarning, setModalWarning] = useState('');
-    const [modalButton, setModalButton] = useState([]);
+    const [modalButton, setModalButton] = useState<React.ReactNode[]>([]);
     const [modalCloseText, setModalCloseText] = useState(false);
     // Search states
     const router = useRouter();
-    const resultCode = membershipResults.resultCode;
-    const groupingsInfo = membershipResults.results;
+    const resultCode = membershipResults?.resultCode ?? '';
+    const groupingsInfo: Membership[] = membershipResults?.results ?? [];
     const userInfo = memberResult;
     const [uid, setUid] = useState('');
     const [searchCounter, setSearchCounter] = useState(-1);
@@ -109,8 +109,8 @@ const PersonTable = ({
      *
      * @param path - The current path
      */
-    const hydrateOwnersModal = async (path) => {
-        const members = (await groupingOwners(path))?.owners?.members ?? [];
+    const hydrateOwnersModal = async (path: string) => {
+        const members = (await groupingOwners(path))?.members ?? [];
         setOwnersModalData(members);
         setOpenOwnersModal(true);
     };
@@ -135,9 +135,7 @@ const PersonTable = ({
 
         const groupPaths = table.getSelectedRowModel().rows.flatMap(({ original }) => {
             const { path, inOwner } = original;
-            return [inOwner && `${path}:owners`].filter(
-                (groupPath) => groupPath
-            );
+            return [inOwner && `${path}:owners`].filter((groupPath): groupPath is string => Boolean(groupPath));
         });
 
         startTransition(() => {
@@ -239,9 +237,11 @@ const PersonTable = ({
     const handleRemove = async () => {
         const groupPaths = table.getSelectedRowModel().rows.flatMap(({ original }) => {
             const { path, inOwner, inInclude, inExclude } = original;
-            return [inOwner && `${path}:owners`, inInclude && `${path}:include`, inExclude && `${path}:exclude`].filter(
-                (groupPath) => groupPath
-            );
+            return [
+                inOwner && `${path}:owners`,
+                inInclude && `${path}:include`,
+                inExclude && `${path}:exclude`
+            ].filter((groupPath): groupPath is string => Boolean(groupPath));
         });
         if (uhIdentifier) {
             await removeFromGroups(uhIdentifier, groupPaths);

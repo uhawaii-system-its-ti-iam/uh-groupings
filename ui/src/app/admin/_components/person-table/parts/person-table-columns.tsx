@@ -1,4 +1,7 @@
-const PersonTableColumns = [
+import type { ColumnDef } from '@tanstack/react-table';
+import type { Membership } from '@/lib/types';
+
+const PersonTableColumns: ColumnDef<Membership>[] = [
     {
         id: 'name',
         header: 'Grouping',

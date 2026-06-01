@@ -167,7 +167,7 @@ describe('PersonTable', () => {
 
     it('renders alert when no user data is found', async () => {
         render(<PersonTable
-                membershipResults={[] as MembershipResults}
+                membershipResults={[] as unknown as MembershipResults}
                 memberResult={undefined}
                 uhIdentifier={admin.uid}
                 showWarning={true}
@@ -283,7 +283,7 @@ describe('PersonTable', () => {
         );
         vi.spyOn(Actions, 'getNumberOfDirectOwners').mockResolvedValue(2);
 
-        const removeAllCheckbox = screen.getAllByRole('checkbox', { name: 'Check All Remove' })[0];
+        const removeAllCheckbox = screen.getAllByRole('checkbox', { name: 'Check All Remove' })[0] as HTMLInputElement;
         await userEvent.click(removeAllCheckbox);
         expect(removeAllCheckbox.disabled).toBe(false);
         expect(removeAllCheckbox.checked).toBe(true);
@@ -321,7 +321,7 @@ describe('PersonTable', () => {
         const removeModal = await screen.findByRole('alertdialog');
         expect(removeModal).toBeInTheDocument();
         const confirmButton = screen.queryByTestId('yes-button');
-        await userEvent.click(confirmButton);
+        await userEvent.click(confirmButton as HTMLElement);
         await waitFor(() => {
             expect(removeFromGroups).not.toHaveBeenCalled();
         });

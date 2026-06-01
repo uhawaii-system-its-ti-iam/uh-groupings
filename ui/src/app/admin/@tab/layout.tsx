@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { usePathname } from 'next/navigation';
 
 const AdminTabsLayout = ({ children }: { children: React.ReactNode }) => {
-    const currentPath = usePathname().split('/').pop();
+    const currentPath = usePathname().split('/').pop() ?? '';
     return (
         <>
             <Tabs className="bg-seafoam" value={currentPath === 'admin' ? 'manage-groupings' : currentPath.toString()}>

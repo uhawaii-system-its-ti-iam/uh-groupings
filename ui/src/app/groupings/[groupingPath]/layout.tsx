@@ -5,7 +5,7 @@ import ReturnButtons from './_components/return-buttons';
 import SideNav from './_components/side-nav';
 import { redirect } from 'next/navigation';
 import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
-import { getCurrentUser } from 'next-cas-client/app';
+import { getUser } from '@/lib/access/user';
 
 const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: string }; tab: React.ReactNode }) => {
     const groupPath = decodeURIComponent(params.groupingPath);
@@ -15,7 +15,7 @@ const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: str
 
     if (!(await groupingPathIsValid(groupPath))) redirect('/');
 
-    const currentUser = await getCurrentUser();
+    const currentUser = await getUser();
     if (!(await isAdmin(currentUser.uid)) && !(await isGroupingOwner(groupPath, currentUser.uid))) redirect('/');
 
     return (

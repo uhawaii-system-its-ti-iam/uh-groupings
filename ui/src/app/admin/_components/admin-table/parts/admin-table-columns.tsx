@@ -74,7 +74,7 @@ const AdminTableColumns = (onOpenRemove: (member: GroupingGroupMember) => void):
                         </button>
                     </TooltipTrigger>
                     <TooltipContent side="top">
-                        {message.Actions.Trashcan_Admin}
+                        {message.Tooltip.Trashcan_Admin}
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>

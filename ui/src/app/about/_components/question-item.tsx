@@ -1,11 +1,13 @@
+import type { ReactNode } from 'react';
+
 type QuestionData = {
     question: string;
-    answer: string;
+    answer: ReactNode;
 };
 
 type QuestionItemProps = {
     data: QuestionData[];
-    col: number;
+    col?: number;
 };
 
 const QuestionItem = ({ data, col }: QuestionItemProps) => {

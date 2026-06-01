@@ -177,6 +177,6 @@ export type EmailResult = {
     text: string;
 };
 
-export type Group = 'basis' | 'include' | 'exclude' | 'owners';
+export type Group = 'basis' | 'include' | 'exclude' | 'owners' | 'admins';
 
 export type WhereListed = 'Basis' | 'Include' | 'Basis & Include';

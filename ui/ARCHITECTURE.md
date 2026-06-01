@@ -67,7 +67,7 @@ Part 1 defines the source layout conventions for `ui/src`.
 
 ## Goals
 
-- Keep feature ownership obvious for human developers.
+- Keep feature ownership obvious for LLMs and human developers.
 - Make file intent discoverable in 1-2 directory hops.
 - Keep import style predictable for editors, code search, and LLM agents.
 

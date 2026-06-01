@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import AdminTabsLayout from '@/app/admin/@tab/layout';
 import { usePathname } from 'next/navigation';
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach, type Mock } from 'vitest';
 
 vi.mock('next/navigation', () => ({
     usePathname: vi.fn(),
@@ -9,7 +9,7 @@ vi.mock('next/navigation', () => ({
 
 describe('AdminTabsLayout', () => {
     beforeEach(() => {
-        (usePathname as jest.Mock).mockReturnValue('/admin/manage-person');
+        (usePathname as Mock).mockReturnValue('/admin/manage-person');
     });
 
     it('renders the correct active tab', () => {

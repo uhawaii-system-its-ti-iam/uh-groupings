@@ -42,7 +42,7 @@ describe('ExportDropdown', () => {
 
         await waitFor(() => {
             expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath', {
-                sortString: 'name',
+                sortBy: 'name',
                 isAscending: true
             });
         });
@@ -72,7 +72,7 @@ describe('ExportDropdown', () => {
 
         await waitFor(() => {
             expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath:basis', {
-                sortString: 'name',
+                sortBy: 'name',
                 isAscending: true
             });
         });
