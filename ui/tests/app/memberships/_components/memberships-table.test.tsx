@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, Mock } from 'vitest';
 import MembershipsTable from '@/app/memberships/_components/memberships-table';
-import { optIn, optOut } from '@/lib/actions';
+import { optIn } from '@/lib/actions';
 import userEvent from '@testing-library/user-event';
 
 vi.mock('next/navigation', () => ({
@@ -37,6 +37,26 @@ describe('MembershipsTable', () => {
             description: 'test-description3'
         }
     ];
+
+    const setupPendingOptIn = () => {
+        const deferred = <T,>() => {
+            let resolve!: (value: T | PromiseLike<T>) => void;
+            let reject!: (reason?: unknown) => void;
+            const promise = new Promise<T>((res, rej) => {
+                resolve = res;
+                reject = rej;
+            });
+            return { promise, resolve, reject };
+        };
+
+        const pending = deferred<void>();
+
+        (optIn as Mock).mockImplementation(vi.fn().mockReturnValue(pending.promise));
+
+        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+
+        return { pending };
+    };
 
     it('renders table with data', async () => {
         render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
@@ -113,29 +133,13 @@ describe('MembershipsTable', () => {
     });
 
     it('does not remove a row immediately when the opt button is clicked', async () => {
-        const deferred = <T,>() => {
-            let resolve!: (value?: T | PromiseLike<T>) => void;
-            let reject!: (reason?: unknown) => void;
-            const promise = new Promise<T>((res, rej) => {
-                resolve = res;
-                reject = rej;
-            });
-            return { promise, resolve, reject };
-        };
-
-        const pending = deferred<void>();
-        const optInMock = vi.fn().mockReturnValue(pending.promise);
-        (optIn as Mock).mockImplementation(optInMock);
-
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+        const { pending } = setupPendingOptIn();
 
         const button = screen.getAllByTestId('opt-button')[0];
         fireEvent.click(button);
 
-        // action is pending -> row should still be visible
         expect(screen.getByText('test-name1')).toBeInTheDocument();
 
-        // finish the action
         pending.resolve();
 
         await waitFor(() => {
@@ -146,25 +150,10 @@ describe('MembershipsTable', () => {
     });
 
     it('removes a row after confirmed action completes', async () => {
-        const deferred = <T,>() => {
-            let resolve!: (value?: T | PromiseLike<T>) => void;
-            let reject!: (reason?: unknown) => void;
-            const promise = new Promise<T>((res, rej) => {
-                resolve = res;
-                reject = rej;
-            });
-            return { promise, resolve, reject };
-        };
-
-        const pending = deferred<void>();
-        const optInMock = vi.fn().mockReturnValue(pending.promise);
-        (optIn as Mock).mockImplementation(optInMock);
-
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+        const { pending } = setupPendingOptIn();
 
         fireEvent.click(screen.getAllByTestId('opt-button')[0]);
 
-        // still present while pending
         expect(screen.getByText('test-name1')).toBeInTheDocument();
 
         pending.resolve();

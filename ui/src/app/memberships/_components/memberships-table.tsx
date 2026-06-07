@@ -44,7 +44,7 @@ const MembershipsTable = ({
     }, [memberships]);
 
     const handleActionFinished = (path: string) => {
-        setDisplayedMemberships((prev) => prev.filter((m: any) => (m as any).path !== path));
+        setDisplayedMemberships((prev) => prev.filter((m) => m.path !== path));
     };
 
     const table = useReactTable({

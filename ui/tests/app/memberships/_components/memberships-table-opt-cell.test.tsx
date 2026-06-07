@@ -100,6 +100,9 @@ describe('MembershipsOptCell', () => {
 
         await waitFor(() => {
             expect(mockOptIn).toHaveBeenCalledWith('test-group');
+        });
+
+        await waitFor(() => {
             expect(mockRefresh).toHaveBeenCalled();
         });
 

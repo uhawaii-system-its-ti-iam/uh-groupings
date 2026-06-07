@@ -22,18 +22,15 @@ const MembershipsOptCell = ({
 
     const handleAction = async () => {
         setIsPending(true);
-            try {
+        try {
             if (isOptOut) {
                 await optOut(groupingPath);
             } else {
                 await optIn(groupingPath);
             }
 
-                // Notify parent that the action completed so it can remove the row immediately.
-                onActionFinished?.(groupingPath);
-
-                // Kick off a refresh to get authoritative server state; don't wait on it.
-                router.refresh();
+            onActionFinished?.(groupingPath);
+            router.refresh();
         } finally {
             setIsPending(false);
         }
