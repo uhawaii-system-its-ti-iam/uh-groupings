@@ -5,6 +5,9 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
     plugins: [tsconfigPaths(), react()],
     test: {
+        api: {
+            host: 'localhost' //helps protect vitest ui/api server when npm run test:ui is run
+        },
         env: {
             JWT_SECRET_KEY: 'dGhpcytqd3Qrc2VjcmV0K3VzZWQrZm9yK3Rlc3Rpbmc=', //jwt secret used for tests.
         },
