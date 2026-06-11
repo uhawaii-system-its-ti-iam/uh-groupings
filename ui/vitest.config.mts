@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [tsconfigPaths(), react()],
     test: {
         api: {
-            host: 'localhost' //helps protect vitest ui/api server when npm run test:ui is run
+            host: '127.0.0.1', // helps protect Vitest UI/API server when `npm run test:ui` is run
         },
         env: {
             JWT_SECRET_KEY: 'dGhpcytqd3Qrc2VjcmV0K3VzZWQrZm9yK3Rlc3Rpbmc=', //jwt secret used for tests.
