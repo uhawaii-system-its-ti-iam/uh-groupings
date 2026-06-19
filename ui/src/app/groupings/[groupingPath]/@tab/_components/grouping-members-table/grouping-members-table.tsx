@@ -260,8 +260,6 @@ const GroupingMembersTable = ({
     useEffect(() => {
         setRowSelection({});
         setSelectedMembers({});
-
-        setIsInputFocused(false);
     }, [groupingPath, group, globalFilter]);
 
     // Clear selections the moment the user starts typing in the list-management
