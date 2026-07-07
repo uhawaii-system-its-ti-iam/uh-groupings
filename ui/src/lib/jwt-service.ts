@@ -36,7 +36,7 @@ export const generateJWT = async (): Promise<string> => {
 
     const payload = {
         sub: user.uid,
-        roles: user.roles,
+        roles: user.roles.map((role) => `ROLE_${role}`),
     };
 
     return sign(payload, secretBuffer, {
