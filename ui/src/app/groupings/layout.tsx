@@ -1,4 +1,9 @@
 import Heading from '@/components/layout/heading';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Owners'
+};
 
 const GroupingsLayout = ({ children }: { children: React.ReactNode }) => {
     return (

@@ -18,13 +18,15 @@ import SortArrow from '@/components/table/table-element/sort-arrow';
 import { useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
-import GroupingsTableColumns from '@/components/table/groupings-table/table-element/groupings-table-columns';
+import GroupingsTableColumns, {
+    AdminGroupingsTableColumns
+} from '@/components/table/groupings-table/table-element/groupings-table-columns';
 import dynamic from 'next/dynamic';
 import GroupingsTableSkeleton from './groupings-table-skeleton';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
-const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) => {
+const GroupingsTable = ({ groupingPaths, fromAdmin = false }: { groupingPaths: GroupingPath[]; fromAdmin?: boolean }) => {
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnVisibility, setColumnVisibility] = useLocalStorage<VisibilityState>('columnVisibility', {
@@ -33,7 +35,7 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
     });
 
     const table = useReactTable({
-        columns: GroupingsTableColumns,
+        columns: fromAdmin ? AdminGroupingsTableColumns : GroupingsTableColumns,
         data: groupingPaths,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),

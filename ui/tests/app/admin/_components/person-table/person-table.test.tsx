@@ -93,6 +93,10 @@ describe('PersonTable', () => {
             expect(screen.getByText(group.name)).toBeInTheDocument();
             expect(screen.getAllByTestId('owners-icon')[0]).toBeInTheDocument();
         });
+        expect(screen.getAllByTestId('fa-up-right-from-square-icon')[0].closest('a')).toHaveAttribute(
+            'href',
+            `/groupings/${firstPageGroupings[0].path}?from=admin`
+        );
     });
 
     it('renders tooltip on hover over Search button', async () => {

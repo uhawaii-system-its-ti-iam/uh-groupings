@@ -1,6 +1,8 @@
 import { groupingSyncDest } from '@/lib/fetchers';
 import SyncDestinations from '@/app/groupings/[groupingPath]/@tab/_components/sync-destinations';
 
+export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
+
 const SyncDestinationsTab = async ({ params }: { params: { groupingPath: string } }) => {
     const syncDestinations = await groupingSyncDest(params.groupingPath);
     const syncDestArray = syncDestinations.syncDestinations;

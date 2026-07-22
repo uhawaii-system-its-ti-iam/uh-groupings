@@ -56,6 +56,16 @@ describe('GroupingsTable', () => {
         });
     });
 
+    it('marks grouping links rendered in Admin', () => {
+        render(<GroupingsTable groupingPaths={mockGroupingPaths} fromAdmin />);
+
+        const firstGrouping = mockGroupingPaths[0];
+        expect(screen.getByRole('link', { name: firstGrouping.name })).toHaveAttribute(
+            'href',
+            `/groupings/${firstGrouping.path}/all-members?from=admin`
+        );
+    });
+
     it('filters data correctly using global filter', () => {
         render(<GroupingsTable groupingPaths={mockGroupingPaths} />);
 

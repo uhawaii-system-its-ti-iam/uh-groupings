@@ -47,13 +47,13 @@ const Navbar = async () => {
                                     currentUser.roles.includes(Role.ADMIN) ||
                                     currentUser.roles.includes(navbarLink.role)
                             ).map((navbarLink) => (
-                                <Link
-                                    href={navbarLink.link}
+                                <a
+                                    href={`/uhgroupings${navbarLink.link}`}
                                     key={navbarLink.name}
                                     className="hover:text-uh-teal lg:inline hidden"
                                 >
                                     {navbarLink.name}
-                                </Link>
+                                </a>
                             ))}
                             <LoginButton currentUser={currentUser} />
                         </div>

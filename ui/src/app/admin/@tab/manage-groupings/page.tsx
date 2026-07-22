@@ -5,7 +5,7 @@ const GroupingsTab = async () => {
     const { groupingPaths } = await ownerGroupings();
     return (
         <div className="container">
-            <GroupingsTable groupingPaths={groupingPaths} />
+            <GroupingsTable groupingPaths={groupingPaths} fromAdmin />
         </div>
     );
 };

@@ -29,7 +29,7 @@ describe('NavbarMenu', () => {
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Memberships' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
             expect(screen.queryByRole('link', { name: 'Feedback' })).not.toBeInTheDocument();
         });
     });
@@ -46,10 +46,13 @@ describe('NavbarMenu', () => {
             fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute(
+                'href',
+                '/uhgroupings/memberships'
+            );
             expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/uhgroupings/feedback');
         });
 
         it('should render only /memberships, /groupings, /about, /feedback for an owner of a grouping', () => {
@@ -59,10 +62,13 @@ describe('NavbarMenu', () => {
             fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute(
+                'href',
+                '/uhgroupings/memberships'
+            );
+            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/uhgroupings/groupings');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/uhgroupings/feedback');
         });
 
         it('should render all links for an Admin', () => {
@@ -71,11 +77,14 @@ describe('NavbarMenu', () => {
 
             fireEvent.click(screen.getByRole('button', { name: 'Open navigation menu' }));
             expect(screen.getByRole('navigation')).toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/uhgroupings/admin');
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute(
+                'href',
+                '/uhgroupings/memberships'
+            );
+            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/uhgroupings/groupings');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/uhgroupings/feedback');
         });
     });
 });
