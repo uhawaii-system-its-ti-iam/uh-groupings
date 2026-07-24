@@ -5,7 +5,6 @@ import {
     flexRender,
     getCoreRowModel,
     getPaginationRowModel,
-    getFilteredRowModel,
     getSortedRowModel,
     SortingState,
     VisibilityState
@@ -15,7 +14,7 @@ import ColumnSettings from '@/components/table/table-element/column-settings';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
 import GroupingsTableColumns from '@/components/table/groupings-table/table-element/groupings-table-columns';
@@ -32,12 +31,25 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
         path: false
     });
 
+    const filteredGroupingPaths = useMemo(() => {
+        const normalizedFilter = globalFilter.trim().toLowerCase();
+
+        if (!normalizedFilter) return groupingPaths;
+
+        return groupingPaths.filter(
+            (grouping) =>
+                grouping.name.toLowerCase().includes(normalizedFilter) ||
+                (columnVisibility.description !== false &&
+                    grouping.description.toLowerCase().includes(normalizedFilter)) ||
+                (columnVisibility.path !== false && grouping.path.toLowerCase().includes(normalizedFilter))
+        );
+    }, [groupingPaths, globalFilter, columnVisibility.description, columnVisibility.path]);
+
     const table = useReactTable({
         columns: GroupingsTableColumns,
-        data: groupingPaths,
+        data: filteredGroupingPaths,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
         state: { globalFilter, sorting, columnVisibility },
         initialState: { pagination: { pageSize } },
