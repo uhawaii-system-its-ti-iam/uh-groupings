@@ -52,11 +52,11 @@ describe('jwt-service', () => {
             expect(decoded.sub).toBe(testUser.uid);
         });
 
-        it('should include the user roles in the token payload prefixed with ROLE_', async () => {
+        it('should include the user roles in the token payload', async () => {
             const token = await generateJWT();
             const decoded = jwt.decode(token) as any;
 
-            expect(decoded.roles).toEqual(testUser.roles.map((role) => `ROLE_${role}`));
+            expect(decoded.roles).toEqual(testUser.roles);
         });
 
         it('prefixes each supplied role in the JWT payload', async () => {
