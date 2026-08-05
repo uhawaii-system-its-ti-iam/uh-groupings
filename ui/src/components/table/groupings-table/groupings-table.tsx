@@ -15,13 +15,14 @@ import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
 import { useMemo, useState } from 'react';
-import { useLocalStorage } from 'usehooks-ts';
+import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
 import GroupingsTableColumns from '@/components/table/groupings-table/table-element/groupings-table-columns';
 import dynamic from 'next/dynamic';
 import GroupingsTableSkeleton from './groupings-table-skeleton';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
+const smBreakpoint = 576;
 
 const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) => {
     const [globalFilter, setGlobalFilter] = useState('');
@@ -30,6 +31,8 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
         description: true,
         path: false
     });
+    const { width = 0 } = useWindowSize();
+    const isSmOrLarger = width >= smBreakpoint;
 
     const filteredGroupingPaths = useMemo(() => {
         const normalizedFilter = globalFilter.trim().toLowerCase();
@@ -39,11 +42,14 @@ const GroupingsTable = ({ groupingPaths }: { groupingPaths: GroupingPath[] }) =>
         return groupingPaths.filter(
             (grouping) =>
                 grouping.name.toLowerCase().includes(normalizedFilter) ||
-                (columnVisibility.description !== false &&
+                (isSmOrLarger &&
+                    columnVisibility.description !== false &&
                     grouping.description.toLowerCase().includes(normalizedFilter)) ||
-                (columnVisibility.path !== false && grouping.path.toLowerCase().includes(normalizedFilter))
+                (isSmOrLarger &&
+                    columnVisibility.path !== false &&
+                    grouping.path.toLowerCase().includes(normalizedFilter))
         );
-    }, [groupingPaths, globalFilter, columnVisibility.description, columnVisibility.path]);
+    }, [groupingPaths, globalFilter, columnVisibility.description, columnVisibility.path, isSmOrLarger]);
 
     const table = useReactTable({
         columns: GroupingsTableColumns,
