@@ -6,8 +6,12 @@ type GroupingMetadataProps = {
     };
 };
 
-export const generateGroupingMetadata = ({ searchParams }: GroupingMetadataProps): Metadata => ({
-    title: {
-        absolute: searchParams?.from === 'admin' ? 'UH Groupings Admin' : 'UH Groupings Owners'
-    }
-});
+export const generateGroupingMetadata = ({ searchParams }: GroupingMetadataProps): Metadata => {
+    const from = searchParams?.from;
+    const isAdmin = from === 'admin' || (Array.isArray(from) && from.includes('admin'));
+    return {
+        title: {
+            absolute: isAdmin ? 'UH Groupings Admin' : 'UH Groupings Owners'
+        }
+    };
+};

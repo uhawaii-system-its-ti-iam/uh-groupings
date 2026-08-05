@@ -6,7 +6,7 @@ const GroupingNameCell = ({ path, name, fromAdmin = false }: { path: string; nam
     const source = fromAdmin ? '?from=admin' : '';
 
     return (
-        <div className="m-2 w-full'">
+        <div className="m-2 w-full">
             <Link href={`/groupings/${path}/all-members${source}`}>
                 <div className="flex">
                     <FontAwesomeIcon className="text-text-primary" data-testid={'edit-icon'} icon={faEdit} />
