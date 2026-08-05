@@ -7,8 +7,15 @@ import { redirect } from 'next/navigation';
 import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
 import { getCurrentUser } from 'next-cas-client/app';
 
-const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: string }; tab: React.ReactNode }) => {
-    const groupPath = decodeURIComponent(params.groupingPath);
+const GroupingPathLayout = async ({
+    params,
+    tab
+}: {
+    params: Promise<{ groupingPath: string }>;
+    tab: React.ReactNode;
+}) => {
+    const { groupingPath } = await params;
+    const groupPath = decodeURIComponent(groupingPath);
     const { description } = await groupingDescription(groupPath);
     const groupName = groupPath.split(':').pop() as string;
     const fromManageSubject = groupPath.includes('manage-person');
@@ -29,7 +36,7 @@ const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: str
                     <GroupingHeader groupName={groupName} groupPath={groupPath} groupDescription={description} />
                     <div className="p-0 min-h-px box-border border-b border-l border-r rounded-b">
                         <div className="flex flex-col md:flex-row mx-auto w-full">
-                            <SideNav groupingPath={params.groupingPath} />
+                            <SideNav groupingPath={groupingPath} />
                             <div data-testid="tab-content">{tab}</div>
                         </div>
                     </div>

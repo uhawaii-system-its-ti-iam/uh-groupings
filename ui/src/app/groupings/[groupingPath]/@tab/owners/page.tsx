@@ -1,14 +1,14 @@
 import GroupingMembersTab from '../_components/grouping-members-tab';
 import { GroupingMembersTableSearchParams } from '../_components/grouping-members-table/grouping-members-table';
 
-const OwnersTab = ({
+const OwnersTab = async ({
     params,
     searchParams
 }: {
-    params: { groupingPath: string };
-    searchParams: GroupingMembersTableSearchParams;
+    params: Promise<{ groupingPath: string }>;
+    searchParams: Promise<GroupingMembersTableSearchParams>;
 }) => {
-    return <GroupingMembersTab params={params} searchParams={searchParams} group="owners" />;
+    return <GroupingMembersTab params={await params} searchParams={await searchParams} group="owners" />;
 };
 
 export default OwnersTab;

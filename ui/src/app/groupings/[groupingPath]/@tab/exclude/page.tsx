@@ -1,14 +1,14 @@
 import GroupingMembersTab from '../_components/grouping-members-tab';
 import { GroupingMembersTableSearchParams } from '../_components/grouping-members-table/grouping-members-table';
 
-const ExcludeTab = ({
+const ExcludeTab = async ({
     params,
     searchParams
 }: {
-    params: { groupingPath: string };
-    searchParams: GroupingMembersTableSearchParams;
+    params: Promise<{ groupingPath: string }>;
+    searchParams: Promise<GroupingMembersTableSearchParams>;
 }) => {
-    return <GroupingMembersTab params={params} searchParams={searchParams} group="exclude" />;
+    return <GroupingMembersTab params={await params} searchParams={await searchParams} group="exclude" />;
 };
 
 export default ExcludeTab;
