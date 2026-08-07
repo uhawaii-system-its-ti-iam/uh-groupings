@@ -75,8 +75,8 @@ describe('Announcements', () => {
             expect(closeButtons).toHaveLength(2);
 
             fireEvent.click(closeButtons[0]);
-            await act(async () => {
-                vi.advanceTimersByTime(250);
+            act(() => {
+                vi.runAllTimers();
             });
 
             expect(screen.queryByText(message)).not.toBeInTheDocument();
