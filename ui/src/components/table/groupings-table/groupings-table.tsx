@@ -5,7 +5,6 @@ import {
     flexRender,
     getCoreRowModel,
     getPaginationRowModel,
-    getFilteredRowModel,
     getSortedRowModel,
     SortingState,
     VisibilityState
@@ -15,8 +14,8 @@ import ColumnSettings from '@/components/table/table-element/column-settings';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
-import { useState } from 'react';
-import { useLocalStorage } from 'usehooks-ts';
+import { useMemo, useState } from 'react';
+import { useLocalStorage, useWindowSize } from 'usehooks-ts';
 import { GroupingPath } from '@/lib/types';
 import GroupingsTableColumns, {
     AdminGroupingsTableColumns
@@ -25,6 +24,7 @@ import dynamic from 'next/dynamic';
 import GroupingsTableSkeleton from './groupings-table-skeleton';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
+const smBreakpoint = 576;
 
 const GroupingsTable = ({ groupingPaths, fromAdmin = false }: { groupingPaths: GroupingPath[]; fromAdmin?: boolean }) => {
     const [globalFilter, setGlobalFilter] = useState('');
@@ -33,13 +33,31 @@ const GroupingsTable = ({ groupingPaths, fromAdmin = false }: { groupingPaths: G
         description: true,
         path: false
     });
+    const { width = 0 } = useWindowSize();
+    const isSmOrLarger = width >= smBreakpoint;
+
+    const filteredGroupingPaths = useMemo(() => {
+        const normalizedFilter = globalFilter.trim().toLowerCase();
+
+        if (!normalizedFilter) return groupingPaths;
+
+        return groupingPaths.filter(
+            (grouping) =>
+                grouping.name.toLowerCase().includes(normalizedFilter) ||
+                (isSmOrLarger &&
+                    columnVisibility.description !== false &&
+                    grouping.description.toLowerCase().includes(normalizedFilter)) ||
+                (isSmOrLarger &&
+                    columnVisibility.path !== false &&
+                    grouping.path.toLowerCase().includes(normalizedFilter))
+        );
+    }, [groupingPaths, globalFilter, columnVisibility.description, columnVisibility.path, isSmOrLarger]);
 
     const table = useReactTable({
         columns: fromAdmin ? AdminGroupingsTableColumns : GroupingsTableColumns,
         data: groupingPaths,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
         getSortedRowModel: getSortedRowModel(),
         state: { globalFilter, sorting, columnVisibility },
         initialState: { pagination: { pageSize } },
