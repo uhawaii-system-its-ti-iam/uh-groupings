@@ -55,7 +55,7 @@ const GroupingsTable = ({ groupingPaths, fromAdmin = false }: { groupingPaths: G
 
     const table = useReactTable({
         columns: fromAdmin ? AdminGroupingsTableColumns : GroupingsTableColumns,
-        data: groupingPaths,
+        data: filteredGroupingPaths,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),

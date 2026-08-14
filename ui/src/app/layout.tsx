@@ -25,7 +25,6 @@ export const metadata: Metadata = {
     icons: {
         icon: {
             url: '/uhgroupings/images/favicon.ico',
-            url: '/images/favicon.ico',
             type: 'image/x-icon'
         }
     }
