@@ -8,7 +8,9 @@ const OwnersTab = async ({
     params: Promise<{ groupingPath: string }>;
     searchParams: Promise<GroupingMembersTableSearchParams>;
 }) => {
-    return <GroupingMembersTab params={await params} searchParams={await searchParams} group="owners" />;
+    const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
+
+    return <GroupingMembersTab params={resolvedParams} searchParams={resolvedSearchParams} group="owners" />;
 };
 
 export default OwnersTab;

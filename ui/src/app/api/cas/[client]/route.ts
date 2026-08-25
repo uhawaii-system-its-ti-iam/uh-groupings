@@ -10,5 +10,10 @@ export const GET = async (
     { params }: { params: Promise<{ client: string }> }
 ) => {
     const { client } = await params;
-    return authHandler(request, { params: { client: client as 'login' | 'logout' } });
+
+    if (client !== 'login' && client !== 'logout') {
+        return new Response('Not Found', { status: 404 });
+    }
+
+    return authHandler(request, { params: { client } });
 };

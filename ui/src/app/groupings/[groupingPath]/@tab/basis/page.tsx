@@ -8,7 +8,9 @@ const BasisTab = async ({
     params: Promise<{ groupingPath: string }>;
     searchParams: Promise<GroupingMembersTableSearchParams>;
 }) => {
-    return <GroupingMembersTab params={await params} searchParams={await searchParams} group="basis" />;
+    const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
+
+    return <GroupingMembersTab params={resolvedParams} searchParams={resolvedSearchParams} group="basis" />;
 };
 
 export default BasisTab;
