@@ -49,7 +49,9 @@ describe('SyncDestinationsTab (Server Component)', () => {
             ],
         };
         (groupingSyncDest as unknown as vi.Mock).mockResolvedValue(mockData);
-        const result = await SyncDestinationsTab({ params: { groupingPath: 'test:group' } });
+        const result = await SyncDestinationsTab({
+            params: Promise.resolve({ groupingPath: 'test:group' })
+        });
         render(result);
 
         expect(await screen.findByText('Mocked SyncDestinations Component')).toBeInTheDocument();

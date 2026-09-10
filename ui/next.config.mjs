@@ -9,9 +9,7 @@ dotenv.config({path: `${os.homedir()}/.${os.userInfo().username}-conf/uh-groupin
 
 const nextConfig = {
     basePath: '/uhgroupings',
-    experimental: {
-        serverComponentsExternalPackages: ['camaro']
-    },
+    serverExternalPackages: ['camaro'],
 
     rewrites: async () => {
         return [
