@@ -15,7 +15,7 @@ import ColumnSettings from '@/components/table/table-element/column-settings';
 import PaginationBar from '@/components/table/table-element/pagination-bar';
 import GlobalFilter from '@/components/table/table-element/global-filter';
 import SortArrow from '@/components/table/table-element/sort-arrow';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocalStorage } from 'usehooks-ts';
 import { GroupingPath, Membership } from '@/lib/types';
 import MembershipsTableColumns from '@/app/memberships/_components/memberships-table-columns';
@@ -37,14 +37,19 @@ const MembershipsTable = ({
         description: true,
         path: false
     });
-    const [data, setData] = useState(memberships);
-    const removeRow = (path: string) => {
-        setData((prevData) => prevData.filter((row) => row.path !== path));
+    const [displayedMemberships, setDisplayedMemberships] = useState(memberships);
+
+    useEffect(() => {
+        setDisplayedMemberships(memberships);
+    }, [memberships]);
+
+    const handleActionFinished = (path: string) => {
+        setDisplayedMemberships((prev) => prev.filter((m) => m.path !== path));
     };
 
     const table = useReactTable({
-        columns: MembershipsTableColumns(isOptOut, removeRow),
-        data: data,
+        columns: MembershipsTableColumns(isOptOut, handleActionFinished),
+        data: displayedMemberships,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

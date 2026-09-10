@@ -1,12 +1,18 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, Mock } from 'vitest';
 import MembershipsTable from '@/app/memberships/_components/memberships-table';
+import { optIn } from '@/lib/actions';
 import userEvent from '@testing-library/user-event';
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
         refresh: vi.fn()
     })
+}));
+
+vi.mock('@/lib/actions', () => ({
+    optIn: vi.fn(),
+    optOut: vi.fn()
 }));
 
 vi.mock('next-cas-client/app');
@@ -31,6 +37,26 @@ describe('MembershipsTable', () => {
             description: 'test-description3'
         }
     ];
+
+    const setupPendingOptIn = () => {
+        const deferred = <T,>() => {
+            let resolve!: (value: T | PromiseLike<T>) => void;
+            let reject!: (reason?: unknown) => void;
+            const promise = new Promise<T>((res, rej) => {
+                resolve = res;
+                reject = rej;
+            });
+            return { promise, resolve, reject };
+        };
+
+        const pending = deferred<void>();
+
+        (optIn as Mock).mockImplementation(vi.fn().mockReturnValue(pending.promise));
+
+        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+
+        return { pending };
+    };
 
     it('renders table with data', async () => {
         render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
@@ -106,17 +132,34 @@ describe('MembershipsTable', () => {
         vi.restoreAllMocks();
     });
 
-    it('removes a row when the opt button is clicked', async () => {
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+    it('does not remove a row immediately when the opt button is clicked', async () => {
+        const { pending } = setupPendingOptIn();
 
-        const buttons = screen.getAllByTestId('opt-button');
-        const button = buttons[0];
+        const button = screen.getAllByTestId('opt-button')[0];
         fireEvent.click(button);
+
+        expect(screen.getByText('test-name1')).toBeInTheDocument();
+
+        pending.resolve();
 
         await waitFor(() => {
             expect(screen.queryByText('test-name1')).not.toBeInTheDocument();
         });
         expect(screen.getByText('test-name2')).toBeInTheDocument();
         expect(screen.getByText('test-name3')).toBeInTheDocument();
+    });
+
+    it('removes a row after confirmed action completes', async () => {
+        const { pending } = setupPendingOptIn();
+
+        fireEvent.click(screen.getAllByTestId('opt-button')[0]);
+
+        expect(screen.getByText('test-name1')).toBeInTheDocument();
+
+        pending.resolve();
+
+        await waitFor(() => {
+            expect(screen.queryByText('test-name1')).not.toBeInTheDocument();
+        });
     });
 });

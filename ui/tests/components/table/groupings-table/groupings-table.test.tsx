@@ -193,4 +193,69 @@ describe('GroupingsTable', () => {
             mockGroupingPaths.length - pageSize - 1
         );
     });
+
+    it('filters groupings using only the displayed columns', async () => {
+        const user = userEvent.setup();
+        const grouping = {
+            path: 'tmp:path-only-match',
+            name: 'Visible Grouping Name',
+            description: 'Description-only match'
+        };
+        const previousColumnVisibility = window.localStorage.getItem('columnVisibility');
+
+        window.localStorage.setItem('columnVisibility', JSON.stringify({ description: true, path: false }));
+
+        try {
+            render(<GroupingsTable groupingPaths={[grouping]} />);
+
+            const filterInput = await screen.findByPlaceholderText('Filter Groupings...');
+            fireEvent.change(filterInput, { target: { value: 'path-only-match' } });
+            expect(screen.queryByText(grouping.name)).not.toBeInTheDocument();
+
+            await user.click(screen.getByLabelText('column-settings-button'));
+            await user.click(screen.getByTestId('Grouping Path Switch'));
+            expect(await screen.findByText(grouping.name)).toBeInTheDocument();
+
+            fireEvent.change(filterInput, { target: { value: 'description-only' } });
+            expect(screen.getByText(grouping.name)).toBeInTheDocument();
+
+            await user.click(screen.getByLabelText('column-settings-button'));
+            await user.click(screen.getByTestId('Description Switch'));
+            await waitFor(() => expect(screen.queryByText(grouping.name)).not.toBeInTheDocument());
+        } finally {
+            if (previousColumnVisibility === null) {
+                window.localStorage.removeItem('columnVisibility');
+            } else {
+                window.localStorage.setItem('columnVisibility', previousColumnVisibility);
+            }
+        }
+    });
+
+    it('filters only by grouping name below the sm breakpoint', async () => {
+        const grouping = {
+            path: 'tmp:path-only-match',
+            name: 'Visible Grouping Name',
+            description: 'Description-only match'
+        };
+        const previousInnerWidth = window.innerWidth;
+
+        Object.defineProperty(window, 'innerWidth', { configurable: true, value: 575 });
+
+        try {
+            render(<GroupingsTable groupingPaths={[grouping]} />);
+
+            const filterInput = await screen.findByPlaceholderText('Filter Groupings...');
+
+            fireEvent.change(filterInput, { target: { value: 'description-only' } });
+            expect(screen.queryByText(grouping.name)).not.toBeInTheDocument();
+
+            fireEvent.change(filterInput, { target: { value: 'path-only-match' } });
+            expect(screen.queryByText(grouping.name)).not.toBeInTheDocument();
+
+            fireEvent.change(filterInput, { target: { value: grouping.name } });
+            expect(screen.getByText(grouping.name)).toBeInTheDocument();
+        } finally {
+            Object.defineProperty(window, 'innerWidth', { configurable: true, value: previousInnerWidth });
+        }
+    });
 });
