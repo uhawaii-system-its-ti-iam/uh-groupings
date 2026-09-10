@@ -14,29 +14,40 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-15, windows-latest]
-        node-version: [18.x, 20.x]
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: ui/.nvmrc
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      # Node 20.19.0 ships npm 10.8.2, which does not support min-release-age.
+      # Pin npm 11.10.0 so ui/.npmrc (ignore-scripts, min-release-age) applies in CI.
+      # Keep ui/.nvmrc on Node >= 20; npm 11 is unsupported on older majors.
+      - name: Verify Node supports npm 11
+        run: |
+          node -e "const major = Number(process.versions.node.split('.')[0]); if (major < 20) { console.error('ui/.nvmrc must pin Node >= 20 for npm 11'); process.exit(1); }"
+
+      - name: Install npm
+        run: npm install -g npm@11.10.0
+
+      - name: Verify npm version
+        run: npm --version
 
       - name: Install dependencies
-        run: |
-          cd ui
-          npm install
+        working-directory: ui
+        run: npm ci
 
       - name: Run ESLint
-        run: |
-          cd ui
-          npm run lint
+        working-directory: ui
+        run: npm run lint
 
       - name: Run Vitest Tests
-        run: |
-          cd ui
-          npm run test
+        working-directory: ui
+        run: npm run test
