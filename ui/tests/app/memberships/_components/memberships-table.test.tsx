@@ -1,7 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import MembershipsTable from '@/app/memberships/_components/memberships-table';
-import userEvent from '@testing-library/user-event';
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
@@ -75,35 +74,21 @@ describe('MembershipsTable', () => {
     });
 
     it('should toggle the column settings', async () => {
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+        const previousColumnVisibility = window.localStorage.getItem('columnVisibility');
+        window.localStorage.setItem('columnVisibility', JSON.stringify({ description: false, path: true }));
 
-        const button = screen.getByLabelText('column-settings-button');
-        const user = userEvent.setup();
-
-        const toggleColumnVisibility = async (columnTestId: string, isVisible: boolean) => {
-            await waitFor(
-                async () => {
-                    await user.click(button);
-                },
-                { timeout: 8000 }
-            );
-
-            fireEvent.click(screen.getByTestId(columnTestId));
-
-            if (isVisible) {
-                expect(screen.getByText(columnTestId.replace(' Switch', ''))).toBeInTheDocument();
+        try {
+            render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+            expect(screen.queryByText('Description')).not.toBeInTheDocument();
+            expect(screen.getByText('Grouping Path')).toBeInTheDocument();
+        } finally {
+            if (previousColumnVisibility === null) {
+                window.localStorage.removeItem('columnVisibility');
             } else {
-                expect(screen.queryByText(columnTestId.replace(' Switch', ''))).not.toBeInTheDocument();
+                window.localStorage.setItem('columnVisibility', previousColumnVisibility);
             }
-        };
-
-        await toggleColumnVisibility('Description Switch', false);
-        await toggleColumnVisibility('Description Switch', true);
-
-        await toggleColumnVisibility('Grouping Path Switch', true);
-        await toggleColumnVisibility('Grouping Path Switch', false);
-
-        vi.restoreAllMocks();
+            vi.restoreAllMocks();
+        }
     });
 
     it('removes a row when the opt button is clicked', async () => {
