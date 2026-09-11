@@ -4,7 +4,10 @@ import GroupingPathCell from '@/components/table/groupings-table/table-element/g
 import GroupingDescriptionCell from '@/components/table/groupings-table/table-element/grouping-description-cell';
 import MembershipsOptCell from '@/app/memberships/_components/memberships-table-opt-cell';
 
-const MembershipsTableColumns = (isOptOut: boolean, removeRow: (path: string) => void): ColumnDef<GroupingPath>[] => [
+const MembershipsTableColumns = (
+    isOptOut: boolean,
+    onActionFinished?: (path: string) => void
+): ColumnDef<GroupingPath>[] => [
     {
         header: 'Grouping Name',
         accessorKey: 'name',
@@ -31,9 +34,10 @@ const MembershipsTableColumns = (isOptOut: boolean, removeRow: (path: string) =>
                 isOptOut={isOptOut}
                 optOutEnabled={row.getValue(isOptOut ? 'optOutEnabled' : 'optInEnabled')}
                 groupingPath={row.getValue('path')}
-                removeRow={removeRow}
+                onActionFinished={onActionFinished}
             />
         )
     }
 ];
+
 export default MembershipsTableColumns;
