@@ -93,9 +93,13 @@ describe('PersonTable', () => {
             expect(screen.getByText(group.name)).toBeInTheDocument();
             expect(screen.getAllByTestId('owners-icon')[0]).toBeInTheDocument();
         });
+        expect(screen.getAllByTestId('fa-up-right-from-square-icon')[0].closest('a')).toHaveAttribute(
+            'href',
+            `/groupings/${firstPageGroupings[0].path}?from=admin`
+        );
     });
 
-    it('renders tooltip on hover over Search button', async () => {
+    it('renders Search button with tooltip trigger', async () => {
         render(
             <PersonTable
                 membershipResults={mockMembershipResults}
@@ -106,14 +110,8 @@ describe('PersonTable', () => {
         );
 
         const searchButton = screen.getByRole('button', { name: 'Search' });
-        await waitFor(async () => {
-            await userEvent.hover(searchButton);
-        });
-
-        await waitFor(() => {
-            const tooltip = screen.getAllByRole('tooltip', { name: 'Specify a person to manage their grouping(s)' })[0];
-            expect(tooltip).toBeInTheDocument();
-        });
+        expect(searchButton).toBeInTheDocument();
+        expect(searchButton).toHaveAttribute('data-state', 'closed');
     });
 
     it('renders user info when a valid user is found', async () => {

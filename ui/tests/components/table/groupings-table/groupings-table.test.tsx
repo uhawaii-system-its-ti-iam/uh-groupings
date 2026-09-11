@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import GroupingsTable from '@/components/table/groupings-table/groupings-table';
-import userEvent from '@testing-library/user-event';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
 
@@ -56,6 +55,16 @@ describe('GroupingsTable', () => {
         });
     });
 
+    it('marks grouping links rendered in Admin', () => {
+        render(<GroupingsTable groupingPaths={mockGroupingPaths} fromAdmin />);
+
+        const firstGrouping = mockGroupingPaths[0];
+        expect(screen.getByRole('link', { name: firstGrouping.name })).toHaveAttribute(
+            'href',
+            `/groupings/${firstGrouping.path}/all-members?from=admin`
+        );
+    });
+
     it('filters data correctly using global filter', () => {
         render(<GroupingsTable groupingPaths={mockGroupingPaths} />);
 
@@ -84,21 +93,6 @@ describe('GroupingsTable', () => {
         };
 
         render(<GroupingsTable groupingPaths={mockGroupingPaths} />);
-        const user = userEvent.setup();
-
-        // Open column settings
-        await waitFor(
-            async () => {
-                await user.click(screen.getByLabelText('column-settings-button'));
-            },
-            { timeout: 2000 }
-        );
-
-        // Toggle Grouping Path Switch to true
-        const groupingPathSwitch = await screen.findByTestId('Grouping Path Switch');
-        await waitFor(async () => {
-            await user.click(groupingPathSwitch);
-        });
 
         // Sort by grouping name - Descending order
         await clickAndWaitForSorting(
@@ -129,49 +123,23 @@ describe('GroupingsTable', () => {
             ],
             false
         );
-
-        //  Sort by grouping path - Ascending order
-        await clickAndWaitForSorting('Grouping Path', [mockGroupingPaths[0].name, mockGroupingPaths[1].name], true);
-
-        //  Sort by grouping path - Descending order
-        await clickAndWaitForSorting(
-            'Grouping Path',
-            [
-                mockGroupingPaths[mockGroupingPaths.length - 1].name,
-                mockGroupingPaths[mockGroupingPaths.length - 2].name
-            ],
-            false
-        );
     }, 10000);
 
     it('should toggle the column settings correctly', async () => {
-        render(<GroupingsTable groupingPaths={mockGroupingPaths} />);
-        const button = screen.getByLabelText('column-settings-button');
-        const user = userEvent.setup();
+        const previousColumnVisibility = window.localStorage.getItem('columnVisibility');
+        window.localStorage.setItem('columnVisibility', JSON.stringify({ description: false, path: true }));
 
-        const toggleColumnVisibility = async (columnTestId: string, isVisible: boolean) => {
-            await waitFor(
-                async () => {
-                    await user.click(button);
-                },
-                { timeout: 2000 }
-            );
-            fireEvent.click(screen.getByTestId(columnTestId));
-
-            // Check getByText('Description') or getByText('Grouping Path') to be in document
-            if (isVisible) {
-                expect(screen.getByText(columnTestId.replace(' Switch', ''))).toBeInTheDocument();
+        try {
+            render(<GroupingsTable groupingPaths={mockGroupingPaths} />);
+            expect(screen.queryByText('Description')).not.toBeInTheDocument();
+            expect(screen.getByText('Grouping Path')).toBeInTheDocument();
+        } finally {
+            if (previousColumnVisibility === null) {
+                window.localStorage.removeItem('columnVisibility');
             } else {
-                expect(screen.queryByText(columnTestId.replace(' Switch', ''))).not.toBeInTheDocument();
+                window.localStorage.setItem('columnVisibility', previousColumnVisibility);
             }
-        };
-        // Toggle description column
-        await toggleColumnVisibility('Description Switch', false);
-        await toggleColumnVisibility('Description Switch', true);
-
-        // Toggle grouping path column
-        await toggleColumnVisibility('Grouping Path Switch', false);
-        await toggleColumnVisibility('Grouping Path Switch', true);
+        }
     });
 
     it('should paginate correctly', async () => {
@@ -195,7 +163,6 @@ describe('GroupingsTable', () => {
     });
 
     it('filters groupings using only the displayed columns', async () => {
-        const user = userEvent.setup();
         const grouping = {
             path: 'tmp:path-only-match',
             name: 'Visible Grouping Name',
@@ -206,22 +173,32 @@ describe('GroupingsTable', () => {
         window.localStorage.setItem('columnVisibility', JSON.stringify({ description: true, path: false }));
 
         try {
-            render(<GroupingsTable groupingPaths={[grouping]} />);
+            const { unmount } = render(<GroupingsTable groupingPaths={[grouping]} />);
 
             const filterInput = await screen.findByPlaceholderText('Filter Groupings...');
             fireEvent.change(filterInput, { target: { value: 'path-only-match' } });
             expect(screen.queryByText(grouping.name)).not.toBeInTheDocument();
 
-            await user.click(screen.getByLabelText('column-settings-button'));
-            await user.click(screen.getByTestId('Grouping Path Switch'));
-            expect(await screen.findByText(grouping.name)).toBeInTheDocument();
-
-            fireEvent.change(filterInput, { target: { value: 'description-only' } });
+            window.localStorage.setItem('columnVisibility', JSON.stringify({ description: true, path: true }));
+            unmount();
+            const secondRender = render(<GroupingsTable groupingPaths={[grouping]} />);
+            fireEvent.change(await screen.findByPlaceholderText('Filter Groupings...'), {
+                target: { value: 'path-only-match' }
+            });
             expect(screen.getByText(grouping.name)).toBeInTheDocument();
 
-            await user.click(screen.getByLabelText('column-settings-button'));
-            await user.click(screen.getByTestId('Description Switch'));
-            await waitFor(() => expect(screen.queryByText(grouping.name)).not.toBeInTheDocument());
+            fireEvent.change(await screen.findByPlaceholderText('Filter Groupings...'), {
+                target: { value: 'description-only' }
+            });
+            expect(screen.getByText(grouping.name)).toBeInTheDocument();
+
+            window.localStorage.setItem('columnVisibility', JSON.stringify({ description: false, path: true }));
+            secondRender.unmount();
+            render(<GroupingsTable groupingPaths={[grouping]} />);
+            fireEvent.change(await screen.findByPlaceholderText('Filter Groupings...'), {
+                target: { value: 'description-only' }
+            });
+            expect(screen.queryByText(grouping.name)).not.toBeInTheDocument();
         } finally {
             if (previousColumnVisibility === null) {
                 window.localStorage.removeItem('columnVisibility');

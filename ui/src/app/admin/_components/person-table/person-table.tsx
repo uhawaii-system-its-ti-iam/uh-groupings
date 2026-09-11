@@ -429,8 +429,7 @@ const PersonTable = ({
                                                                     <Tooltip>
                                                                         <TooltipTrigger>
                                                                             <Link
-                                                                                href={`/groupings/${cell.row.original.path}
-                                                                            `}
+                                                                                href={`/groupings/${cell.row.original.path}?from=admin`}
                                                                                 rel="noopener noreferrer"
                                                                                 target="_blank"
                                                                             >

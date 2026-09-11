@@ -1,5 +1,10 @@
 import { getUser } from '@/lib/access/user';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Feedback'
+};
 
 const Feedback = async () => {
     const currentUser = await getUser();

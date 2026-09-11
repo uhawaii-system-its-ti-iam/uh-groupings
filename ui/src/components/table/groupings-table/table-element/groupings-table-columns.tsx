@@ -4,14 +4,18 @@ import GroupingPathCell from '@/components/table/groupings-table/table-element/g
 import GroupingDescriptionCell from '@/components/table/groupings-table/table-element/grouping-description-cell';
 import GroupingNameCell from '@/components/table/groupings-table/table-element/grouping-name-cell';
 
-const GroupingsTableColumns: ColumnDef<GroupingPath>[] = [
+const createGroupingsTableColumns = (fromAdmin = false): ColumnDef<GroupingPath>[] => [
     {
         header: 'Grouping Name',
         accessorKey: 'name',
         enableHiding: false,
         sortDescFirst: true,
         cell: ({ row }) => (
-            <GroupingNameCell path={row.getValue('path')} name={row.getValue('name')}></GroupingNameCell>
+            <GroupingNameCell
+                path={row.getValue('path')}
+                name={row.getValue('name')}
+                fromAdmin={fromAdmin}
+            ></GroupingNameCell>
         )
     },
     {
@@ -27,4 +31,8 @@ const GroupingsTableColumns: ColumnDef<GroupingPath>[] = [
         cell: ({ row }) => <GroupingPathCell path={row.getValue('path')} />
     }
 ];
+
+export const AdminGroupingsTableColumns = createGroupingsTableColumns(true);
+const GroupingsTableColumns = createGroupingsTableColumns();
+
 export default GroupingsTableColumns;

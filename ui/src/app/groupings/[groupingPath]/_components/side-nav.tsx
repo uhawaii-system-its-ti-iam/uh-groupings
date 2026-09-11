@@ -12,11 +12,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faIdCard } from '@fortawesome/free-regular-svg-icons';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const SideNav = ({ groupingPath }: { groupingPath: string }) => {
     const currentPath = usePathname().split('/').pop();
+    const source = useSearchParams().get('from') === 'admin' ? '?from=admin' : '';
 
     const links = [
         { href: 'all-members', icon: faUsers, label: 'List all members (Basis + Include - Exclude members)' },
@@ -41,7 +42,7 @@ const SideNav = ({ groupingPath }: { groupingPath: string }) => {
                                 <Tooltip>
                                     <TooltipTrigger>
                                         <Link
-                                            href={`/groupings/${decodeURIComponent(groupingPath)}/${href}`}
+                                            href={`/groupings/${decodeURIComponent(groupingPath)}/${href}${source}`}
                                             className={`flex items-center justify-center w-11 h-11 rounded-full 
                                             border-none ${isSelected ? 'bg-white' : 'bg-transparent'}`}
                                         >

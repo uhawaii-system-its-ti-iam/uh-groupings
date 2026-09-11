@@ -1,5 +1,10 @@
 import Heading from '@/components/layout/heading';
 import React from 'react';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Admin'
+};
 
 const AdminLayout = ({ tab, modals }: { tab: React.ReactNode, modals: React.ReactNode }) => {
     return (

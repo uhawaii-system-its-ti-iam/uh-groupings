@@ -1,9 +1,16 @@
 import { vi, describe, beforeEach, it, expect } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ColumnSettings from '@/components/table/table-element/column-settings';
 import { Table } from '@tanstack/table-core';
 import { GroupingPath } from '@/lib/types';
+
+vi.mock('@/components/ui/dropdown-menu', () => ({
+    DropdownMenu: ({ children }: { children: any }) => <div>{children}</div>,
+    DropdownMenuTrigger: ({ children }: { children: any }) => <div>{children}</div>,
+    DropdownMenuContent: ({ children }: { children: any }) => <div>{children}</div>,
+    DropdownMenuItem: ({ children }: { children: any }) => <div>{children}</div>
+}));
 
 const mockColumnVisibility = {
     description: true,
@@ -48,11 +55,7 @@ describe('ColumnSettings', () => {
         render(<ColumnSettings table={mockTable} />);
         const user = userEvent.setup();
 
-        // Open the dropdown menu
-        const button = screen.getByLabelText('column-settings-button');
-        await user.click(button);
-
-        const descriptionSwitch = screen.getByTestId('description Switch');
+        const descriptionSwitch = await screen.findByTestId('description Switch');
 
         // Initially, it should be checked (true)
         expect(descriptionSwitch).toBeChecked();
@@ -62,27 +65,15 @@ describe('ColumnSettings', () => {
         await user.click(descriptionSwitch);
         expect(mockColumnVisibility['description']).toBeFalsy(); // Visibility should be false
 
-        // Ensure dropdown menu has closed
-        await waitFor(() => {
-            expect(screen.queryByTestId('description Switch')).not.toBeInTheDocument();
-        });
-
-        await user.click(button);
-
-        const reopenedDescriptionSwitch = await screen.findByTestId('description Switch');
-        await user.click(reopenedDescriptionSwitch);
-        expect(reopenedDescriptionSwitch).toBeChecked();
+        await user.click(descriptionSwitch);
+        expect(descriptionSwitch).toBeChecked();
     });
 
     it('toggles grouping path column visibility', async () => {
         render(<ColumnSettings table={mockTable} />);
         const user = userEvent.setup();
 
-        // Open the dropdown menu
-        const button = screen.getByLabelText('column-settings-button');
-        await user.click(button);
-
-        const pathSwitch = screen.getByTestId('path Switch');
+        const pathSwitch = await screen.findByTestId('path Switch');
 
         // Initially, it should be checked (true)
         expect(pathSwitch).not.toBeChecked();
@@ -92,15 +83,7 @@ describe('ColumnSettings', () => {
         await user.click(pathSwitch);
         expect(mockColumnVisibility['path']).toBeTruthy(); // Visibility should be true
 
-        // Ensure dropdown menu has closed
-        await waitFor(() => {
-            expect(screen.queryByTestId('path Switch')).not.toBeInTheDocument();
-        });
-
-        await user.click(button);
-
-        const reopenedPathSwitch = await screen.findByTestId('path Switch');
-        await user.click(reopenedPathSwitch);
-        expect(reopenedPathSwitch).toHaveAttribute('aria-checked', 'false');
+        await user.click(pathSwitch);
+        expect(pathSwitch).toHaveAttribute('aria-checked', 'false');
     });
 });

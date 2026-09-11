@@ -1,6 +1,8 @@
 import Actions from '@/app/groupings/[groupingPath]/@tab/_components/grouping-actions';
 import { getDuplicateOwnersData } from './utils';
 
+export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
+
 interface ActionsTabProps {
     params: { groupingPath: string };
 }
