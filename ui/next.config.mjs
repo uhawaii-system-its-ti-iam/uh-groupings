@@ -12,23 +12,6 @@ const nextConfig = {
     experimental: {
         serverComponentsExternalPackages: ['camaro']
     },
-
-    rewrites: async () => {
-        return [
-            {
-                source: '/groupings/:groupingPath',
-                destination: '/groupings/:groupingPath/all-members'
-            },
-            {
-                source: '/memberships',
-                destination: '/memberships/current'
-            },
-            {
-                source: '/admin',
-                destination: '/admin/manage-groupings'
-            }
-        ];
-    }
 };
 
 export default nextConfig;

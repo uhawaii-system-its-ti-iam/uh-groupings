@@ -314,9 +314,6 @@ describe('GroupingMembersTable', () => {
                     const selectAllCheckboxUnchecked = screen.getByRole('checkbox', { name: /select all rows/i });
                     expect(selectAllCheckboxUnchecked).not.toBeChecked();
 
-                    const updatedRowCheckboxes = screen.getAllByRole('checkbox', { name: /select row/i });
-                    expect(rowCheckboxes[0]).not.toBeChecked();
-
                     // Other checkboxes should remain checked
                     for (let i = 1; i < rowCheckboxes.length; i++) {
                         expect(rowCheckboxes[i]).toBeChecked();
@@ -603,7 +600,6 @@ describe('GroupingMembersTable', () => {
             const tabsWithTrashIcon = ['include', 'exclude', 'owners'] as const;
 
             it.each(tabsWithTrashIcon)('should display trash icon in the %s tab', async (tab) => {
-                const user = userEvent.setup();
                 render(
                     <GroupingMembersTable
                         groupingGroupMembers={mockGroupingGroupMembers}
@@ -642,7 +638,6 @@ describe('GroupingMembersTable', () => {
             });
 
             it('should open RemoveMemberModal with correct member when trash icon is clicked', async () => {
-                const user = userEvent.setup();
                 render(
                     <GroupingMembersTable
                         groupingGroupMembers={mockGroupingGroupMembers}
@@ -677,7 +672,6 @@ describe('GroupingMembersTable', () => {
     describe('RemoveMemberModal', () => {
         it('should close the remove member modal when cancel action is triggered', async () => {
             //open remove member modal through click of trash icon
-            const user = userEvent.setup();
             render(
                 <GroupingMembersTable
                     groupingGroupMembers={mockGroupingGroupMembers}

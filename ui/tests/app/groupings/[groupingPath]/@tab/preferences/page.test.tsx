@@ -15,17 +15,6 @@ vi.mock('@/lib/fetchers', () => ({
     ),
 }));
 
-beforeAll(() => {
-    if (typeof global.ResizeObserver === 'undefined') {
-        class ResizeObserver {
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-        }
-        global.ResizeObserver = ResizeObserver;
-    }
-});
-
 describe('PreferenceTab (Server Component)', () => {
     it('renders Preference component with correct groupingPath', async () => {
         const params = { groupingPath: 'test%3Agroup' };
