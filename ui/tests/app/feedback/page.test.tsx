@@ -1,16 +1,23 @@
 import { vi, describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import Feedback from '@/app/feedback/page';
-import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
+import { getUser } from '@/lib/access/user.server';
+import Role from '@/lib/access/role';
+import { setRoles } from '@/lib/access/authorization';
 
-vi.mock('next-cas-client/app');
+vi.mock('@/lib/access/user.server', () => ({
+    getUser: vi.fn(),
+}));
+vi.mock('@/lib/access/authorization', () => ({ setRoles: vi.fn() }));
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
 describe('Feedback', () => {
-    it('should render the Feedback form', async () => {
-        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+    it('renders the Feedback form for a Better Auth application-session user', async () => {
+        const signedInUser = { ...testUser, roles: [Role.UH] };
+        vi.mocked(getUser).mockResolvedValue(signedInUser);
+        vi.mocked(setRoles).mockResolvedValue(signedInUser);
 
         render(await Feedback());
 

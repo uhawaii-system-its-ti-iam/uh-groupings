@@ -2,6 +2,7 @@ import './globals.css';
 import { Source_Sans_3 } from 'next/font/google';
 import Navbar from '@/components/layout/navbar/navbar';
 import Footer from '@/components/layout/footer';
+import SessionMonitor from '@/components/auth/session-monitor';
 import type { Metadata } from 'next';
 
 // FontAwesome configuration.
@@ -21,9 +22,10 @@ export const metadata: Metadata = {
     title: 'UH Groupings'
 };
 
-const RootLayout = ({children, error}: Readonly<{ children?: React.ReactNode; error?: React.ReactNode; }>) => (
+const RootLayout = ({children, error}: Readonly<{ children: React.ReactNode; error: React.ReactNode; }>) => (
     <html lang="en">
         <body className={`${sourceSans3.variable} min-h-screen flex flex-col`}>
+            <SessionMonitor />
             <Navbar />
             <main className="flex-grow">{children}</main>
             {error}

@@ -4,8 +4,10 @@ import GroupingHeader from './_components/grouping-header';
 import ReturnButtons from './_components/return-buttons';
 import SideNav from './_components/side-nav';
 import { redirect } from 'next/navigation';
-import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
-import { getCurrentUser } from 'next-cas-client/app';
+import { groupingDescription, groupingPathIsValid, isGroupingOwner } from '@/lib/fetchers';
+import { getUser } from '@/lib/access/user.server';
+import { setRoles } from '@/lib/access/authorization';
+import Role from '@/lib/access/role';
 
 const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: string }; tab: React.ReactNode }) => {
     const groupPath = decodeURIComponent(params.groupingPath);
@@ -15,8 +17,9 @@ const GroupingPathLayout = async ({ params, tab }: { params: { groupingPath: str
 
     if (!(await groupingPathIsValid(groupPath))) redirect('/');
 
-    const currentUser = await getCurrentUser();
-    if (!(await isAdmin(currentUser.uid)) && !(await isGroupingOwner(groupPath, currentUser.uid))) redirect('/');
+    const currentUser = await getUser();
+    await setRoles(currentUser);
+    if (!currentUser.roles.includes(Role.ADMIN) && !(await isGroupingOwner(groupPath, currentUser.uid))) redirect('/');
 
     return (
         <Providers>

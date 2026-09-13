@@ -1,6 +1,6 @@
-import { sendStackTrace } from './actions';
 import { redirect } from 'next/navigation';
 import { generateJWT } from './jwt-service'
+import type User from './access/user';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -55,6 +55,21 @@ const poll = async <T>(jobId: number): Promise<T> => {
  */
 export const getRequest = async <T>(endpoint: string): Promise<T> => {
     const jwtToken = await generateJWT();
+    return await fetch(endpoint, { headers: { Authorization: `Bearer ${jwtToken}` } })
+        .then((res) => handleFetch(res, HTTPMethod.GET))
+        .catch((err) => err);
+};
+
+/**
+ * Perform a GET request to the specified URL using a caller-resolved user.
+ *
+ * @param endpoint - the URL to perform the request on
+ * @param user - the user to perform the request with
+ *
+ * @returns The promise of type T
+ * */
+export const getRequestWithUser = async <T>(endpoint: string, user: User): Promise<T> => {
+    const jwtToken = await generateJWT(user);
     return await fetch(endpoint, { headers: { Authorization: `Bearer ${jwtToken}` } })
         .then((res) => handleFetch(res, HTTPMethod.GET))
         .catch((err) => err);
@@ -231,7 +246,6 @@ export const deleteRequestAsync = async <T>(
 export const handleFetch = (res: Response, httpMethod: HTTPMethod) => {
     if (!res.ok) {
         const error = Error(`${res.status} error from ${httpMethod} ${res.url}`);
-        sendStackTrace(error.stack as string);
         redirect('/error');
     }
     return res.json();

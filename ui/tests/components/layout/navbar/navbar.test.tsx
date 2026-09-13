@@ -1,18 +1,23 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import User, { AnonymousUser } from '@/lib/access/user';
-import * as NextCasClient from 'next-cas-client/app';
+import { getUser } from '@/lib/access/user.server';
+import { setRoles } from '@/lib/access/authorization';
 import { render, screen } from '@testing-library/react';
 import Navbar from '@/components/layout/navbar/navbar';
 import Role from '@/lib/access/role';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-vi.mock('next-cas-client/app');
+vi.mock('@/lib/access/user.server', () => ({ getUser: vi.fn() }));
+vi.mock('@/lib/access/authorization', () => ({ setRoles: vi.fn() }));
 
 describe('Navbar', () => {
+    beforeEach(() => {
+        vi.mocked(setRoles).mockImplementation(async (user) => user);
+    });
     describe('User is logged-out', () => {
         it('should render the navbar with only the link to /about', async () => {
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(AnonymousUser);
+            vi.mocked(getUser).mockResolvedValue(AnonymousUser);
             render(await Navbar());
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -37,7 +42,7 @@ describe('Navbar', () => {
 
         it('should render only /memberships, /about, /feedback for the average user', async () => {
             testUser.roles.push(Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+            vi.mocked(getUser).mockResolvedValue(testUser);
             render(await Navbar());
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -56,7 +61,7 @@ describe('Navbar', () => {
 
         it('should render only /memberships, /groupings, /about, /feedback for an owner of a grouping', async () => {
             testUser.roles.push(Role.OWNER, Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+            vi.mocked(getUser).mockResolvedValue(testUser);
             render(await Navbar());
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -75,7 +80,7 @@ describe('Navbar', () => {
 
         it('should render all links for an Admin', async () => {
             testUser.roles.push(Role.ADMIN, Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+            vi.mocked(getUser).mockResolvedValue(testUser);
             render(await Navbar());
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();
@@ -94,7 +99,7 @@ describe('Navbar', () => {
 
         it('should render the departmental icon for a Departmental Account without Admin or Groupings links', async () => {
             testUser.roles.push(Role.DEPARTMENTAL, Role.UH);
-            vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
+            vi.mocked(getUser).mockResolvedValue(testUser);
             render(await Navbar());
 
             expect(screen.getByRole('navigation')).toBeInTheDocument();

@@ -1,5 +1,6 @@
 import { sign } from 'jsonwebtoken';
-import { getUser } from './access/user';
+import { getUser } from './access/user.server';
+import type User from './access/user';
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY as string;
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION_SECONDS as string;
@@ -23,9 +24,13 @@ const getSecretKeyBuffer = (): Buffer => {
  * @returns A signed JWT token string with expiration based on environment variable
  * @throws Error if JWT_SECRET or JWT_EXPIRATION_SECONDS environment variable is not set
  */
-export const generateJWT = async (): Promise<string> => {
+export const generateJWT = async (currentUser?: User): Promise<string> => {
+    const user = currentUser ?? await getUser();
 
-    const user = await getUser();
+    if (!currentUser) {
+        const { setRoles } = await import('./access/authorization');
+        await setRoles(user);
+    }
 
     const secretBuffer = getSecretKeyBuffer();
 
@@ -44,4 +49,3 @@ export const generateJWT = async (): Promise<string> => {
         expiresIn: expirationSeconds
     });
 };
-

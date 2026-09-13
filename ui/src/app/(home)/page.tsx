@@ -4,10 +4,12 @@ import AfterLogin from '@/app/(home)/_components/after-login';
 import Role from '@/lib/access/role';
 import LoginButton from '@/app/(home)/_components/login-button';
 import Announcements from '@/app/(home)/_components/announcements';
-import { getUser } from '@/lib/access/user';
+import { getUser } from '@/lib/access/user.server';
+import { setRoles } from '@/lib/access/authorization';
 
 const Home = async () => {
     const currentUser = await getUser();
+    await setRoles(currentUser);
 
     return (
         <main>
