@@ -24,6 +24,15 @@ describe('authorization', () => {
             expect(AnonymousUser.roles.includes(Role.ANONYMOUS)).toBeTruthy();
             expect(AnonymousUser.roles.includes(Role.OWNER)).toBeFalsy();
             expect(AnonymousUser.roles.includes(Role.UH)).toBeFalsy();
+            expect(AnonymousUser.roles.includes(Role.DEPARTMENTAL)).toBeFalsy();
+
+        });
+
+        it('does not query authorization APIs for an unenriched session', async () => {
+            const user = { ...AnonymousUser, roles: [Role.ANONYMOUS] };
+            await expect(setRoles(user)).resolves.toEqual(user);
+            expect(Fetchers.isOwner).not.toHaveBeenCalled();
+            expect(Fetchers.isAdmin).not.toHaveBeenCalled();
         });
 
         it('should set the UH role', async () => {
@@ -35,8 +44,9 @@ describe('authorization', () => {
             expect(testUser.roles.includes(Role.ANONYMOUS)).toBeTruthy();
             expect(testUser.roles.includes(Role.OWNER)).toBeFalsy();
             expect(testUser.roles.includes(Role.UH)).toBeTruthy();
+            expect(testUser.roles.includes(Role.DEPARTMENTAL)).toBeFalsy();
         });
-
+        
         it('should set the UH and ADMIN roles', async () => {
             vi.spyOn(Fetchers, 'isOwner').mockResolvedValue(false);
             vi.spyOn(Fetchers, 'isAdmin').mockResolvedValue(true);
@@ -46,6 +56,8 @@ describe('authorization', () => {
             expect(testUser.roles.includes(Role.ANONYMOUS)).toBeTruthy();
             expect(testUser.roles.includes(Role.OWNER)).toBeFalsy();
             expect(testUser.roles.includes(Role.UH)).toBeTruthy();
+            expect(testUser.roles.includes(Role.DEPARTMENTAL)).toBeFalsy();
+
         });
 
         it('should set the UH and OWNER roles', async () => {
@@ -57,6 +69,8 @@ describe('authorization', () => {
             expect(testUser.roles.includes(Role.ANONYMOUS)).toBeTruthy();
             expect(testUser.roles.includes(Role.OWNER)).toBeTruthy();
             expect(testUser.roles.includes(Role.UH)).toBeTruthy();
+            expect(testUser.roles.includes(Role.DEPARTMENTAL)).toBeFalsy();
+
         });
 
         it('should set the UH, ADMIN, and OWNER roles', async () => {
@@ -68,6 +82,40 @@ describe('authorization', () => {
             expect(testUser.roles.includes(Role.ANONYMOUS)).toBeTruthy();
             expect(testUser.roles.includes(Role.OWNER)).toBeTruthy();
             expect(testUser.roles.includes(Role.UH)).toBeTruthy();
+            expect(testUser.roles.includes(Role.DEPARTMENTAL)).toBeFalsy();
+        });
+
+        it('should set the DEPARTMENTAL role', async () => {
+            const departmentalUser: User = {
+                ...testUser,
+                uid: testUser.uhUuid,
+                roles: [],
+            };
+            vi.spyOn(Fetchers, 'isOwner').mockResolvedValue(false);
+            vi.spyOn(Fetchers, 'isAdmin').mockResolvedValue(false);
+
+            await setRoles(departmentalUser);
+            expect(departmentalUser.roles.includes(Role.ADMIN)).toBeFalsy();
+            expect(departmentalUser.roles.includes(Role.ANONYMOUS)).toBeTruthy();
+            expect(departmentalUser.roles.includes(Role.OWNER)).toBeFalsy();
+            expect(departmentalUser.roles.includes(Role.UH)).toBeTruthy();
+            expect(departmentalUser.roles.includes(Role.DEPARTMENTAL)).toBeTruthy();
+        });
+
+        it('does not duplicate existing application roles', async () => {
+            const fullyAuthorizedDepartmentalUser: User = {
+                ...testUser,
+                uid: testUser.uhUuid,
+                roles: [Role.ANONYMOUS, Role.UH, Role.OWNER, Role.ADMIN, Role.DEPARTMENTAL],
+            };
+            vi.spyOn(Fetchers, 'isOwner').mockResolvedValue(true);
+            vi.spyOn(Fetchers, 'isAdmin').mockResolvedValue(true);
+
+            await setRoles(fullyAuthorizedDepartmentalUser);
+
+            expect(fullyAuthorizedDepartmentalUser.roles).toEqual([
+                Role.ANONYMOUS, Role.UH, Role.OWNER, Role.ADMIN, Role.DEPARTMENTAL,
+            ]);
         });
     });
 });

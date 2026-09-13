@@ -5,6 +5,16 @@ import * as Fetchers from '@/lib/fetchers';
 import { GroupingPaths } from '@/lib/types';
 
 vi.mock('@/lib/fetchers');
+vi.mock('@/lib/access/user.server', () => ({
+    getUser: vi.fn().mockResolvedValue({
+        name: '',
+        firstName: '',
+        lastName: '',
+        uid: '',
+        uhUuid: '',
+        roles: []
+    })
+}));
 vi.mock('next/navigation', () => ({
     useRouter: vi.fn()
 }));

@@ -25,7 +25,7 @@ import {
     putRequest,
     putRequestAsync
 } from './http-client';
-import { getUser } from '@/lib/access/user';
+import { getUser } from '@/lib/access/user.server';
 import { z } from 'zod';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
@@ -461,7 +461,17 @@ export const getGroupingMembers = async (
         isAscending: isAscending.toString(),
         ...(searchString && { searchString })
     })}`;
-    return getRequest<GroupingGroupMembers>(endpoint);
+    const groupingMembers = await getRequest<GroupingGroupMembers>(endpoint);
+
+    // http-client preserves legacy callers by returning a rejected fetch
+    // value. A Server Component must never pass that Error instance to the
+    // client table; rethrow it so Next can render its normal error/redirect
+    // response instead.
+    if (groupingMembers instanceof Error) {
+        throw groupingMembers;
+    }
+
+    return groupingMembers;
 };
 
 /**

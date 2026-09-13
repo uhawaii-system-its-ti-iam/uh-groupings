@@ -4,12 +4,14 @@ import { NavbarLinks } from './navbar-links';
 import LoginButton from './login-button';
 import NavbarMenu from './navbar-menu';
 import TimeoutModal from '@/components/modal/timeout-modal';
-import { getUser } from '@/lib/access/user';
+import { getUser } from '@/lib/access/user.server';
 import Role from '@/lib/access/role';
 import DeptAccountIcon from '@/components/layout/navbar/dept-account-icon';
+import { setRoles } from '@/lib/access/authorization';
 
 const Navbar = async () => {
     const currentUser = await getUser();
+    await setRoles(currentUser);
 
     return (
         <>

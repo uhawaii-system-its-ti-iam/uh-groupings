@@ -1,8 +1,13 @@
-import { getUser } from '@/lib/access/user';
+import { getUser } from '@/lib/access/user.server';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
+import { setRoles } from '@/lib/access/authorization';
+import { redirect } from 'next/navigation';
+import Role from '@/lib/access/role';
 
 const Feedback = async () => {
     const currentUser = await getUser();
+    await setRoles(currentUser);
+    if (!currentUser.roles.includes(Role.UH)) redirect('/');
 
     return (
         <div className="container grid sm:grid-cols-12 pt-5 pb-4">

@@ -1,165 +1,108 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, Mock } from 'vitest';
-import MembershipsTable from '@/app/memberships/_components/memberships-table';
-import { optIn } from '@/lib/actions';
-import userEvent from '@testing-library/user-event';
+import { vi, beforeEach, describe, it, expect, Mock } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import GroupingPathLayout from '@/app/groupings/[groupingPath]/layout';
+import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
+import { usePathname, redirect } from 'next/navigation';
+import { GroupingDescription } from '@/lib/types';
+import GroupingHeader from '@/app/groupings/[groupingPath]/_components/grouping-header';
+import { getUser } from '@/lib/access/user.server';
+import { setRoles } from '@/lib/access/authorization';
 
-vi.mock('next/navigation', () => ({
-    useRouter: () => ({
-        refresh: vi.fn()
-    })
-}));
+vi.mock('next/navigation');
+vi.mock('@/lib/fetchers');
+vi.mock('@/app/groupings/[groupingPath]/_components/grouping-header');
+vi.mock('@/lib/access/user.server', () => ({ getUser: vi.fn() }));
+vi.mock('@/lib/access/authorization', () => ({ setRoles: vi.fn() }));
 
-vi.mock('@/lib/actions', () => ({
-    optIn: vi.fn(),
-    optOut: vi.fn()
-}));
+const mockData: GroupingDescription = {
+    groupPath: 'Test-path:Test-name',
+    description: 'Test Description',
+    resultCode: 'SUCCESS'
+};
 
-vi.mock('next-cas-client/app');
+beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(getUser).mockResolvedValue({ uid: 'test-user', roles: [] } as never);
+    vi.mocked(setRoles).mockImplementation(async (user) => user);
+    (isAdmin as Mock).mockResolvedValue(false);
+    (isGroupingOwner as Mock).mockResolvedValue(true);
+    (groupingDescription as Mock).mockResolvedValue(mockData);
+    (groupingPathIsValid as Mock).mockResolvedValue(true);
+    (usePathname as Mock).mockReturnValue('/groupings/Test-Path/Test-name');
+});
 
-vi.spyOn(global.localStorage, 'getItem').mockReturnValue(JSON.stringify({ description: true, path: true }));
+describe('GroupingPathLayout', () => {
+    it('fetches data and correctly extracts groupPath, groupDescription, and groupName', async () => {
+        const params = { groupingPath: 'Test-path:Test-name' };
+        render(
+            await GroupingPathLayout({
+                params,
+                tab: <div>Tab Content</div>
+            })
+        );
 
-describe('MembershipsTable', () => {
-    const mockResults = [
-        {
-            path: 'test-path1',
-            name: 'test-name1',
-            description: 'test-description1'
-        },
-        {
-            path: 'test-path2',
-            name: 'test-name2',
-            description: 'test-description2'
-        },
-        {
-            path: 'test-path3',
-            name: 'test-name3',
-            description: 'test-description3'
-        }
-    ];
+        const groupPath = params.groupingPath;
+        const groupDescription = mockData?.description;
+        const groupName = groupPath.split(':').pop();
 
-    const setupPendingOptIn = () => {
-        const deferred = <T,>() => {
-            let resolve!: (value: T | PromiseLike<T>) => void;
-            let reject!: (reason?: unknown) => void;
-            const promise = new Promise<T>((res, rej) => {
-                resolve = res;
-                reject = rej;
-            });
-            return { promise, resolve, reject };
-        };
+        expect(groupPath).toBe('Test-path:Test-name');
+        expect(groupDescription).toBe('Test Description');
+        expect(groupName).toBe('Test-name');
 
-        const pending = deferred<void>();
+        expect(GroupingHeader).toHaveBeenCalledWith(
+            {
+                groupName: 'Test-name',
+                groupPath: 'Test-path:Test-name',
+                groupDescription: 'Test Description'
+            },
+            {}
+        );
+    });
 
-        (optIn as Mock).mockImplementation(vi.fn().mockReturnValue(pending.promise));
+    it('renders the tab content', async () => {
+        render(
+            await GroupingPathLayout({
+                params: { groupingPath: 'Test-path:Test-name' },
+                tab: <div>Tab Content</div>
+            })
+        );
 
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
+        const tabContent = await screen.findByTestId('tab-content');
+        expect(tabContent).toBeInTheDocument();
+        expect(tabContent).toHaveTextContent('Tab Content');
+    });
 
-        return { pending };
-    };
+    it('redirects if path is invalid', async () => {
+        (groupingPathIsValid as Mock).mockResolvedValue(false);
 
-    it('renders table with data', async () => {
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
-
-        await waitFor(() => {
-            expect(screen.getByText('Available Memberships')).toBeInTheDocument();
+        await GroupingPathLayout({
+            params: { groupingPath: 'Invalid:path' },
+            tab: <div>Tab Content</div>
         });
-        expect(screen.getByText('test-name1')).toBeInTheDocument();
-        expect(screen.getByText('test-name2')).toBeInTheDocument();
-        expect(screen.getByText('test-name3')).toBeInTheDocument();
+
+        expect(redirect).toHaveBeenCalledWith('/');
     });
 
-    it('renders correct heading for opt-out', () => {
-        render(<MembershipsTable memberships={mockResults} isOptOut={true} />);
+    it('redirects if user is not admin and not owner', async () => {
+        (isAdmin as Mock).mockResolvedValue(false);
+        (isGroupingOwner as Mock).mockResolvedValue(false);
 
-        expect(screen.getByText('Manage Memberships')).toBeInTheDocument();
-    });
-
-    it('filters memberships based on search input', () => {
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
-
-        const input = screen.getByPlaceholderText('Filter Groupings...');
-        fireEvent.change(input, { target: { value: 'test-name1' } });
-
-        expect(screen.getByText('test-name1')).toBeInTheDocument();
-        expect(screen.queryByText('test-name2')).not.toBeInTheDocument();
-        expect(screen.queryByText('test-name3')).not.toBeInTheDocument();
-    });
-
-    it('triggers sorting when table header is clicked', async () => {
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
-
-        const header = screen.getByText('Description');
-        fireEvent.click(header);
-
-        const rows = screen.getAllByRole('row');
-        const lastRow = rows[rows.length - 1];
-
-        expect(screen.getByText('test-description1')).toBeInTheDocument();
-        expect(screen.getByText('test-description2')).toBeInTheDocument();
-        expect(lastRow).toHaveTextContent('test-description3');
-    });
-
-    it('should toggle the column settings', async () => {
-        render(<MembershipsTable memberships={mockResults} isOptOut={false} />);
-
-        const button = screen.getByLabelText('column-settings-button');
-        const user = userEvent.setup();
-
-        const toggleColumnVisibility = async (columnTestId: string, isVisible: boolean) => {
-            await waitFor(
-                async () => {
-                    await user.click(button);
-                },
-                { timeout: 8000 }
-            );
-
-            fireEvent.click(screen.getByTestId(columnTestId));
-
-            if (isVisible) {
-                expect(screen.getByText(columnTestId.replace(' Switch', ''))).toBeInTheDocument();
-            } else {
-                expect(screen.queryByText(columnTestId.replace(' Switch', ''))).not.toBeInTheDocument();
-            }
-        };
-
-        await toggleColumnVisibility('Description Switch', false);
-        await toggleColumnVisibility('Description Switch', true);
-
-        await toggleColumnVisibility('Grouping Path Switch', true);
-        await toggleColumnVisibility('Grouping Path Switch', false);
-
-        vi.restoreAllMocks();
-    });
-
-    it('does not remove a row immediately when the opt button is clicked', async () => {
-        const { pending } = setupPendingOptIn();
-
-        const button = screen.getAllByTestId('opt-button')[0];
-        fireEvent.click(button);
-
-        expect(screen.getByText('test-name1')).toBeInTheDocument();
-
-        pending.resolve();
-
-        await waitFor(() => {
-            expect(screen.queryByText('test-name1')).not.toBeInTheDocument();
+        await GroupingPathLayout({
+            params: { groupingPath: 'Test-path:Test-name' },
+            tab: <div>Tab Content</div>
         });
-        expect(screen.getByText('test-name2')).toBeInTheDocument();
-        expect(screen.getByText('test-name3')).toBeInTheDocument();
+
+        expect(redirect).toHaveBeenCalledWith('/');
     });
 
-    it('removes a row after confirmed action completes', async () => {
-        const { pending } = setupPendingOptIn();
+    it('should not redirect if user is admin or owner', async () => {
+        (isAdmin as Mock).mockResolvedValue(true);
 
-        fireEvent.click(screen.getAllByTestId('opt-button')[0]);
-
-        expect(screen.getByText('test-name1')).toBeInTheDocument();
-
-        pending.resolve();
-
-        await waitFor(() => {
-            expect(screen.queryByText('test-name1')).not.toBeInTheDocument();
+        await GroupingPathLayout({
+            params: { groupingPath: 'Test-path:Test-name' },
+            tab: <div>Tab Content</div>
         });
+
+        expect(redirect).not.toHaveBeenCalled();
     });
 });

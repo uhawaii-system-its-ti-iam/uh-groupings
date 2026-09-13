@@ -31,10 +31,13 @@ import {
     updateDescription,
     getGroupingMembers,
     getNumberOfDirectOwners,
-    getDuplicateOwners
+    getDuplicateOwners,
+    getMembersExistInInclude,
+    getMembersExistInExclude,
+    getMembersExistInOwners
 } from '@/lib/actions';
-import * as NextCasClient from 'next-cas-client/app';
 import User from '@/lib/access/user';
+import { getUser } from '@/lib/access/user.server';
 import { Feedback } from '@/lib/types';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 import * as JwtService from '@/lib/jwt-service';
@@ -45,7 +48,9 @@ const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 const OPT_IN = process.env.NEXT_PUBLIC_OPT_IN as string;
 const OPT_OUT = process.env.NEXT_PUBLIC_OPT_OUT as string;
 
-vi.mock('next-cas-client/app');
+vi.mock('@/lib/access/user.server', () => ({
+    getUser: vi.fn(),
+}));
 
 describe('actions', () => {
     const currentUser = testUser;
@@ -78,9 +83,8 @@ describe('actions', () => {
     };
 
     beforeAll(async () => {
-        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
-        authToken = await JwtService.generateJWT();
-        // Mock generateJWT to always return the same token for consistent test assertions
+        vi.mocked(getUser).mockResolvedValue(testUser);
+        authToken = 'better-auth-application-jwt';
         vi.spyOn(JwtService, 'generateJWT').mockResolvedValue(authToken);
     });
 
@@ -340,7 +344,7 @@ describe('actions', () => {
         it('should make a GET request at the correct endpoint', async () => {
             await groupingOwners(groupingPath);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/grouping/${groupingPath}/owners`, {
-                headers: { 
+                headers: {
                     Authorization: `Bearer ${authToken}`
                 }
             });
@@ -823,7 +827,7 @@ describe('actions', () => {
             await getGroupingMembers(groupingPath, { sortBy, isAscending, page, size });
             expect(fetch).toHaveBeenCalledWith(
                 `${baseUrl}/groupings/${groupingPath}?` +
-                    `page=${page}&size=${size}&sortBy=${sortBy}&isAscending=${isAscending}`,
+                `page=${page}&size=${size}&sortBy=${sortBy}&isAscending=${isAscending}`,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken}`
@@ -992,6 +996,21 @@ describe('actions', () => {
         it('should validate input groupingPath as string', async () => {
             const invalidPath = 123 as unknown as string;
             await expect(getDuplicateOwners(invalidPath)).rejects.toThrow();
+        });
+    });
+
+    describe('member existence checks', () => {
+        it.each([
+            ['include-members', getMembersExistInInclude],
+            ['exclude-members', getMembersExistInExclude],
+            ['owners', getMembersExistInOwners],
+        ] as const)('posts identifiers to the %s membership check', async (group, request) => {
+            await request(groupingPath, uhIdentifiers);
+            expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/${groupingPath}/${group}/in-list`, {
+                body: JSON.stringify(uhIdentifiers),
+                headers: { Authorization: `Bearer ${authToken}`, 'Content-Type': 'application/json' },
+                method: 'POST',
+            });
         });
     });
 });

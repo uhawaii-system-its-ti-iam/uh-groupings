@@ -1,4 +1,5 @@
-import { getRequest } from './http-client';
+import { getRequest, getRequestWithUser } from './http-client';
+import type User from './access/user';
 import {
     Announcements,
     GroupingDescription,
@@ -8,7 +9,6 @@ import {
     GroupingPaths,
     MembershipResults
 } from './types';
-import { getUser } from '@/lib/access/user';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -115,9 +115,8 @@ export const getNumberOfMemberships = async (): Promise<number> => {
  *
  * @returns The promise of the grouping paths
  */
-export const optInGroupingPaths = async (): Promise<GroupingPaths> => {
-    const currentUser = await getUser();
-    const endpoint = `${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`;
+export const optInGroupingPaths = async (user: User): Promise<GroupingPaths> => {
+    const endpoint = `${baseUrl}/groupings/members/${user.uid}/opt-in-groups`;
     return getRequest<GroupingPaths>(endpoint);
 };
 
@@ -173,9 +172,9 @@ export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): P
  *
  * @returns True if the uhIdentifier is an owner of a grouping
  */
-export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
+export const isOwner = async (uhIdentifier: string, user: User): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${uhIdentifier}/is-owner`;
-    return getRequest<boolean>(endpoint);
+    return getRequestWithUser<boolean>(endpoint, user);
 };
 
 /**
@@ -198,9 +197,9 @@ export const isGroupingOwner = async (groupingPath: string, uhIdentifier: string
  *
  * @returns True if the uhIdentifier is an admin
  */
-export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
+export const isAdmin = async (uhIdentifier: string, user: User): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${uhIdentifier}/is-admin`;
-    return getRequest<boolean>(endpoint);
+    return getRequestWithUser<boolean>(endpoint, user);
 };
 
 /**
