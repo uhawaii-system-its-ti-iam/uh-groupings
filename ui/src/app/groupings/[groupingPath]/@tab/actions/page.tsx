@@ -2,11 +2,11 @@ import Actions from '@/app/groupings/[groupingPath]/@tab/_components/grouping-ac
 import { getDuplicateOwnersData } from './utils';
 
 interface ActionsTabProps {
-    params: { groupingPath: string };
+    params: Promise<{ groupingPath: string }>;
 }
 
 const ActionsTab = async ({ params }: ActionsTabProps) => {
-    const { groupingPath } = params;
+    const { groupingPath } = await params;
     const { duplicateOwners, duplicateOwnersCount } = await getDuplicateOwnersData(groupingPath);
 
     return (

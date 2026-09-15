@@ -2,8 +2,8 @@ import { managePersonResults } from '@/lib/fetchers';
 import PersonTable from '@/app/admin/_components/person-table/person-table';
 import { memberAttributeResults } from '@/lib/actions';
 
-const PersonTab = async ({ searchParams }: { searchParams: { uhIdentifier?: string } }) => {
-    const uhIdentifier = searchParams.uhIdentifier ?? '';
+const PersonTab = async ({ searchParams }: { searchParams: Promise<{ uhIdentifier?: string }> }) => {
+    const uhIdentifier = (await searchParams).uhIdentifier ?? '';
     const membershipResults = JSON.parse(JSON.stringify(await managePersonResults(uhIdentifier)));
     let memberResult = undefined;
     if (uhIdentifier) {

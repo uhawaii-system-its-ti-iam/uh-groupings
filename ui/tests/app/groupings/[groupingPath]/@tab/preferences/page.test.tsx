@@ -28,7 +28,7 @@ beforeAll(() => {
 
 describe('PreferenceTab (Server Component)', () => {
     it('renders Preference component with correct groupingPath', async () => {
-        const params = { groupingPath: 'test%3Agroup' };
+        const params = Promise.resolve({ groupingPath: 'test%3Agroup' });
         const ui = await PreferenceTab({ params });
         render(ui);
         expect(await screen.findByText('Mocked Preference Component: test%3Agroup')).toBeInTheDocument();
