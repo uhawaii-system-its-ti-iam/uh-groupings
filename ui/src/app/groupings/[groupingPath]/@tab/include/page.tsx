@@ -3,14 +3,16 @@ import { GroupingMembersTableSearchParams } from '../_components/grouping-member
 
 export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
 
-const IncludeTab = ({
+const IncludeTab = async ({
     params,
     searchParams
 }: {
-    params: { groupingPath: string };
-    searchParams: GroupingMembersTableSearchParams;
+    params: Promise<{ groupingPath: string }>;
+    searchParams: Promise<GroupingMembersTableSearchParams>;
 }) => {
-    return <GroupingMembersTab params={params} searchParams={searchParams} group="include" />;
+    const [resolvedParams, resolvedSearchParams] = await Promise.all([params, searchParams]);
+
+    return <GroupingMembersTab params={resolvedParams} searchParams={resolvedSearchParams} group="include" />;
 };
 
 export default IncludeTab;

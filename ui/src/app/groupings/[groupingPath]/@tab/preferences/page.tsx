@@ -3,8 +3,8 @@ import { groupingOptAttributes } from '@/lib/fetchers';
 
 export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
 
-const PreferenceTab = async ({ params }: { params: { groupingPath: string } }) => {
-    const { groupingPath } = params;
+const PreferenceTab = async ({ params }: { params: Promise<{ groupingPath: string }> }) => {
+    const { groupingPath } = await params;
     const decodedGroupingPath = decodeURIComponent(groupingPath);
 
     const result = await groupingOptAttributes(decodedGroupingPath);

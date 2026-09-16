@@ -120,7 +120,11 @@ const PersonTable = ({
      */
     const validRemove = () => {
         const anyChecked = table.getSelectedRowModel().rows.length;
-        anyChecked > 0 ? openRemoveModal() : setShowRemoveWarning(true);
+        if (anyChecked > 0) {
+            openRemoveModal();
+        } else {
+            setShowRemoveWarning(true);
+        }
     };
 
     /**

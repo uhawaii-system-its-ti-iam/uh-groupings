@@ -9,11 +9,11 @@ vi.mock('@/app/groupings/[groupingPath]/@tab/_components/grouping-members-tab');
 
 describe('ExcludeTab', () => {
     it('renders Exclude tab', async () => {
-        render(
-            <ExcludeTab
-                params={{ groupingPath: 'test' }}
-                searchParams={{ page: '1', sortBy: '1', isAscending: 'true' }}
-            />
-        );
+        const component = await ExcludeTab({
+            params: Promise.resolve({ groupingPath: 'test' }),
+            searchParams: Promise.resolve({ page: '1', sortBy: '1', isAscending: 'true' })
+        });
+
+        render(component);
     });
 });

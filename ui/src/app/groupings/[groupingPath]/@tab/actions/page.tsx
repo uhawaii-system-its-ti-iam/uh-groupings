@@ -4,11 +4,11 @@ import { getDuplicateOwnersData } from './utils';
 export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
 
 interface ActionsTabProps {
-    params: { groupingPath: string };
+    params: Promise<{ groupingPath: string }>;
 }
 
 const ActionsTab = async ({ params }: ActionsTabProps) => {
-    const { groupingPath } = params;
+    const { groupingPath } = await params;
     const { duplicateOwners, duplicateOwnersCount } = await getDuplicateOwnersData(groupingPath);
 
     return (

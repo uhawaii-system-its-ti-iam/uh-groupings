@@ -31,7 +31,8 @@ beforeEach(() => {
 
 describe('GroupingPathLayout', () => {
     it('fetches data and correctly extracts groupPath, groupDescription, and groupName', async () => {
-        const params = { groupingPath: 'Test-path:Test-name' };
+        const groupingPath = 'Test-path:Test-name';
+        const params = Promise.resolve({ groupingPath });
         render(
             await GroupingPathLayout({
                 params,
@@ -39,7 +40,7 @@ describe('GroupingPathLayout', () => {
             })
         );
 
-        const groupPath = params.groupingPath;
+        const groupPath = groupingPath;
         const groupDescription = mockData?.description;
         const groupName = groupPath.split(':').pop();
 
@@ -60,7 +61,7 @@ describe('GroupingPathLayout', () => {
     it('renders the tab content', async () => {
         render(
             await GroupingPathLayout({
-                params: { groupingPath: 'Test-path:Test-name' },
+                params: Promise.resolve({ groupingPath: 'Test-path:Test-name' }),
                 tab: <div>Tab Content</div>
             })
         );
@@ -74,7 +75,7 @@ describe('GroupingPathLayout', () => {
         (groupingPathIsValid as Mock).mockResolvedValue(false);
 
         await GroupingPathLayout({
-            params: { groupingPath: 'Invalid:path' },
+            params: Promise.resolve({ groupingPath: 'Invalid:path' }),
             tab: <div>Tab Content</div>
         });
 
@@ -86,7 +87,7 @@ describe('GroupingPathLayout', () => {
         (isGroupingOwner as Mock).mockResolvedValue(false);
 
         await GroupingPathLayout({
-            params: { groupingPath: 'Test-path:Test-name' },
+            params: Promise.resolve({ groupingPath: 'Test-path:Test-name' }),
             tab: <div>Tab Content</div>
         });
 
@@ -97,7 +98,7 @@ describe('GroupingPathLayout', () => {
         (isAdmin as Mock).mockResolvedValue(true);
 
         await GroupingPathLayout({
-            params: { groupingPath: 'Test-path:Test-name' },
+            params: Promise.resolve({ groupingPath: 'Test-path:Test-name' }),
             tab: <div>Tab Content</div>
         });
 
