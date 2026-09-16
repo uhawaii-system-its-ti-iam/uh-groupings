@@ -7,22 +7,33 @@ import User from './user';
  *
  * @param user - The user
  */
-export const setRoles = async (user: User): Promise<void> => {
-    // All users should have ANONYMOUS role to describe universal access (e.g. /about page in NavLinks.ts)
-    user.roles.push(Role.ANONYMOUS);
+export const setRoles = async (user: User): Promise<User> => {
+    if (!user.roles.includes(Role.ANONYMOUS)) {
+        user.roles.push(Role.ANONYMOUS);
+    }
 
-    if (isValidUhUuid(user.uhUuid)) {
-        user.roles.push(Role.UH);
+    if (!isValidUhUuid(user.uhUuid)) {
+        return user;
     }
-    if (await isOwner(user.uhUuid)) {
-        user.roles.push(Role.OWNER);
+
+    if (!user.roles.includes(Role.UH)) user.roles.push(Role.UH);
+
+    const [isUserOwner, isUserAdmin] = await Promise.all([
+        user.roles.includes(Role.OWNER) ? Promise.resolve(true) : isOwner(user.uhUuid, user),
+        user.roles.includes(Role.ADMIN) ? Promise.resolve(true) : isAdmin(user.uhUuid, user)
+    ]);
+
+    if (isUserOwner) {
+        if (!user.roles.includes(Role.OWNER)) user.roles.push(Role.OWNER);
     }
-    if (await isAdmin(user.uhUuid)) {
-        user.roles.push(Role.ADMIN);
+    if (isUserAdmin) {
+        if (!user.roles.includes(Role.ADMIN)) user.roles.push(Role.ADMIN);
     }
     if (isDepartmental(user.uid, user.uhUuid)) {
-        user.roles.push(Role.DEPARTMENTAL);
+        if (!user.roles.includes(Role.DEPARTMENTAL)) user.roles.push(Role.DEPARTMENTAL);
     }
+
+    return user;
 };
 
 /**

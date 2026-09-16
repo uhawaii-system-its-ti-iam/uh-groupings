@@ -1,7 +1,14 @@
 import Heading from '@/components/layout/heading';
 import React from 'react';
+import { redirect } from 'next/navigation';
+import Role from '@/lib/access/role';
+import { getUser } from '@/lib/access/user.server';
+import { setRoles } from '@/lib/access/authorization';
 
-const AdminLayout = ({ tab, modals }: { tab: React.ReactNode, modals: React.ReactNode }) => {
+const AdminLayout = async ({ tab, modals }: { tab: React.ReactNode, modals: React.ReactNode }) => {
+    const user = await setRoles(await getUser());
+    if (!user.roles.includes(Role.ADMIN)) redirect('/');
+
     return (
         <>
             <main>

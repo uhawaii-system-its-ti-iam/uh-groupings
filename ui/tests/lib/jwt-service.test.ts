@@ -1,11 +1,11 @@
 import { vi, describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
 import * as jwt from 'jsonwebtoken';
-import * as UserAccess from '@/lib/access/user';
+import * as UserAccess from '@/lib/access/user.server';
 import User from '@/lib/access/user';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-vi.mock('@/lib/access/user');
+vi.mock('@/lib/access/user.server');
 
 describe('jwt-service', () => {
     let generateJWT: () => Promise<string>;
