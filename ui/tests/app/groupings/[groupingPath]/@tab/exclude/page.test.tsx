@@ -2,9 +2,7 @@ import { vi, describe, it } from 'vitest';
 import { render } from '@testing-library/react';
 import ExcludeTab from '@/app/groupings/[groupingPath]/@tab/exclude/page';
 
-vi.mock('next-cas-client/app');
-
-// TODO: React Testing Library does not support rendering nested server components yet.
+// Authorization is enforced by the Better Auth-backed grouping layout.
 vi.mock('@/app/groupings/[groupingPath]/@tab/_components/grouping-members-tab');
 
 describe('ExcludeTab', () => {

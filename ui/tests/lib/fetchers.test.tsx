@@ -19,7 +19,6 @@ import {
     groupingPathIsValid,
     groupingOwners
 } from '@/lib/fetchers';
-import * as NextCasClient from 'next-cas-client/app';
 import * as Actions from '@/lib/actions';
 import { vi, describe, beforeAll, it, expect } from 'vitest';
 import * as JwtService from '@/lib/jwt-service';
@@ -27,7 +26,6 @@ import * as JwtService from '@/lib/jwt-service';
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-vi.mock('next-cas-client/app');
 vi.mock('@/lib/actions');
 
 describe('fetchers', () => {
@@ -45,10 +43,8 @@ describe('fetchers', () => {
     };
 
     beforeAll(async () => {
-        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(testUser);
         vi.spyOn(Actions, 'sendStackTrace');
-        authToken = await JwtService.generateJWT();
-        // Mock generateJWT to always return the same token for consistent test assertions
+        authToken = 'better-auth-application-jwt';
         vi.spyOn(JwtService, 'generateJWT').mockResolvedValue(authToken);
     });
 
@@ -225,7 +221,7 @@ describe('fetchers', () => {
 
     describe('optInGroupingPaths', () => {
         it('should make a GET request at the correct endpoint', async () => {
-            await optInGroupingPaths();
+            await optInGroupingPaths(currentUser);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`, {
                 headers: { Authorization: `Bearer ${authToken}` }
             });
@@ -233,12 +229,12 @@ describe('fetchers', () => {
 
         it('should handle the successful response', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
-            expect(await optInGroupingPaths()).toEqual(mockResponse);
+            expect(await optInGroupingPaths(currentUser)).toEqual(mockResponse);
         });
 
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
-            expect(await optInGroupingPaths()).toEqual(mockError);
+            expect(await optInGroupingPaths(currentUser)).toEqual(mockError);
         });
     });
 
