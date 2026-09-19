@@ -4,6 +4,23 @@ import { vi, describe, beforeEach, beforeAll, it, expect } from 'vitest';
 import ExportDropdown from '@/app/groupings/[groupingPath]/_components/export-dropdown';
 import { getGroupingMembers } from '@/lib/actions';
 
+vi.mock('@/components/ui/dropdown-menu', () => ({
+    DropdownMenu: ({ children }: { children: any }) => <div>{children}</div>,
+    DropdownMenuTrigger: ({ children }: { children: any }) => <div>{children}</div>,
+    DropdownMenuContent: ({ children }: { children: any }) => <div>{children}</div>,
+    DropdownMenuItem: ({ children, onClick }: { children: any; onClick?: () => void }) => (
+        <button type="button" onClick={onClick}>
+            {children}
+        </button>
+    )
+}));
+
+vi.mock('@/components/ui/tooltip', () => ({
+    TooltipProvider: ({ children }: { children: any }) => <>{children}</>,
+    Tooltip: ({ children }: { children: any }) => <>{children}</>,
+    TooltipTrigger: ({ children }: { children: any }) => <>{children}</>
+}));
+
 vi.mock('@/lib/actions', () => ({
     getGroupingMembers: vi.fn().mockResolvedValue({
         members: [

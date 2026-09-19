@@ -2,7 +2,7 @@ import { vi, beforeEach, describe, it, expect, Mock } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import GroupingPathLayout from '@/app/groupings/[groupingPath]/layout';
 import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
-import { usePathname, redirect } from 'next/navigation';
+import { usePathname, useSearchParams, redirect } from 'next/navigation';
 import { GroupingDescription } from '@/lib/types';
 import GroupingHeader from '@/app/groupings/[groupingPath]/_components/grouping-header';
 import { getCurrentUser } from 'next-cas-client/app';
@@ -26,6 +26,7 @@ beforeEach(() => {
     (groupingDescription as Mock).mockResolvedValue(mockData);
     (groupingPathIsValid as Mock).mockResolvedValue(true);
     (usePathname as Mock).mockReturnValue('/groupings/Test-Path/Test-name');
+    (useSearchParams as Mock).mockReturnValue(new URLSearchParams());
 });
 
 describe('GroupingPathLayout', () => {

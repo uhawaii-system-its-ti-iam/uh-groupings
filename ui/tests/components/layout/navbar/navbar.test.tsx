@@ -24,7 +24,7 @@ describe('Navbar', () => {
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Memberships' })).not.toBeInTheDocument();
             expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
             expect(screen.queryByRole('link', { name: 'Feedback' })).not.toBeInTheDocument();
             expect(screen.getByRole('button', { name: 'Login' })).toBeInTheDocument();
         });
@@ -47,10 +47,13 @@ describe('Navbar', () => {
             );
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute(
+                'href',
+                '/uhgroupings/memberships'
+            );
             expect(screen.queryByRole('link', { name: 'Groupings' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/uhgroupings/feedback');
             expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
 
@@ -66,10 +69,13 @@ describe('Navbar', () => {
             );
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.queryByRole('link', { name: 'Admin' })).not.toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute(
+                'href',
+                '/uhgroupings/memberships'
+            );
+            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/uhgroupings/groupings');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/uhgroupings/feedback');
             expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
 
@@ -84,11 +90,14 @@ describe('Navbar', () => {
                 '/uhgroupings/uh-groupings-logo.svg'
             );
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
-            expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin');
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/groupings');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/uhgroupings/admin');
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute(
+                'href',
+                '/uhgroupings/memberships'
+            );
+            expect(screen.getByRole('link', { name: 'Groupings' })).toHaveAttribute('href', '/uhgroupings/groupings');
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/uhgroupings/feedback');
             expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
 
@@ -105,9 +114,12 @@ describe('Navbar', () => {
 
             expect(screen.getAllByRole('link', { name: 'UH Groupings Logo' })[0]).toHaveAttribute('href', '/');
             expect(screen.getByLabelText('Departmental Account Icon')).toBeInTheDocument();
-            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute('href', '/memberships');
-            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
-            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/feedback');
+            expect(screen.getByRole('link', { name: 'Memberships' })).toHaveAttribute(
+                'href',
+                '/uhgroupings/memberships'
+            );
+            expect(screen.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/uhgroupings/about');
+            expect(screen.getByRole('link', { name: 'Feedback' })).toHaveAttribute('href', '/uhgroupings/feedback');
             expect(screen.getByRole('button', { name: `Logout (${testUser.uid})` })).toBeInTheDocument();
         });
     });

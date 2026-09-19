@@ -2,7 +2,6 @@
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import User from '@/lib/access/user';
-import Link from 'next/link';
 import { NavbarLinks } from './navbar-links';
 import { useState } from 'react';
 import Role from '@/lib/access/role';
@@ -35,9 +34,9 @@ const NavbarMenu = ({ currentUser }: { currentUser: User }) => {
                             currentUser?.roles.includes(Role.ADMIN) ||
                             currentUser?.roles.includes(navbarLink.role)
                     ).map((navbarLink) => (
-                        <Link href={navbarLink.link} key={navbarLink.name} className="hover:text-uh-teal">
+                        <a href={`/uhgroupings${navbarLink.link}`} key={navbarLink.name} className="hover:text-uh-teal">
                             {navbarLink.name}
-                        </Link>
+                        </a>
                     ))}
                 </nav>
             </SheetContent>

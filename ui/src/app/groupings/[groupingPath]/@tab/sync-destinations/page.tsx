@@ -1,6 +1,8 @@
 import { groupingSyncDest } from '@/lib/fetchers';
 import SyncDestinations from '@/app/groupings/[groupingPath]/@tab/_components/sync-destinations';
 
+export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
+
 const SyncDestinationsTab = async ({ params }: { params: Promise<{ groupingPath: string }> }) => {
     const { groupingPath } = await params;
     const syncDestinations = await groupingSyncDest(groupingPath);
@@ -19,4 +21,3 @@ const SyncDestinationsTab = async ({ params }: { params: Promise<{ groupingPath:
 };
 
 export default SyncDestinationsTab;
-
