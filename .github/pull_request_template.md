@@ -14,3 +14,4 @@
 -   [ ] Integration Tests Passed
 -   [ ] General Visual Inspection
 -   [ ] Checked For ADA Compliance
+-   [ ] If dependencies changed, reviewed `ui/package-lock.json`

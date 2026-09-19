@@ -44,17 +44,30 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 18.x
+          node-version-file: ui/.nvmrc
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      # Node 20.19.0 ships npm 10.8.2, which does not support min-release-age.
+      # Pin npm 11.10.0 so ui/.npmrc (ignore-scripts, min-release-age) applies in CI.
+      # Keep ui/.nvmrc on Node >= 20; npm 11 is unsupported on older majors.
+      - name: Verify Node supports npm 11
+        run: |
+          node -e "const major = Number(process.versions.node.split('.')[0]); if (major < 20) { console.error('ui/.nvmrc must pin Node >= 20 for npm 11'); process.exit(1); }"
+
+      - name: Install npm
+        run: npm install -g npm@11.10.0
+
+      - name: Verify npm version
+        run: npm --version
 
       - name: Installing dependencies
-        run: |
-          cd ui
-          npm install
+        working-directory: ui
+        run: npm ci
 
       - name: Tests
-        run: |
-          cd ui
-          npm run test:coverage
+        working-directory: ui
+        run: npm run test:coverage
 
       - name: Switch to badges branch
         run: |

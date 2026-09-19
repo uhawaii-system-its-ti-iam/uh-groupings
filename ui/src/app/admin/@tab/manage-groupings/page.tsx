@@ -1,11 +1,11 @@
-import { ownerGroupings } from '@/lib/fetchers';
+import { getAllGroupings } from '@/lib/fetchers';
 import GroupingsTable from '@/components/table/groupings-table/groupings-table';
 
 const GroupingsTab = async () => {
-    const { groupingPaths } = await ownerGroupings();
+    const { groupingPaths } = await getAllGroupings();
     return (
         <div className="container">
-            <GroupingsTable groupingPaths={groupingPaths} />
+            <GroupingsTable groupingPaths={groupingPaths} fromAdmin />
         </div>
     );
 };

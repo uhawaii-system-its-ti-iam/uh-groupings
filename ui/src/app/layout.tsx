@@ -18,7 +18,16 @@ const sourceSans3 = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-    title: 'UH Groupings'
+    title: {
+        default: 'UH Groupings Home',
+        template: 'UH Groupings %s'
+    },
+    icons: {
+        icon: {
+            url: '/uhgroupings/images/favicon.ico',
+            type: 'image/x-icon'
+        }
+    }
 };
 
 const RootLayout = ({children, error}: Readonly<{ children?: React.ReactNode; error?: React.ReactNode; }>) => (

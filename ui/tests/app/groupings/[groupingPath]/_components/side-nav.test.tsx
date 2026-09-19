@@ -1,7 +1,7 @@
 import { vi, describe, beforeEach, it, expect, Mock } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import SideNav from '@/app/groupings/[groupingPath]/_components/side-nav';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 vi.mock('next/navigation');
 
@@ -10,6 +10,7 @@ describe('SideNav Component', () => {
 
     beforeEach(() => {
         (usePathname as Mock).mockReturnValue(`/groupings/${groupingPath}/all-members`);
+        (useSearchParams as Mock).mockReturnValue(new URLSearchParams());
     });
 
     it('renders link', () => {
@@ -37,6 +38,15 @@ describe('SideNav Component', () => {
 
         links.forEach((link, index) => {
             expect(link).toHaveAttribute('href', expectedHrefs[index]);
+        });
+    });
+
+    it('preserves the Admin source when switching grouping tabs', () => {
+        (useSearchParams as Mock).mockReturnValue(new URLSearchParams('from=admin'));
+        render(<SideNav groupingPath={groupingPath} />);
+
+        screen.getAllByRole('link').forEach((link) => {
+            expect(link).toHaveAttribute('href', expect.stringMatching(/\?from=admin$/));
         });
     });
 });

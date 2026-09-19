@@ -75,6 +75,13 @@ vi.mock('@/components/modal/add-member-modal', () => ({
         ) : null
 }));
 
+vi.mock('@/components/ui/tooltip', () => ({
+    TooltipProvider: ({ children }: any) => <>{children}</>,
+    Tooltip: ({ children }: never) => <>{children}</>,
+    TooltipTrigger: ({ children, asChild }: never) => (asChild ? children : <div>{children}</div>),
+    TooltipContent: ({ children }: never) => <div data-testid="tooltip-content">{children}</div>,
+}));
+
 vi.mock('@/lib/messages', () => ({
     message: {
         AdminTable: {
@@ -82,15 +89,24 @@ vi.mock('@/lib/messages', () => ({
                 ADD_TITLE: 'Add Success',
                 ADD_BODY: (name: string) => `Added ${name}`,
                 REMOVE_TITLE: 'Remove Success',
-                REMOVE_BODY: (name: string) => `Removed ${name}`
-            }
-        }
-    }
+                REMOVE_BODY: (name: string) => `Removed ${name}`,
+            },
+        },
+        Actions: {
+            Trashcan_Admin: 'Remove this admin',
+        },
+        RemoveMemberModals: {
+            TOOLTIP: {
+                NO_UID_SINGLE: 'This member does not have a UH username.',
+                NO_UID_MULTIPLE: 'This person does not have a UH username.',
+            },
+        },
+    },
 }));
 
 function deferred<T = void>() {
     let resolve!: (value: T) => void;
-    let reject!: (reason?: any) => void;
+    let reject!: (reason?: never) => void;
     const promise = new Promise<T>((res, rej) => {
         resolve = res;
         reject = rej;
@@ -251,7 +267,7 @@ describe('AdminTable', () => {
         const { rerender } = render(<AdminTable groupingGroupMembers={initialData as any} />);
         expect(await screen.findByText('Manage Admins')).toBeInTheDocument();
         expect(screen.getByText('Bob B')).toBeInTheDocument();
-        const trash = screen.getByTestId('remove-user-uid-2');
+        const trash = screen.getByTestId('remove-user-222');
         await user.click(trash);
         const removeModal = await screen.findByTestId('remove-member-modal');
         expect(within(removeModal).getByText('Remove Member')).toBeInTheDocument();
@@ -374,7 +390,7 @@ describe('AdminTable', () => {
             />
         );
 
-        const trash = screen.getByTestId('remove-user-uid-1');
+        const trash = screen.getByTestId('remove-user-111');
         await user.click(trash);
 
         const modal = await screen.findByTestId('remove-member-modal');
@@ -407,7 +423,7 @@ describe('AdminTable', () => {
             />
         );
 
-        const trash = screen.getByTestId('remove-user-uid-1');
+        const trash = screen.getByTestId('remove-user-111');
         await user.click(trash);
 
         removeAdminMock.mockResolvedValueOnce(undefined);
@@ -459,7 +475,7 @@ describe('AdminTable', () => {
             />
         );
 
-        const trash = screen.getByTestId('remove-user-uid-1');
+        const trash = screen.getByTestId('remove-user-111');
         await user.click(trash);
 
         removeAdminMock.mockRejectedValueOnce(new Error('fail'));
@@ -534,7 +550,7 @@ describe('AdminTable', () => {
 
         removeAdminMock.mockResolvedValueOnce(undefined);
 
-        const trash = screen.getByTestId('remove-user-uid-example-0');
+        const trash = screen.getByTestId('remove-user-uhUuid-example-0');
         await user.click(trash);
 
         const modal = await screen.findByTestId('remove-member-modal');

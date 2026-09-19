@@ -1,8 +1,23 @@
 import Actions from '@/app/groupings/[groupingPath]/@tab/_components/grouping-actions';
+import { getDuplicateOwnersData } from './utils';
 
-const ActionsTab = ({ params }: { params: { groupingPath: string } }) => {
-    const { groupingPath } = params;
-    return <Actions groupingPath={groupingPath} />;
+export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
+
+interface ActionsTabProps {
+    params: Promise<{ groupingPath: string }>;
+}
+
+const ActionsTab = async ({ params }: ActionsTabProps) => {
+    const { groupingPath } = await params;
+    const { duplicateOwners, duplicateOwnersCount } = await getDuplicateOwnersData(groupingPath);
+
+    return (
+        <Actions
+            groupingPath={groupingPath}
+            initialDuplicateOwners={duplicateOwners}
+            initialDuplicateOwnersCount={duplicateOwnersCount}
+        />
+    );
 };
 
 export default ActionsTab;

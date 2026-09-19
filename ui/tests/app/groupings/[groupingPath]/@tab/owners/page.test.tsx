@@ -9,11 +9,11 @@ vi.mock('@/app/groupings/[groupingPath]/@tab/_components/grouping-members-tab');
 
 describe('OwnersTab', () => {
     it('renders Owners tab', async () => {
-        render(
-            <OwnersTab
-                params={{ groupingPath: 'test' }}
-                searchParams={{ page: '1', sortBy: '1', isAscending: 'true' }}
-            />
-        );
+        const component = await OwnersTab({
+            params: Promise.resolve({ groupingPath: 'test' }),
+            searchParams: Promise.resolve({ page: '1', sortBy: '1', isAscending: 'true' })
+        });
+
+        render(component);
     });
 });

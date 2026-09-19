@@ -1,4 +1,9 @@
 import Heading from '@/components/layout/heading';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Membership'
+};
 
 const MembershipsLayout = ({ tab }: { tab: React.ReactNode }) => {
     return (

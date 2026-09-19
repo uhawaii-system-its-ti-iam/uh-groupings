@@ -1,8 +1,10 @@
 import Preference from '@/app/groupings/[groupingPath]/@tab/_components/preference';
 import { groupingOptAttributes } from '@/lib/fetchers';
 
-const PreferenceTab = async ({ params }: { params: { groupingPath: string } }) => {
-    const { groupingPath } = params;
+export { generateGroupingMetadata as generateMetadata } from '../../grouping-metadata';
+
+const PreferenceTab = async ({ params }: { params: Promise<{ groupingPath: string }> }) => {
+    const { groupingPath } = await params;
     const decodedGroupingPath = decodeURIComponent(groupingPath);
 
     const result = await groupingOptAttributes(decodedGroupingPath);

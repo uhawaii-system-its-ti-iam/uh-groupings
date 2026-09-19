@@ -120,7 +120,11 @@ const PersonTable = ({
      */
     const validRemove = () => {
         const anyChecked = table.getSelectedRowModel().rows.length;
-        anyChecked > 0 ? openRemoveModal() : setShowRemoveWarning(true);
+        if (anyChecked > 0) {
+            openRemoveModal();
+        } else {
+            setShowRemoveWarning(true);
+        }
     };
 
     /**
@@ -429,8 +433,7 @@ const PersonTable = ({
                                                                     <Tooltip>
                                                                         <TooltipTrigger>
                                                                             <Link
-                                                                                href={`/groupings/${cell.row.original.path}
-                                                                            `}
+                                                                                href={`/groupings/${cell.row.original.path}?from=admin`}
                                                                                 rel="noopener noreferrer"
                                                                                 target="_blank"
                                                                             >

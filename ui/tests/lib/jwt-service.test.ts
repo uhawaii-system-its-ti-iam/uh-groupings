@@ -37,11 +37,11 @@ describe('jwt-service', () => {
             expect(decoded.sub).toBe(testUser.uid);
         });
 
-        it('should include the user roles in the token payload', async () => {
+        it('should include the user roles in the token payload prefixed with ROLE_', async () => {
             const token = await generateJWT();
             const decoded = jwt.decode(token) as any;
 
-            expect(decoded.roles).toEqual(testUser.roles);
+            expect(decoded.roles).toEqual(testUser.roles.map((role) => `ROLE_${role}`));
         });
 
         it('should set expiration time based on JWT_EXPIRATION_SECONDS', async () => {
