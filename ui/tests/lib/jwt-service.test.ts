@@ -1,17 +1,22 @@
 import { vi, describe, it, expect, beforeAll, beforeEach, afterEach } from 'vitest';
 import * as jwt from 'jsonwebtoken';
-import * as UserAccess from '@/lib/access/user';
+import * as UserAccess from '@/lib/access/user.server';
 import User from '@/lib/access/user';
+import Role from '@/lib/access/role';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-vi.mock('@/lib/access/user');
+vi.mock('@/lib/access/user.server', () => ({
+    getAuthorizedUser: vi.fn(),
+    getUser: vi.fn()
+}));
 
 describe('jwt-service', () => {
-    let generateJWT: () => Promise<string>;
+    let generateJWT: (user?: User) => Promise<string>;
 
     beforeEach(async () => {
-        vi.spyOn(UserAccess, 'getUser').mockResolvedValue(testUser);
+        vi.clearAllMocks();
+        vi.mocked(UserAccess.getAuthorizedUser).mockResolvedValue(testUser);
         vi.resetModules();
         const jwtService = await import('@/lib/jwt-service');
         generateJWT = jwtService.generateJWT;
@@ -22,6 +27,16 @@ describe('jwt-service', () => {
     });
 
     describe('generateJWT', () => {
+        it('resolves the authorized user when no user is supplied', async () => {
+            await generateJWT();
+            expect(UserAccess.getAuthorizedUser).toHaveBeenCalledOnce();
+        });
+
+        it('uses a supplied user without resolving the session', async () => {
+            const token = await generateJWT(testUser);
+            expect(UserAccess.getAuthorizedUser).not.toHaveBeenCalled();
+            expect((jwt.decode(token) as jwt.JwtPayload).sub).toBe(testUser.uid);
+        });
         it('should generate a valid JWT token', async () => {
             const token = await generateJWT();
 
@@ -44,6 +59,13 @@ describe('jwt-service', () => {
             expect(decoded.roles).toEqual(testUser.roles.map((role) => `ROLE_${role}`));
         });
 
+        it('prefixes each supplied role in the JWT payload', async () => {
+            const token = await generateJWT({ ...testUser, roles: [Role.ADMIN, Role.OWNER] });
+            const decoded = jwt.decode(token) as jwt.JwtPayload;
+
+            expect(decoded.roles).toEqual(['ROLE_ADMIN', 'ROLE_OWNER']);
+        });
+
         it('should set expiration time based on JWT_EXPIRATION_SECONDS', async () => {
             const token = await generateJWT();
             const decoded = jwt.decode(token) as any;
@@ -64,7 +86,7 @@ describe('jwt-service', () => {
 
         it('should generate different tokens when called multiple times', async () => {
             const token1 = await generateJWT();
-            await new Promise(resolve => setTimeout(resolve, 1100));
+            await new Promise((resolve) => setTimeout(resolve, 1100));
             const token2 = await generateJWT();
 
             expect(token1).not.toBe(token2);
@@ -96,7 +118,9 @@ describe('jwt-service', () => {
             vi.resetModules();
             const jwtService = await import('@/lib/jwt-service');
 
-            await expect(jwtService.generateJWT()).rejects.toThrow('JWT_EXPIRATION_SECONDS environment variable is not set');
+            await expect(jwtService.generateJWT()).rejects.toThrow(
+                'JWT_EXPIRATION_SECONDS environment variable is not set'
+            );
 
             process.env.JWT_EXPIRATION_SECONDS = originalExpiration;
         });

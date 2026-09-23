@@ -1,8 +1,10 @@
 import MembershipsTable from '@/app/memberships/_components/memberships-table';
 import { membershipResults } from '@/lib/fetchers';
+import { getAuthorizedUser } from '@/lib/access/user.server';
 
 const CurrentMembershipsTab = async () => {
-    const { results } = await membershipResults();
+    const user = await getAuthorizedUser();
+    const { results } = await membershipResults(user);
     return (
         <div className="bg-white">
             <div className="container">

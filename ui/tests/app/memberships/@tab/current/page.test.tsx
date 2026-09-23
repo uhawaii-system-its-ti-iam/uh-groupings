@@ -5,6 +5,7 @@ import * as Fetchers from '@/lib/fetchers';
 import { MembershipResults } from '@/lib/types';
 
 vi.mock('@/lib/fetchers');
+vi.mock('@/lib/access/user.server', () => ({ getAuthorizedUser: vi.fn() }));
 vi.mock('next/navigation', () => ({
     useRouter: vi.fn()
 }));
@@ -14,7 +15,7 @@ const mockResults: MembershipResults = {
     results: Array.from({ length: 10 }, (_, i) => ({
         path: `tmp:example:example-${i}`,
         name: `example-${i}`,
-        description: `Test Description ${i}`,
+        description: `Test Description ${i}`
     }))
 };
 
@@ -24,6 +25,8 @@ beforeEach(() => {
 
 describe('CurrentMembershipsTab', () => {
     it('renders CurrentMembershipsTab content', async () => {
+        const { getAuthorizedUser } = await import('@/lib/access/user.server');
+        vi.mocked(getAuthorizedUser).mockResolvedValue({ uid: 'test-user', uhUuid: '99997010', roles: [] } as never);
         render(await CurrentMembershipsTab());
         await waitFor(() => {
             expect(screen.getByRole('table')).toBeInTheDocument();

@@ -4,7 +4,6 @@ import MembershipsTable from '@/app/memberships/_components/memberships-table';
 import { optIn } from '@/lib/actions';
 import userEvent from '@testing-library/user-event';
 
-
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
         refresh: vi.fn()
@@ -15,8 +14,6 @@ vi.mock('@/lib/actions', () => ({
     optIn: vi.fn(),
     optOut: vi.fn()
 }));
-
-vi.mock('next-cas-client/app');
 
 vi.spyOn(global.localStorage, 'getItem').mockReturnValue(JSON.stringify({ description: true, path: true }));
 

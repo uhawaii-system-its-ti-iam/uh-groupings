@@ -1,6 +1,6 @@
-import { sendStackTrace } from './actions';
 import { redirect } from 'next/navigation';
-import { generateJWT } from './jwt-service'
+import { generateJWT } from './jwt-service';
+import type User from './access/user';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -32,16 +32,15 @@ const delay = async (ms = 5000) => new Promise((res) => setTimeout(res, ms));
  *
  * @returns The promise of type T
  */
-const poll = async <T>(jobId: number): Promise<T> => {
-    const jwtToken = await generateJWT();
+const poll = async <T>(jobId: number, jwtToken: string): Promise<T> => {
     return await fetch(`${baseUrl}/jobs/${jobId}`, { headers: { Authorization: `Bearer ${jwtToken}` } })
-        .then((res) => handleFetch(res, HTTPMethod.GET))
+        .then((res) => handleFetch(res))
         .then(async (res) => {
             if (res.status === Status.COMPLETED) {
                 return res.result;
             }
             await delay();
-            return poll<T>(jobId);
+            return poll<T>(jobId, jwtToken);
         })
         .catch((err) => err);
 };
@@ -56,7 +55,22 @@ const poll = async <T>(jobId: number): Promise<T> => {
 export const getRequest = async <T>(endpoint: string): Promise<T> => {
     const jwtToken = await generateJWT();
     return await fetch(endpoint, { headers: { Authorization: `Bearer ${jwtToken}` } })
-        .then((res) => handleFetch(res, HTTPMethod.GET))
+        .then((res) => handleFetch(res))
+        .catch((err) => err);
+};
+
+/**
+ * Perform a GET request to the specified URL using a caller-resolved user.
+ *
+ * @param endpoint - the URL to perform the request on
+ * @param user - the user to perform the request with
+ *
+ * @returns The promise of type T
+ * */
+export const getRequestWithUser = async <T>(endpoint: string, user: User): Promise<T> => {
+    const jwtToken = await generateJWT(user);
+    return await fetch(endpoint, { headers: { Authorization: `Bearer ${jwtToken}` } })
+        .then((res) => handleFetch(res))
         .catch((err) => err);
 };
 
@@ -71,9 +85,10 @@ export const getRequest = async <T>(endpoint: string): Promise<T> => {
 export const postRequest = async <T>(
     endpoint: string,
     body?: object | string | string[],
-    contentType = 'application/json'
+    contentType = 'application/json',
+    user?: User
 ): Promise<T> => {
-    const jwtToken = await generateJWT();
+    const jwtToken = await generateJWT(user);
     return await fetch(endpoint, {
         method: HTTPMethod.POST,
         headers: {
@@ -82,7 +97,7 @@ export const postRequest = async <T>(
         },
         body: stringifyBody(body)
     })
-        .then((res) => handleFetch(res, HTTPMethod.POST))
+        .then((res) => handleFetch(res))
         .catch((err) => err);
 };
 
@@ -97,9 +112,10 @@ export const postRequest = async <T>(
 export const postRequestAsync = async <T>(
     endpoint: string,
     body?: object | string | string[],
-    contentType = 'application/json'
+    contentType = 'application/json',
+    user?: User
 ): Promise<T> => {
-    const jwtToken = await generateJWT();
+    const jwtToken = await generateJWT(user);
     return await fetch(endpoint, {
         method: HTTPMethod.POST,
         headers: {
@@ -108,8 +124,8 @@ export const postRequestAsync = async <T>(
         },
         body: stringifyBody(body)
     })
-        .then((res) => handleFetch(res, HTTPMethod.POST))
-        .then((res) => poll<T>(res))
+        .then((res) => handleFetch(res))
+        .then((res) => poll<T>(res, jwtToken))
         .catch((err) => err);
 };
 
@@ -124,9 +140,10 @@ export const postRequestAsync = async <T>(
 export const putRequest = async <T>(
     endpoint: string,
     body?: object | string | string[],
-    contentType = 'application/json'
+    contentType = 'application/json',
+    user?: User
 ): Promise<T> => {
-    const jwtToken = await generateJWT();
+    const jwtToken = await generateJWT(user);
     return await fetch(endpoint, {
         method: HTTPMethod.PUT,
         headers: {
@@ -135,7 +152,7 @@ export const putRequest = async <T>(
         },
         body: stringifyBody(body)
     })
-        .then((res) => handleFetch(res, HTTPMethod.PUT))
+        .then((res) => handleFetch(res))
         .catch((err) => err);
 };
 
@@ -150,9 +167,10 @@ export const putRequest = async <T>(
 export const putRequestAsync = async <T>(
     endpoint: string,
     body?: object | string | string[],
-    contentType = 'application/json'
+    contentType = 'application/json',
+    user?: User
 ): Promise<T> => {
-    const jwtToken = await generateJWT();
+    const jwtToken = await generateJWT(user);
     return await fetch(endpoint, {
         method: HTTPMethod.PUT,
         headers: {
@@ -161,8 +179,8 @@ export const putRequestAsync = async <T>(
         },
         body: stringifyBody(body)
     })
-        .then((res) => handleFetch(res, HTTPMethod.PUT))
-        .then((res) => poll<T>(res))
+        .then((res) => handleFetch(res))
+        .then((res) => poll<T>(res, jwtToken))
         .catch((err) => err);
 };
 
@@ -177,9 +195,10 @@ export const putRequestAsync = async <T>(
 export const deleteRequest = async <T>(
     endpoint: string,
     body?: object | string | string[],
-    contentType = 'application/json'
+    contentType = 'application/json',
+    user?: User
 ): Promise<T> => {
-    const jwtToken = await generateJWT();
+    const jwtToken = await generateJWT(user);
     return await fetch(endpoint, {
         method: HTTPMethod.DELETE,
         headers: {
@@ -188,7 +207,7 @@ export const deleteRequest = async <T>(
         },
         body: stringifyBody(body)
     })
-        .then((res) => handleFetch(res, HTTPMethod.DELETE))
+        .then((res) => handleFetch(res))
         .catch((err) => err);
 };
 
@@ -203,9 +222,10 @@ export const deleteRequest = async <T>(
 export const deleteRequestAsync = async <T>(
     endpoint: string,
     body?: object | string | string[],
-    contentType = 'application/json'
+    contentType = 'application/json',
+    user?: User
 ): Promise<T> => {
-    const jwtToken = await generateJWT();
+    const jwtToken = await generateJWT(user);
     return await fetch(endpoint, {
         method: HTTPMethod.DELETE,
         headers: {
@@ -214,8 +234,8 @@ export const deleteRequestAsync = async <T>(
         },
         body: stringifyBody(body)
     })
-        .then((res) => handleFetch(res, HTTPMethod.DELETE))
-        .then((res) => poll<T>(res))
+        .then((res) => handleFetch(res))
+        .then((res) => poll<T>(res, jwtToken))
         .catch((err) => err);
 };
 
@@ -224,14 +244,11 @@ export const deleteRequestAsync = async <T>(
  * Sends an email stack trace if an error is thrown.
  *
  * @param res - the response
- * @param httpMethod - the HTTPMethod
  *
  * @returns The res.json()
  */
-export const handleFetch = (res: Response, httpMethod: HTTPMethod) => {
+export const handleFetch = (res: Response) => {
     if (!res.ok) {
-        const error = Error(`${res.status} error from ${httpMethod} ${res.url}`);
-        sendStackTrace(error.stack as string);
         redirect('/error');
     }
     return res.json();

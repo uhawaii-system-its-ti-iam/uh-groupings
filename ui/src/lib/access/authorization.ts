@@ -1,28 +1,39 @@
 import { isOwner, isAdmin } from '../fetchers';
 import Role from './role';
 import User from './user';
+import { unstable_cache } from 'next/cache';
+
+const getRemoteRoles = (user: User) =>
+    unstable_cache(
+        async (): Promise<Role[]> => {
+            const [owner, admin] = await Promise.all([isOwner(user.uhUuid, user), isAdmin(user.uhUuid, user)]);
+            return [owner && Role.OWNER, admin && Role.ADMIN].filter(Boolean) as Role[];
+        },
+        ['user-authorization', user.uid],
+        { revalidate: 60, tags: [`user-authorization:${user.uid}`] }
+    )();
 
 /**
  * Sets the appropriate roles for a user.
  *
  * @param user - The user
  */
-export const setRoles = async (user: User): Promise<void> => {
-    // All users should have ANONYMOUS role to describe universal access (e.g. /about page in NavLinks.ts)
-    user.roles.push(Role.ANONYMOUS);
+export const setRoles = async (user: User): Promise<User> => {
+    const roles = new Set(user.roles);
+    roles.add(Role.ANONYMOUS);
 
-    if (isValidUhUuid(user.uhUuid)) {
-        user.roles.push(Role.UH);
+    if (!user.uid || !isValidUhUuid(user.uhUuid)) {
+        return { ...user, roles: [...roles] };
     }
-    if (await isOwner(user.uhUuid)) {
-        user.roles.push(Role.OWNER);
-    }
-    if (await isAdmin(user.uhUuid)) {
-        user.roles.push(Role.ADMIN);
-    }
+
+    roles.add(Role.UH);
+
+    for (const role of await getRemoteRoles(user)) roles.add(role);
     if (isDepartmental(user.uid, user.uhUuid)) {
-        user.roles.push(Role.DEPARTMENTAL);
+        roles.add(Role.DEPARTMENTAL);
     }
+
+    return { ...user, roles: [...roles] };
 };
 
 /**

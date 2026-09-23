@@ -25,7 +25,7 @@ import {
     putRequest,
     putRequestAsync
 } from './http-client';
-import { getUser } from '@/lib/access/user';
+import { getUser } from '@/lib/access/user.server';
 import { z } from 'zod';
 import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
@@ -461,7 +461,13 @@ export const getGroupingMembers = async (
         isAscending: isAscending.toString(),
         ...(searchString && { searchString })
     })}`;
-    return getRequest<GroupingGroupMembers>(endpoint);
+    const groupingMembers = await getRequest<GroupingGroupMembers>(endpoint);
+
+    if (groupingMembers instanceof Error) {
+        throw groupingMembers;
+    }
+
+    return groupingMembers;
 };
 
 /**
@@ -525,11 +531,17 @@ export async function getNumberOfDirectOwners(groupingPath: string) {
  *
  * @returns The promise of duplicate owners map
  */
-export async function getDuplicateOwners(groupingPath: string): Promise<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>> {
+export async function getDuplicateOwners(groupingPath: string): Promise<Record<string, {
+    uhUuid: string;
+    name: string;
+    uid: string;
+    paths: string[]
+}>> {
     z.string().parse(groupingPath);
     const endpoint = `${baseUrl}/groupings/${groupingPath}/owners/duplicates`;
     return getRequest<Record<string, { uhUuid: string; name: string; uid: string; paths: string[] }>>(endpoint);
 }
+
 /**
  * Check if members exist in the include group of a grouping.
  *

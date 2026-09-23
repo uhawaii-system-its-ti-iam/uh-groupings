@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import User from '@/lib/access/user';
-import { logout } from 'next-cas-client';
+import { signOutFromEntra } from '@/lib/auth-client';
 import Role from '@/lib/access/role';
 import DynamicModal from '@/components/modal/dynamic-modal';
 
@@ -15,7 +15,7 @@ const TimeoutModal = ({ currentUser }: { currentUser: User }) => {
     const [remainingTime, setRemainingTime] = useState<number>(timeout);
 
     const { activate, getRemainingTime } = useIdleTimer({
-        onIdle: () => logout(),
+        onIdle: signOutFromEntra,
         onPrompt: () => setOpen(true),
         timeout,
         promptBeforeIdle,
@@ -64,7 +64,7 @@ const TimeoutModal = ({ currentUser }: { currentUser: User }) => {
             onClose={close}
             buttons={[
                 <span key="stay" onClick={close}>Stay logged in</span>,
-                <span key="logout" onClick={() => logout()}>Log off now</span>,
+                <span key="logout" onClick={signOutFromEntra}>Log off now</span>,
             ]}
         />
     );

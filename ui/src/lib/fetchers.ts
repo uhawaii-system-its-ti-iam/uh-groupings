@@ -1,4 +1,5 @@
-import { getRequest } from './http-client';
+import { getRequest, getRequestWithUser } from './http-client';
+import type User from './access/user';
 import {
     Announcements,
     GroupingDescription,
@@ -8,7 +9,6 @@ import {
     GroupingPaths,
     MembershipResults
 } from './types';
-import { getUser } from '@/lib/access/user';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_2_1_BASE_URL as string;
 
@@ -73,9 +73,11 @@ export const groupingAdmins = async (): Promise<GroupingGroupMembers> => {
  *
  * @returns The promise of all the grouping paths
  */
-export const getAllGroupings = async (): Promise<GroupingPaths> => {
-    const endpoint = `${baseUrl}/groupings`;
-    return getRequest<GroupingPaths>(endpoint);
+export type GroupingListQuery = { page?: number; size?: number; search?: string };
+export const getAllGroupings = async (user: User, query: GroupingListQuery = {}): Promise<GroupingPaths> => {
+    const params = new URLSearchParams({ page: String(query.page ?? 1), size: String(query.size ?? 25) });
+    if (query.search) params.set('search', query.search);
+    return getRequestWithUser<GroupingPaths>(`${baseUrl}/groupings?${params}`, user);
 };
 
 /**
@@ -83,9 +85,9 @@ export const getAllGroupings = async (): Promise<GroupingPaths> => {
  *
  * @returns The promise of the membership results
  */
-export const membershipResults = async (): Promise<MembershipResults> => {
+export const membershipResults = async (user: User): Promise<MembershipResults> => {
     const endpoint = `${baseUrl}/members/memberships`;
-    return getRequest<MembershipResults>(endpoint);
+    return getRequestWithUser<MembershipResults>(endpoint, user);
 };
 
 /**
@@ -105,9 +107,9 @@ export const managePersonResults = async (uhIdentifier: string): Promise<Members
  *
  * @returns The promise of the number of memberships
  */
-export const getNumberOfMemberships = async (): Promise<number> => {
+export const getNumberOfMemberships = async (user?: User): Promise<number> => {
     const endpoint = `${baseUrl}/members/memberships/count`;
-    return getRequest<number>(endpoint);
+    return user ? getRequestWithUser<number>(endpoint, user) : getRequest<number>(endpoint);
 };
 
 /**
@@ -115,10 +117,9 @@ export const getNumberOfMemberships = async (): Promise<number> => {
  *
  * @returns The promise of the grouping paths
  */
-export const optInGroupingPaths = async (): Promise<GroupingPaths> => {
-    const currentUser = await getUser();
-    const endpoint = `${baseUrl}/groupings/members/${currentUser.uid}/opt-in-groups`;
-    return getRequest<GroupingPaths>(endpoint);
+export const optInGroupingPaths = async (user: User): Promise<GroupingPaths> => {
+    const endpoint = `${baseUrl}/groupings/members/${user.uid}/opt-in-groups`;
+    return getRequestWithUser<GroupingPaths>(endpoint, user);
 };
 
 /**
@@ -148,9 +149,9 @@ export const ownerGroupings = async (): Promise<GroupingPaths> => {
  *
  * @returns The promise of the number of groupings
  */
-export const getNumberOfGroupings = async (): Promise<number> => {
+export const getNumberOfGroupings = async (user?: User): Promise<number> => {
     const endpoint = `${baseUrl}/owners/groupings/count`;
-    return getRequest<number>(endpoint);
+    return user ? getRequestWithUser<number>(endpoint, user) : getRequest<number>(endpoint);
 };
 
 /**
@@ -173,9 +174,9 @@ export const isSoleOwner = async (uhIdentifier: string, groupingPath: string): P
  *
  * @returns True if the uhIdentifier is an owner of a grouping
  */
-export const isOwner = async (uhIdentifier: string): Promise<boolean> => {
+export const isOwner = async (uhIdentifier: string, user: User): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${uhIdentifier}/is-owner`;
-    return getRequest<boolean>(endpoint);
+    return getRequestWithUser<boolean>(endpoint, user);
 };
 
 /**
@@ -198,9 +199,9 @@ export const isGroupingOwner = async (groupingPath: string, uhIdentifier: string
  *
  * @returns True if the uhIdentifier is an admin
  */
-export const isAdmin = async (uhIdentifier: string): Promise<boolean> => {
+export const isAdmin = async (uhIdentifier: string, user: User): Promise<boolean> => {
     const endpoint = `${baseUrl}/members/${uhIdentifier}/is-admin`;
-    return getRequest<boolean>(endpoint);
+    return getRequestWithUser<boolean>(endpoint, user);
 };
 
 /**

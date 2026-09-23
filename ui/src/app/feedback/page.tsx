@@ -1,4 +1,4 @@
-import { getUser } from '@/lib/access/user';
+import { getAuthorizedUser } from '@/lib/access/user.server';
 import FeedbackForm from '@/app/feedback/_components/feedback-form';
 import type { Metadata } from 'next';
 
@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const Feedback = async () => {
-    const currentUser = await getUser();
+    const currentUser = await getAuthorizedUser();
 
     return (
         <div className="container grid sm:grid-cols-12 pt-5 pb-4">
