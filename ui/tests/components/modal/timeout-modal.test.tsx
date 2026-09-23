@@ -3,11 +3,11 @@ import Role from '@/lib/access/role';
 import User from '@/lib/access/user';
 import TimeoutModal from '@/components/modal/timeout-modal';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import * as NextCasClient from 'next-cas-client';
+import { signOutFromEntra } from '@/lib/auth-client';
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
-vi.mock('next-cas-client');
+vi.mock('@/lib/auth-client', () => ({ signOutFromEntra: vi.fn() }));
 
 describe('TimeoutModal', () => {
     beforeEach(() => {
@@ -85,8 +85,6 @@ describe('TimeoutModal', () => {
     });
 
     it('should logout when "Log off now" is pressed', () => {
-        const logoutSpy = vi.spyOn(NextCasClient, 'logout');
-
         testUser.roles.push(Role.UH);
         render(<TimeoutModal currentUser={testUser} />);
 
@@ -95,18 +93,16 @@ describe('TimeoutModal', () => {
 
         expect(screen.getByRole('alertdialog', { name: 'Inactivity Warning' })).toBeInTheDocument();
         fireEvent.click(screen.getByText('Log off now' ));
-        expect(logoutSpy).toHaveBeenCalled();
+        expect(signOutFromEntra).toHaveBeenCalled();
     });
 
     it('should logout after 30 minutes of idle', () => {
-        const logoutSpy = vi.spyOn(NextCasClient, 'logout');
-
         testUser.roles.push(Role.UH);
         render(<TimeoutModal currentUser={testUser} />);
 
         act(() => vi.advanceTimersByTime(1000 * 60 * 30 + 1));
         fireEvent.focus(document);
 
-        expect(logoutSpy).toHaveBeenCalled();
+        expect(signOutFromEntra).toHaveBeenCalled();
     });
 });

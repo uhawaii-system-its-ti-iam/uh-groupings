@@ -5,12 +5,11 @@ import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } fr
 import { usePathname, useSearchParams, redirect } from 'next/navigation';
 import { GroupingDescription } from '@/lib/types';
 import GroupingHeader from '@/app/groupings/[groupingPath]/_components/grouping-header';
-import { getCurrentUser } from 'next-cas-client/app';
+import { getAuthorizedUser } from '@/lib/access/user.server';
 
 vi.mock('next/navigation');
 vi.mock('@/lib/fetchers');
 vi.mock('@/app/groupings/[groupingPath]/_components/grouping-header');
-vi.mock('next-cas-client/app');
 
 const mockData: GroupingDescription = {
     groupPath: 'Test-path:Test-name',
@@ -20,7 +19,8 @@ const mockData: GroupingDescription = {
 
 beforeEach(() => {
     vi.clearAllMocks();
-    (getCurrentUser as Mock).mockResolvedValue({ uid: 'test-user' });
+    vi.mock('@/lib/access/user.server', () => ({ getAuthorizedUser: vi.fn() }));
+    vi.mocked(getAuthorizedUser).mockResolvedValue({ uid: 'test-user', roles: [] } as never);
     (isAdmin as Mock).mockResolvedValue(false);
     (isGroupingOwner as Mock).mockResolvedValue(true);
     (groupingDescription as Mock).mockResolvedValue(mockData);

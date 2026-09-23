@@ -4,13 +4,12 @@ import { faKey, faIdCard, faWrench, faUser } from '@fortawesome/free-solid-svg-i
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getNumberOfGroupings, getNumberOfMemberships } from '@/lib/fetchers';
-import { getUser } from '@/lib/access/user';
+import type User from '@/lib/access/user';
 
-const AfterLogin = async () => {
-    const [currentUser, numberOfGroupings, numberOfMemberships] = await Promise.all([
-        getUser(),
-        getNumberOfGroupings(),
-        getNumberOfMemberships()
+const AfterLogin = async ({ currentUser }: { currentUser: User }) => {
+    const [numberOfGroupings, numberOfMemberships] = await Promise.all([
+        getNumberOfGroupings(currentUser),
+        getNumberOfMemberships(currentUser)
     ]);
 
     const getHighestRole = () => {

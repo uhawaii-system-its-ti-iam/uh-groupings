@@ -29,6 +29,9 @@ export type GroupingPath = {
 export type GroupingPaths = {
     resultCode: string;
     groupingPaths: GroupingPath[];
+    page?: number;
+    pageSize?: number;
+    totalCount?: number;
 };
 
 export type Membership = {

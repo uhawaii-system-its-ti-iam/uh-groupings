@@ -27,13 +27,24 @@ const GroupingMembersTab = async ({
     const searchString = searchParams.search;
 
     const groupPath = group ? groupingPath + ':' + group : groupingPath;
-    const groupingGroupMembers = await getGroupingMembers(groupPath, {
+    const groupingGroupMembersResult = await getGroupingMembers(groupPath, {
         page,
         size,
         sortBy,
         isAscending,
         searchString
     });
+
+    if (!Array.isArray(groupingGroupMembersResult.members)) {
+        throw new Error('The grouping members response was invalid.');
+    }
+
+    const groupingGroupMembers = {
+        resultCode: groupingGroupMembersResult.resultCode,
+        groupPath: groupingGroupMembersResult.groupPath,
+        size: groupingGroupMembersResult.size,
+        members: groupingGroupMembersResult.members.map((member) => ({ ...member }))
+    };
 
     return (
         <GroupingMembersTable groupingGroupMembers={groupingGroupMembers} groupingPath={groupingPath} group={group} />

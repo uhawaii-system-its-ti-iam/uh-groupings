@@ -4,10 +4,10 @@ import AfterLogin from '@/app/(home)/_components/after-login';
 import Role from '@/lib/access/role';
 import LoginButton from '@/app/(home)/_components/login-button';
 import Announcements from '@/app/(home)/_components/announcements';
-import { getUser } from '@/lib/access/user';
+import { getAuthorizedUser } from '@/lib/access/user.server';
 
 const Home = async () => {
-    const currentUser = await getUser();
+    const currentUser = await getAuthorizedUser();
 
     return (
         <main>
@@ -42,7 +42,7 @@ const Home = async () => {
                 </div>
             </div>
 
-            {currentUser.roles.includes(Role.UH) ? <AfterLogin /> : <BeforeLogin />}
+            {currentUser.roles.includes(Role.UH) ? <AfterLogin currentUser={currentUser} /> : <BeforeLogin />}
         </main>
     );
 };

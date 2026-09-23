@@ -4,13 +4,14 @@ import GroupingHeader from './_components/grouping-header';
 import ReturnButtons from './_components/return-buttons';
 import SideNav from './_components/side-nav';
 import { redirect } from 'next/navigation';
-import { groupingDescription, groupingPathIsValid, isAdmin, isGroupingOwner } from '@/lib/fetchers';
-import { getCurrentUser } from 'next-cas-client/app';
+import { groupingDescription, groupingPathIsValid, isGroupingOwner } from '@/lib/fetchers';
+import Role from '@/lib/access/role';
+import { getAuthorizedUser } from '@/lib/access/user.server';
 
 const GroupingPathLayout = async ({
-    params,
-    tab
-}: {
+                                      params,
+                                      tab
+                                  }: {
     params: Promise<{ groupingPath: string }>;
     tab: React.ReactNode;
 }) => {
@@ -20,10 +21,9 @@ const GroupingPathLayout = async ({
     const groupName = groupPath.split(':').pop() as string;
     const fromManageSubject = groupPath.includes('manage-person');
 
-    if (!(await groupingPathIsValid(groupPath))) redirect('/');
-
-    const currentUser = await getCurrentUser();
-    if (!(await isAdmin(currentUser.uid)) && !(await isGroupingOwner(groupPath, currentUser.uid))) redirect('/');
+    const [pathIsValid, currentUser] = await Promise.all([groupingPathIsValid(groupPath), getAuthorizedUser()]);
+    if (!pathIsValid) redirect('/');
+    if (!currentUser.roles.includes(Role.ADMIN) && !(await isGroupingOwner(groupPath, currentUser.uid))) redirect('/');
 
     return (
         <Providers>

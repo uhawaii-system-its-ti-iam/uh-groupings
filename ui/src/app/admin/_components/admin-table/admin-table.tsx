@@ -74,7 +74,7 @@ const AdminTable = ({ groupingGroupMembers }: { groupingGroupMembers: GroupingGr
     const table = useReactTable<GroupingGroupMember>({
         data,
         columns,
-        getRowId: (row) => row.uid,
+        getRowId: (row, index) => `${row.uid || row.uhUuid || row.name || 'admin'}-${index}`,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getFilteredRowModel: getFilteredRowModel(),

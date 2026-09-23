@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import GroupingsTable from '@/components/table/groupings-table/groupings-table';
 
 const pageSize = parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE as string);
@@ -234,5 +234,37 @@ describe('GroupingsTable', () => {
         } finally {
             Object.defineProperty(window, 'innerWidth', { configurable: true, value: previousInnerWidth });
         }
+    });
+
+    it('sends the server filter when loading the first search page', async () => {
+        vi.useFakeTimers();
+        const fetchMock = vi
+            .spyOn(global, 'fetch')
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ groupingPaths: [], page: 1, pageSize: 25, totalCount: 50 })
+            } as Response)
+            .mockResolvedValueOnce({
+                ok: true,
+                json: async () => ({ groupingPaths: [], page: 2, pageSize: 25, totalCount: 50 })
+            } as Response);
+
+        render(
+            <GroupingsTable
+                fromAdmin
+                groupingPaths={[mockGroupingPaths[0]]}
+                serverPage={{ page: 1, pageSize: 25, totalCount: 50 }}
+            />
+        );
+
+        fireEvent.change(screen.getByPlaceholderText('Filter Groupings...'), { target: { value: 'finance & hr' } });
+        await act(async () => vi.advanceTimersByTimeAsync(250));
+
+        expect(fetchMock).toHaveBeenCalledWith('/uhgroupings/api/groupings?page=1&size=25&search=finance+%26+hr');
+        fireEvent.click(screen.getByText('Next'));
+        await act(async () => await Promise.resolve());
+        expect(fetchMock).toHaveBeenCalledWith('/uhgroupings/api/groupings?page=2&size=25&search=finance+%26+hr');
+        vi.useRealTimers();
+        vi.restoreAllMocks();
     });
 });

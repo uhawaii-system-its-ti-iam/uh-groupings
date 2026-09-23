@@ -3,11 +3,13 @@ import Role from '@/lib/access/role';
 import { render, screen } from '@testing-library/react';
 import User from '@/lib/access/user';
 import * as Fetchers from '@/lib/fetchers';
-import * as NextCasClient from 'next-cas-client/app';
 import afterLogin from '@/app/(home)/_components/after-login';
+import { getAuthorizedUser } from '@/lib/access/user.server';
+import { setRoles } from '@/lib/access/authorization';
 
 vi.mock('@/lib/fetchers');
-vi.mock('next-cas-client/app');
+vi.mock('@/lib/access/user.server', () => ({ getAuthorizedUser: vi.fn() }));
+vi.mock('@/lib/access/authorization', () => ({ setRoles: vi.fn() }));
 
 const testUser: User = JSON.parse(process.env.TEST_USER_A as string);
 
@@ -103,29 +105,30 @@ describe('AfterLogin', () => {
     beforeEach(() => {
         vi.spyOn(Fetchers, 'getNumberOfGroupings').mockResolvedValue(numberOfGroupings);
         vi.spyOn(Fetchers, 'getNumberOfMemberships').mockResolvedValue(numberOfMemberships);
+        vi.mocked(setRoles).mockImplementation(async (user) => user);
     });
 
-    it('Should render correctly when logged in as an admin', async () => {
-        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(admin);
-        render(await afterLogin());
+    it('renders Better Auth session user content when the user is an admin', async () => {
+        vi.mocked(getAuthorizedUser).mockResolvedValue(admin);
+        render(await afterLogin({ currentUser: admin }));
         expectWelcome(admin, 'Admin');
         expectAdministration(true);
         expectMemberships();
         expectGroupings(true, false);
     });
 
-    it('Should render correctly when logged in as Owner', async () => {
-        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(owner);
-        render(await afterLogin());
+    it('renders Better Auth session user content when the user is an owner', async () => {
+        vi.mocked(getAuthorizedUser).mockResolvedValue(owner);
+        render(await afterLogin({ currentUser: owner }));
         expectWelcome(owner, 'Owner');
         expectAdministration(false);
         expectMemberships();
         expectGroupings(false, true);
     });
 
-    it('Should render correctly when logged in as a user with a UH account', async () => {
-        vi.spyOn(NextCasClient, 'getCurrentUser').mockResolvedValue(uhUser);
-        render(await afterLogin());
+    it('renders Better Auth session user content when the user has a UH account', async () => {
+        vi.mocked(getAuthorizedUser).mockResolvedValue(uhUser);
+        render(await afterLogin({ currentUser: uhUser }));
         expectWelcome(uhUser, 'Member');
         expectAdministration(false);
         expectMemberships();
