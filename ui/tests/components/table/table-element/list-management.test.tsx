@@ -151,27 +151,6 @@ describe('ListManagement Component', () => {
         const mockOnOpenManageMemberModal = vi.fn();
         const mockOnOpenManageMembersModal = vi.fn();
 
-        const setup = async (inputValue: string) => {
-            const user = userEvent.setup();
-            render(
-                <ListManagement
-                    list="include"
-                    groupingPath="/mock/path"
-                    onOpenManageMemberModal={mockOnOpenManageMemberModal}
-                    onOpenManageMembersModal={mockOnOpenManageMembersModal}
-                    checkedMembers={[]}
-                    isPerformingRemoval={false}
-                />
-            );
-
-            const inputBox = screen.getByPlaceholderText(/UH Username or UH Number/i);
-            if (inputValue) {
-                await user.type(inputBox, inputValue);
-            }
-
-            return { user, inputBox };
-        };
-
         // Non-alphanumeric input should show error
         it('should reject input of non alphanumeric and throw special characters error', async () => {
             const user = userEvent.setup();

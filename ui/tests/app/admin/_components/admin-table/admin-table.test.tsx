@@ -35,7 +35,7 @@ vi.mock('@/components/modal/dynamic-modal', () => ({
 }));
 
 vi.mock('@/components/modal/remove-member-modal', () => ({
-    default: ({ isOpen, memberToRemove, group, groupingPath, onClose, onSuccess, onProcessing }: any) =>
+    default: ({ isOpen, memberToRemove, group, onClose, onSuccess, onProcessing }: any) =>
         isOpen ? (
             <div data-testid="remove-member-modal">
                 <div>Remove Member</div>

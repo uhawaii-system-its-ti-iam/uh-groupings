@@ -24,17 +24,6 @@ import {
 
 vi.mock('@/lib/actions');
 
-beforeAll(() => {
-    if (typeof global.ResizeObserver === 'undefined') {
-        class ResizeObserver {
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-        }
-        global.ResizeObserver = ResizeObserver;
-    }
-});
-
 describe('Actions Component', () => {
     const shortGroupingPath = 'test%3Apath%3AgroupName';
     const longGroupingPath = 'test:' + 'a'.repeat(751) + ':groupNameLong';
@@ -267,7 +256,7 @@ describe('Actions Component', () => {
         await waitFor(() => expect(includeCheckbox).toBeChecked());
         const resetBtn = screen.getByRole('button', { name: /reset selected/i });
         await user.click(resetBtn);
-        const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
+        await screen.findByRole('alertdialog', { name: /reset grouping/i });
         const yesButton = screen.getByText('Yes');
         await user.click(yesButton);
         await waitFor(() => {
@@ -305,7 +294,7 @@ describe('Actions Component', () => {
         });
         const resetBtn = screen.getByRole('button', { name: /reset selected/i });
         await user.click(resetBtn);
-        const modal = await screen.findByRole('alertdialog', { name: /reset grouping/i });
+        await screen.findByRole('alertdialog', { name: /reset grouping/i });
         const yesButton = screen.getByText('Yes');
         await user.click(yesButton);
         await waitFor(() => {
