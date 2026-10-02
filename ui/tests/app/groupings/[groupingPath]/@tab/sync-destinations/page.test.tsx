@@ -3,17 +3,6 @@ import { describe, it, expect, vi, beforeAll } from 'vitest';
 import SyncDestinationsTab from '@/app/groupings/[groupingPath]/@tab/sync-destinations/page';
 import { groupingSyncDest } from '@/lib/fetchers';
 
-beforeAll(() => {
-    if (typeof global.ResizeObserver === 'undefined') {
-        class ResizeObserver {
-            observe() {}
-            unobserve() {}
-            disconnect() {}
-        }
-        global.ResizeObserver = ResizeObserver;
-    }
-});
-
 vi.mock('@/lib/fetchers', () => ({
     groupingSyncDest: vi.fn(),
 }));

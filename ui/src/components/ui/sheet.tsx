@@ -9,8 +9,6 @@ import { cn } from '@/lib/utils';
 
 const Sheet = SheetPrimitive.Root;
 
-const SheetClose = SheetPrimitive.Close;
-
 const SheetPortal = SheetPrimitive.Portal;
 
 interface SheetTriggerProps extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Trigger> {
@@ -141,7 +139,6 @@ export {
     SheetPortal,
     SheetOverlay,
     SheetTrigger,
-    SheetClose,
     SheetContent,
     SheetHeader,
     SheetFooter,
