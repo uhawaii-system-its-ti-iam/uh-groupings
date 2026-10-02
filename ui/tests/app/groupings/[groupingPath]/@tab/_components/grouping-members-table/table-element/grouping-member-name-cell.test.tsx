@@ -19,4 +19,12 @@ describe('GroupingMemberNameCell', () => {
         rerender(<GroupingMemberNameCell name={name} uid={'dept123'} uhUuid={'dept123'} />);
         expect(screen.getByLabelText('Departmental Account Icon')).toBeInTheDocument();
     });
+
+    it('should not render the departmental account icon for a personal account or missing UH UUID', () => {
+        const { rerender } = render(<GroupingMemberNameCell name={name} uid="testiwta" uhUuid="99997010" />);
+        expect(screen.queryByLabelText('Departmental Account Icon')).not.toBeInTheDocument();
+
+        rerender(<GroupingMemberNameCell name={name} uid="testiwta" uhUuid="" />);
+        expect(screen.queryByLabelText('Departmental Account Icon')).not.toBeInTheDocument();
+    });
 });

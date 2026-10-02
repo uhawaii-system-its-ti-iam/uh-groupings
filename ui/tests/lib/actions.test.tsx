@@ -820,12 +820,12 @@ describe('actions', () => {
         const sortBy = SortBy.NAME;
         const isAscending = true;
 
-        it('should make a POST request at the correct endpoint', async () => {
+        it('should make a GET request at the correct endpoint', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
             await getGroupingMembers(groupingPath, { sortBy, isAscending, page, size });
             expect(fetch).toHaveBeenCalledWith(
                 `${baseUrl}/groupings/${groupingPath}?` +
-                    `page=${page}&size=${size}&sortBy=${sortBy}&isAscending=${isAscending}`,
+                    `pageNumber=${page}&pageSize=${size}&sortBy=${sortBy}&isAscending=${isAscending}`,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken}`
