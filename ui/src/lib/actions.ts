@@ -455,8 +455,8 @@ export const getGroupingMembers = async (
         searchString
     });
     const endpoint = `${baseUrl}/groupings/${groupingPath}?${new URLSearchParams({
-        ...(page && { page: page.toString() }),
-        ...(size && { size: size.toString() }),
+        ...(page && { pageNumber: page.toString() }),
+        ...(size && { pageSize: size.toString() }),
         sortBy,
         isAscending: isAscending.toString(),
         ...(searchString && { searchString })
