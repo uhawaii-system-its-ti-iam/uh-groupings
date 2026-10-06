@@ -73,7 +73,7 @@
         "autoprefixer": "^10.0.1",
         "eslint": "^8",
         "eslint-config-next": "^15.5.24",
-        "eslint-config-prettier": "^9.1.0",
+        "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-testing-library": "^6.2.0",
         "eslint-plugin-tsdoc": "^0.5.2",
         "jsdom": "^25.0.1",
