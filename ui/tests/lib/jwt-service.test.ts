@@ -59,11 +59,12 @@ describe('jwt-service', () => {
             expect(decoded.roles).toEqual(testUser.roles);
         });
 
-        it('prefixes each supplied role in the JWT payload', async () => {
+        it('emits the supplied roles without the ROLE_ prefix', async () => {
             const token = await generateJWT({ ...testUser, roles: [Role.ADMIN, Role.OWNER] });
             const decoded = jwt.decode(token) as jwt.JwtPayload;
 
-            expect(decoded.roles).toEqual(['ROLE_ADMIN', 'ROLE_OWNER']);
+            // The API applies the ROLE_ authority prefix; the UI must send plain role names.
+            expect(decoded.roles).toEqual(['ADMIN', 'OWNER']);
         });
 
         it('should set expiration time based on JWT_EXPIRATION_SECONDS', async () => {
