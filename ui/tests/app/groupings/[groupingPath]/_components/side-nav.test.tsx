@@ -41,8 +41,9 @@ describe('SideNav Component', () => {
         });
     });
 
-    it('preserves the Admin source when switching grouping tabs', () => {
-        (useSearchParams as Mock).mockReturnValue(new URLSearchParams('from=admin'));
+    it.each(['from=admin', 'from=groupings&from=admin', 'from=admin&from=groupings'])(
+        'preserves the Admin source when switching grouping tabs for %s', (query) => {
+        (useSearchParams as Mock).mockReturnValue(new URLSearchParams(query));
         render(<SideNav groupingPath={groupingPath} />);
 
         screen.getAllByRole('link').forEach((link) => {
