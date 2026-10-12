@@ -1,14 +1,15 @@
+import { isAdminContext } from '@/lib/grouping-context';
 import type { Metadata } from 'next';
 
 type GroupingMetadataProps = {
-    searchParams?: {
+    searchParams: Promise<{
         from?: string | string[];
-    };
+    }>;
 };
 
-export const generateGroupingMetadata = ({ searchParams }: GroupingMetadataProps): Metadata => {
-    const from = searchParams?.from;
-    const isAdmin = from === 'admin' || (Array.isArray(from) && from.includes('admin'));
+export const generateGroupingMetadata = async ({ searchParams }: GroupingMetadataProps): Promise<Metadata> => {
+    const { from } = await searchParams;
+    const isAdmin = isAdminContext(from);
     return {
         title: {
             absolute: isAdmin ? 'UH Groupings Admin' : 'UH Groupings Owners'
