@@ -65,7 +65,7 @@
         "@types/react": "^18",
         "@types/react-dom": "^18",
         "@types/uniqid": "^5.3.4",
-        "@typescript-eslint/eslint-plugin": "^8.69.0",
+        "@typescript-eslint/eslint-plugin": "^8.71.1",
         "@typescript-eslint/parser": "^8.69.0",
         "@vitejs/plugin-react": "^4.3.4",
         "@vitest/coverage-istanbul": "^4.1.11",
