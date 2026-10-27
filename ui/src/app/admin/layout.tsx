@@ -1,4 +1,5 @@
 import Heading from '@/components/layout/heading';
+import { sectionHeadings } from '@/components/layout/section-headings';
 import React from 'react';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
@@ -16,11 +17,7 @@ const AdminLayout = async ({ tab, modals }: { tab: React.ReactNode; modals: Reac
     return (
         <>
             <main>
-                <Heading
-                    title="UH Groupings Administration"
-                    description="Search for and manage any grouping on behalf of its
-                        owner. Manage the list of UH Groupings administrators."
-                />
+                <Heading {...sectionHeadings.admin} />
                 {tab}
             </main>
             <div id="modals">{modals}</div>

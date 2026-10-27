@@ -1,4 +1,5 @@
-import Heading from '@/components/layout/heading';
+import GroupingsHeading from '@/components/layout/groupings-heading';
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import Role from '@/lib/access/role';
@@ -14,11 +15,9 @@ const GroupingsLayout = async ({ children }: { children: React.ReactNode }) => {
 
     return (
         <>
-            <Heading
-                title="Manage My Groupings"
-                description="View and manage groupings I own. Manage members, 
-                        configure grouping options and sync destinations."
-            />
+            <Suspense fallback={null}>
+                <GroupingsHeading />
+            </Suspense>
             {children}
         </>
     );

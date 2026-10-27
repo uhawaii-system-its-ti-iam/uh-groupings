@@ -8,7 +8,11 @@ import { redirect } from 'next/navigation';
 
 vi.mock('@/lib/access/user.server', () => ({ getAuthorizedUser: vi.fn() }));
 vi.mock('@/lib/access/authorization', () => ({ setRoles: vi.fn() }));
-vi.mock('next/navigation', () => ({ redirect: vi.fn() }));
+vi.mock('next/navigation', () => ({
+    redirect: vi.fn(),
+    usePathname: () => '/groupings',
+    useSearchParams: () => new URLSearchParams()
+}));
 
 describe('GroupingsLayout', () => {
     beforeEach(() => vi.clearAllMocks());
