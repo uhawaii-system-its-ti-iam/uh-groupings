@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Git
         run: |
@@ -37,23 +37,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: ui/.nvmrc
           cache: npm
           cache-dependency-path: ui/package-lock.json
 
-      # Node 20.19.0 ships npm 10.8.2, which does not support min-release-age.
       # Pin npm 11.10.0 so ui/.npmrc (ignore-scripts, min-release-age) applies in CI.
-      # Keep ui/.nvmrc on Node >= 20; npm 11 is unsupported on older majors.
       - name: Verify Node supports npm 11
         run: |
-          node -e "const major = Number(process.versions.node.split('.')[0]); if (major < 20) { console.error('ui/.nvmrc must pin Node >= 20 for npm 11'); process.exit(1); }"
+          node -e "const major = Number(process.versions.node.split('.')[0]); if (major < 24) { console.error('ui/.nvmrc must pin Node >= 24'); process.exit(1); }"
 
       - name: Install npm
         run: npm install -g npm@11.10.0
@@ -75,7 +73,7 @@ jobs:
           git switch badges
 
       - name: Generating coverage badges
-        uses: jpb06/coverage-badges-action@0a7ed097d01918e7a7618152eff8bb62f133322f # v1.4.9
+        uses: jpb06/coverage-badges-action@6bebba3f008cb03c2be0ff9b148c663df30cde4b # v1.4.11
         with:
           branches: "*"
           coverage-summary-path: ui/coverage/coverage-summary.json
