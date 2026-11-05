@@ -1,4 +1,5 @@
 import Heading from '@/components/layout/heading';
+import { sectionHeadings } from '@/components/layout/section-headings';
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import Role from '@/lib/access/role';
@@ -14,10 +15,7 @@ const MembershipsLayout = async ({ tab }: { tab: React.ReactNode }) => {
 
     return (
         <main>
-            <Heading
-                title="Manage My Memberships"
-                description="View and manage my memberships. Search for new groupings to join as a member."
-            />
+            <Heading {...sectionHeadings.memberships} />
             {tab}
         </main>
     );
