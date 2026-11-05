@@ -7,7 +7,9 @@ const GeneralInfoSection = () => {
             answer: (
                 <a
                     className="text-link-color hover:underline hover:text-link-hover-color"
-                    href="https://uhawaii.atlassian.net/wiki/spaces/UHIAM/pages/13402308/UH+Groupings+Request+Form"
+                    href="https://hawaii.kualibuild.com/app/builder/#/app/6167985b528f872228ee1d4c/run"
+                    target={'_blank'}
+                    rel="noopener noreferrer"
                     aria-label="A request form is available"
                 >
                     A request form is available.
