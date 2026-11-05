@@ -5,6 +5,9 @@ import createFetchMock from 'vitest-fetch-mock';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { withNuqsTestingAdapter, type OnUrlUpdateFunction } from 'nuqs/adapters/testing';
 
+const jsdomWindow = (globalThis as typeof globalThis & { jsdom: { window: Window } }).jsdom.window;
+vi.stubGlobal('localStorage', jsdomWindow.localStorage);
+
 vi.mock('react', async (importOriginal) => {
     const react = await importOriginal<typeof import('react')>();
     return {
