@@ -10,6 +10,7 @@ type ImageItem = {
 
 type ImageItemProps = {
     data: ImageItem[];
+    size?: 'default' | 'lg';
 };
 
 const ImageItem = ({ data, size = 'default' }: ImageItemProps) => {

@@ -1,3 +1,5 @@
+import 'server-only';
+import { isDepartmental } from './account-utils';
 import { isOwner, isAdmin } from '../fetchers';
 import Role from './role';
 import User from './user';
@@ -46,16 +48,4 @@ export const setRoles = async (user: User): Promise<User> => {
 const isValidUhUuid = (uhUuid: string): boolean => {
     const uhUuidPattern = new RegExp(/^[0-9]{8}$/);
     return uhUuidPattern.test(uhUuid);
-};
-
-/**
- * Checks if user is a Departmental account.
- *
- * @param uid - The username
- * @param uhUuid - 8 digit unique user indentifier
- *
- * @returns True if user is a departmental account
- */
-export const isDepartmental = (uid: string, uhUuid: string): boolean => {
-    return uid === uhUuid || !uhUuid;
 };

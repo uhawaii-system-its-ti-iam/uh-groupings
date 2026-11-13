@@ -15,7 +15,15 @@ const mockResults: MembershipResults = {
     results: Array.from({ length: 10 }, (_, i) => ({
         path: `tmp:example:example-${i}`,
         name: `example-${i}`,
-        description: `Test Description ${i}`
+        description: `Test Description ${i}`,
+        inBasis: true,
+        inInclude: false,
+        inExclude: false,
+        inOwner: false,
+        inBasisAndInclude: true,
+        optOutEnabled: false,
+        optInEnabled: false,
+        selfOpted: false
     }))
 };
 

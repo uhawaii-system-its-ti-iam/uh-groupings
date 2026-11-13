@@ -171,7 +171,7 @@ describe('fetchers', () => {
 
     describe('membershipResults', () => {
         it('should make a GET request at the correct endpoint', async () => {
-            await membershipResults();
+            await membershipResults(currentUser);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/memberships`, {
                 headers: { Authorization: `Bearer ${authToken}` }
             });
@@ -179,12 +179,12 @@ describe('fetchers', () => {
 
         it('should handle the successful response', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
-            expect(await membershipResults()).toEqual(mockResponse);
+            expect(await membershipResults(currentUser)).toEqual(mockResponse);
         });
 
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
-            expect(await membershipResults()).toEqual(mockError);
+            expect(await membershipResults(currentUser)).toEqual(mockError);
         });
     });
 
@@ -333,7 +333,7 @@ describe('fetchers', () => {
 
     describe('isOwner', () => {
         it('should make a GET request at the correct endpoint', async () => {
-            await isOwner(uhIdentifier);
+            await isOwner(uhIdentifier, currentUser);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/is-owner`, {
                 headers: { Authorization: `Bearer ${authToken}` }
             });
@@ -341,12 +341,12 @@ describe('fetchers', () => {
 
         it('should handle the successful response', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
-            expect(await isOwner(uhIdentifier)).toEqual(mockResponse);
+            expect(await isOwner(uhIdentifier, currentUser)).toEqual(mockResponse);
         });
 
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
-            expect(await isOwner(uhIdentifier)).toEqual(mockError);
+            expect(await isOwner(uhIdentifier, currentUser)).toEqual(mockError);
         });
     });
 
@@ -371,7 +371,7 @@ describe('fetchers', () => {
 
     describe('isAdmin', () => {
         it('should make a GET request at the correct endpoint', async () => {
-            await isAdmin(uhIdentifier);
+            await isAdmin(uhIdentifier, currentUser);
             expect(fetch).toHaveBeenCalledWith(`${baseUrl}/members/${uhIdentifier}/is-admin`, {
                 headers: { Authorization: `Bearer ${authToken}` }
             });
@@ -379,12 +379,12 @@ describe('fetchers', () => {
 
         it('should handle the successful response', async () => {
             fetchMock.mockResponse(JSON.stringify(mockResponse));
-            expect(await isAdmin(uhIdentifier)).toEqual(mockResponse);
+            expect(await isAdmin(uhIdentifier, currentUser)).toEqual(mockResponse);
         });
 
         it('should handle the error response', async () => {
             fetchMock.mockReject(() => Promise.reject(mockError));
-            expect(await isAdmin(uhIdentifier)).toEqual(mockError);
+            expect(await isAdmin(uhIdentifier, currentUser)).toEqual(mockError);
         });
     });
 

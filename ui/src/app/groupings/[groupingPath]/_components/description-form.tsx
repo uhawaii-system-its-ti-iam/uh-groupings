@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faCircleCheck, faTimesCircle } from '@fortawesome/free-regular-svg-icons';
 import { updateDescription } from '@/lib/actions';
 import { Alert } from '@/components/ui/alert';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useReducer } from 'react';
@@ -40,7 +40,7 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
         handleSubmit,
         reset,
         formState: { isSubmitting },
-        watch
+        control
     } = useForm<z.infer<typeof schema>>({
         defaultValues: {
             description: groupDescription
@@ -57,7 +57,7 @@ const DescriptionForm = ({ groupDescription, groupPath }: { groupDescription: st
         router.refresh();
     };
 
-    const currentDescription = watch('description', state.description);
+    const currentDescription = useWatch({ control, name: 'description', defaultValue: state.description });
 
     const closeForm = () => {
         reset({ description: state.description });

@@ -7,7 +7,7 @@ describe('authentication navigation', () => {
             .toBe('/uhgroupings/admin?tab=users');
     });
 
-    it('uses the current in-app URL when middleware did not supply a destination', () => {
+    it('uses the current in-app URL when proxy did not supply a destination', () => {
         expect(getLoginCallbackURL('http://localhost:8080/uhgroupings/groupings?tab=members'))
             .toBe('/uhgroupings/groupings?tab=members');
     });

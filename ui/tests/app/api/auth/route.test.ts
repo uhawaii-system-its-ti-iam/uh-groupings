@@ -4,8 +4,8 @@ import { GET, POST } from '@/app/api/auth/[...all]/route';
 
 const { handlers } = vi.hoisted(() => ({
     handlers: {
-        GET: vi.fn(() => NextResponse.json({ method: 'GET' })),
-        POST: vi.fn(() => NextResponse.json({ method: 'POST' })),
+        GET: vi.fn<(request: NextRequest) => Response>(() => NextResponse.json({ method: 'GET' })),
+        POST: vi.fn<(request: NextRequest) => Response>(() => NextResponse.json({ method: 'POST' })),
     },
 }));
 

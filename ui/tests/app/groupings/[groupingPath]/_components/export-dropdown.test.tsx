@@ -59,7 +59,9 @@ describe('ExportDropdown', () => {
 
         await waitFor(() => {
             expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath', {
-                sortString: 'name',
+                page: 1,
+                size: 1000,
+                sortBy: 'name',
                 isAscending: true
             });
         });
@@ -89,7 +91,9 @@ describe('ExportDropdown', () => {
 
         await waitFor(() => {
             expect(getGroupingMembers).toHaveBeenCalledWith('test-groupPath:basis', {
-                sortString: 'name',
+                page: 1,
+                size: 1000,
+                sortBy: 'name',
                 isAscending: true
             });
         });
@@ -102,5 +106,29 @@ describe('ExportDropdown', () => {
 
         expect(createObjectURLSpy).toHaveBeenCalledWith(expect.any(Blob));
         expect(global.URL.revokeObjectURL).toHaveBeenCalled();
+    });
+
+    it('exports members from subsequent pages when the first page is full', async () => {
+        const member = { resultCode: 'SUCCESS', lastName: 'Owner', firstName: 'Test', uid: 'owner', uhUuid: '12345678', name: 'Test Owner' };
+        vi.mocked(getGroupingMembers)
+            .mockResolvedValueOnce({ resultCode: 'SUCCESS', groupPath, size: 1000, members: Array(1000).fill(member) })
+            .mockResolvedValueOnce({ resultCode: 'SUCCESS', groupPath, size: 1, members: [member] });
+        render(<ExportDropdown groupingPath={groupPath} />);
+        const user = userEvent.setup();
+        await user.click(screen.getByRole('button', { name: /Export Grouping/ }));
+        await user.click(screen.getByText('Export All Members'));
+
+        await waitFor(() => expect(global.URL.revokeObjectURL).toHaveBeenCalled());
+        expect(getGroupingMembers).toHaveBeenCalledTimes(2);
+        expect(getGroupingMembers).toHaveBeenNthCalledWith(2, groupPath, {
+            page: 2, size: 1000, sortBy: 'name', isAscending: true
+        });
+        const csv = vi.mocked(global.URL.createObjectURL).mock.calls[0][0] as Blob;
+        const text = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsText(csv);
+        });
+        expect(text.split('\n')).toHaveLength(1002);
     });
 });

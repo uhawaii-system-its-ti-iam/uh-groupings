@@ -165,7 +165,7 @@ describe('PersonTable', () => {
 
     it('renders alert when no user data is found', async () => {
         render(<PersonTable
-                membershipResults={[] as MembershipResults}
+                membershipResults={{ resultCode: 'FAILURE', results: [] }}
                 memberResult={undefined}
                 uhIdentifier={admin.uid}
                 showWarning={true}
@@ -206,6 +206,17 @@ describe('PersonTable', () => {
     });
 
     it('renders the owners modal when the crown icon is clicked on', async () => {
+        vi.mocked(Actions.groupingOwners).mockResolvedValueOnce({
+            resultCode: 'SUCCESS',
+            groupPath: mockResults[0].path,
+            size: 1,
+            members: [{
+                resultCode: 'SUCCESS',
+                uid: 'group-owner',
+                uhUuid: '12345678',
+                name: 'Grouping Owner'
+            }]
+        });
         render(<PersonTable
                 membershipResults={mockMembershipResults}
                 memberResult={admin}
@@ -225,6 +236,8 @@ describe('PersonTable', () => {
         expect(screen.getByText('Username')).toBeInTheDocument();
         expect(screen.getByText('UH Number')).toBeInTheDocument();
         expect(screen.getByText('Name')).toBeInTheDocument();
+        expect(screen.getByText('Grouping Owner')).toBeInTheDocument();
+        expect(screen.getByText('group-owner')).toBeInTheDocument();
 
         const closeButton = screen.getAllByRole('button', { name: 'Close' })[0];
         await userEvent.click(closeButton);
@@ -283,8 +296,8 @@ describe('PersonTable', () => {
 
         const removeAllCheckbox = screen.getAllByRole('checkbox', { name: 'Check All Remove' })[0];
         await userEvent.click(removeAllCheckbox);
-        expect(removeAllCheckbox.disabled).toBe(false);
-        expect(removeAllCheckbox.checked).toBe(true);
+        expect(removeAllCheckbox).toBeEnabled();
+        expect(removeAllCheckbox).toBeChecked();
 
         const firstPageGroupings = mockResults.slice(0, pageSize);
         firstPageGroupings.forEach((group, i) => {
@@ -318,7 +331,7 @@ describe('PersonTable', () => {
 
         const removeModal = await screen.findByRole('alertdialog');
         expect(removeModal).toBeInTheDocument();
-        const confirmButton = screen.queryByTestId('yes-button');
+        const confirmButton = screen.getByTestId('yes-button');
         await userEvent.click(confirmButton);
         await waitFor(() => {
             expect(removeFromGroups).not.toHaveBeenCalled();
@@ -345,11 +358,11 @@ describe('PersonTable', () => {
         expect(modal).toBeInTheDocument();
         const modalTitle = screen.getByText('Remove Member From Groups');
         expect(modalTitle).toBeInTheDocument();
-        const confirmButton = screen.queryByTestId('yes-button');
+        const confirmButton = screen.getByTestId('yes-button');
         await userEvent.click(confirmButton);
 
         expect(removeFromGroups).toHaveBeenCalled();
-        const [[uid, groups]] = (removeFromGroups as unknown as vi.Mock).mock.calls;
+        const [[uid, groups]] = vi.mocked(removeFromGroups).mock.calls;
         expect(uid).toBe(admin.uid);
         expect(groups).toEqual(['tmp:example:example-0:owners', 'tmp:example:example-0:include', 'tmp:example:example-0:exclude']);
     });
@@ -369,6 +382,6 @@ describe('PersonTable', () => {
         expect(groupingsInfo.length).toBe(0);
         const removeAllCheckbox = screen.getAllByRole('checkbox', { name: 'Check All Remove' })[0];
         expect(removeAllCheckbox).toBeDisabled();
-        expect(removeAllCheckbox.checked).toBe(false);
+        expect(removeAllCheckbox).not.toBeChecked();
     });
 });

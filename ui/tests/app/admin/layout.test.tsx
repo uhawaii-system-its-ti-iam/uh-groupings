@@ -19,7 +19,7 @@ describe('AdminLayout', () => {
         const user = { roles: [Role.ADMIN] };
         vi.mocked(getAuthorizedUser).mockResolvedValue(user as never);
         vi.mocked(setRoles).mockResolvedValue(user as never);
-        render(await AdminLayout({ tab: tabContent, modals: null }), { wrapper: withNuqsTestingAdapter() });
+        render(await AdminLayout({ tab: tabContent }), { wrapper: withNuqsTestingAdapter() });
 
         expect(screen.getByText('UH Groupings Administration')).toBeInTheDocument();
         expect(
@@ -38,12 +38,10 @@ describe('AdminLayout', () => {
         vi.mocked(redirect).mockImplementation(() => { throw redirectError; });
 
         await expect(AdminLayout({
-            tab: <div>Protected Admin Content</div>,
-            modals: <div>Protected Admin Modal</div>
+            tab: <div>Protected Admin Content</div>
         })).rejects.toThrow(redirectError);
 
         expect(redirect).toHaveBeenCalledExactlyOnceWith('/');
         expect(screen.queryByText('Protected Admin Content')).not.toBeInTheDocument();
-        expect(screen.queryByText('Protected Admin Modal')).not.toBeInTheDocument();
     });
 });

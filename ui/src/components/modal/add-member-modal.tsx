@@ -28,7 +28,7 @@ const AddMemberModal = ({
     uid: string;
     name: string;
     uhUuid: string;
-    group: Group;
+    group: Group | 'admins';
     onConfirm: () => void;
     onClose: () => void;
 }) => {

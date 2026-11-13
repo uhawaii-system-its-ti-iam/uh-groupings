@@ -165,6 +165,7 @@ describe('SyncDestinations Component', () => {
             {
                 name: 'no-tip',
                 description: 'NoTooltipDest',
+                tooltip: '',
                 synced: false,
                 hidden: false,
             },

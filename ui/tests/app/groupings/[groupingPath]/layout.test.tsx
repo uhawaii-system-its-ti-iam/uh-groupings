@@ -54,7 +54,7 @@ describe('GroupingPathLayout', () => {
                 groupPath: 'Test-path:Test-name',
                 groupDescription: 'Test Description'
             },
-            {}
+            undefined
         );
     });
 

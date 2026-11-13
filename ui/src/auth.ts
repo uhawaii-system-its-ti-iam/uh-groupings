@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { decodeJwt, SignJWT, importPKCS8 } from 'jose';
 import type { JWTHeaderParameters } from 'jose';
-import type { MicrosoftEntraIDProfile } from '@better-auth/core/social-providers';
+import type { MicrosoftEntraIDProfile } from 'better-auth/social-providers';
 
 // Entra-specific values
 const ENTRA_CLIENT_ID = process.env.ENTRA_CLIENT_ID!;
@@ -47,8 +47,6 @@ async function entraClientAssertion({
     const header: JWTHeaderParameters = {
         alg: 'PS256',
         typ: 'JWT',
-        // This login-only value must not be derived while merely resolving
-        // an existing session during SSR.
         'x5t#S256': ENTRA_CERT_THUMBPRINT
     } as JWTHeaderParameters;
 

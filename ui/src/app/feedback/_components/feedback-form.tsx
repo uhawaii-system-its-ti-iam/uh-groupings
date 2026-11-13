@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { sendFeedback } from '@/lib/actions';
 import User from '@/lib/access/user';
 import { Textarea } from '@/components/ui/textarea';
@@ -35,12 +35,13 @@ const FeedbackForm = ({ currentUser }: { currentUser: User }) => {
         mode: 'onChange',
         defaultValues: {
             type: 'General',
+            name: '',
             email: `${currentUser.uid}@hawaii.edu`,
             message: ''
         }
     });
 
-    const message = form.watch('message', '');
+    const message = useWatch({ control: form.control, name: 'message', defaultValue: '' });
 
     const onSubmit = async (values: z.infer<typeof feedbackFormSchema>) => {
         isShowSuccessAlert(false);

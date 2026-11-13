@@ -12,9 +12,9 @@ vi.mock('react', async (importOriginal) => {
     const react = await importOriginal<typeof import('react')>();
     return {
         ...react,
-        cache: <T extends (...args: never[]) => unknown>(fn: T): T => {
-            let result: ReturnType<T> | undefined;
-            return ((...args: Parameters<T>) => (result ??= fn(...args))) as T;
+        cache: <Args extends unknown[], Result>(fn: (...args: Args) => Result) => {
+            let result: Result | undefined;
+            return (...args: Args): Result => (result ??= fn(...args));
         }
     };
 });
