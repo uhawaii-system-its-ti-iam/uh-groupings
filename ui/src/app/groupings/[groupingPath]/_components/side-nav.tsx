@@ -1,5 +1,6 @@
 'use client';
 
+import { isAdminContext } from '@/lib/grouping-context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faUsers,
@@ -17,7 +18,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 const SideNav = ({ groupingPath }: { groupingPath: string }) => {
     const currentPath = usePathname().split('/').pop();
-    const source = useSearchParams().get('from') === 'admin' ? '?from=admin' : '';
+    const source = isAdminContext(useSearchParams().getAll('from')) ? '?from=admin' : '';
 
     const links = [
         { href: 'all-members', icon: faUsers, label: 'List all members (Basis + Include - Exclude members)' },
