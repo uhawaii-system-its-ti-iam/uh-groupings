@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+ 
 const env = require('@next/env');
 
 env.loadEnvConfig(process.cwd());

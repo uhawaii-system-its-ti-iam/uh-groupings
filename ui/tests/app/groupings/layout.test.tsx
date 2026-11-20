@@ -37,7 +37,7 @@ describe('GroupingPathLayout', () => {
         const params = { groupingPath: 'Test-path:Test-name' };
         render(
             await GroupingPathLayout({
-                params,
+                params: Promise.resolve(params),
                 tab: <div>Tab Content</div>
             })
         );
@@ -56,14 +56,14 @@ describe('GroupingPathLayout', () => {
                 groupPath: 'Test-path:Test-name',
                 groupDescription: 'Test Description'
             },
-            {}
+            undefined
         );
     });
 
     it('renders the tab content', async () => {
         render(
             await GroupingPathLayout({
-                params: { groupingPath: 'Test-path:Test-name' },
+                params: Promise.resolve({ groupingPath: 'Test-path:Test-name' }),
                 tab: <div>Tab Content</div>
             })
         );
@@ -77,7 +77,7 @@ describe('GroupingPathLayout', () => {
         (groupingPathIsValid as Mock).mockResolvedValue(false);
 
         await GroupingPathLayout({
-            params: { groupingPath: 'Invalid:path' },
+            params: Promise.resolve({ groupingPath: 'Invalid:path' }),
             tab: <div>Tab Content</div>
         });
 
@@ -89,7 +89,7 @@ describe('GroupingPathLayout', () => {
         (isGroupingOwner as Mock).mockResolvedValue(false);
 
         await GroupingPathLayout({
-            params: { groupingPath: 'Test-path:Test-name' },
+            params: Promise.resolve({ groupingPath: 'Test-path:Test-name' }),
             tab: <div>Tab Content</div>
         });
 
@@ -100,7 +100,7 @@ describe('GroupingPathLayout', () => {
         (isAdmin as Mock).mockResolvedValue(true);
 
         await GroupingPathLayout({
-            params: { groupingPath: 'Test-path:Test-name' },
+            params: Promise.resolve({ groupingPath: 'Test-path:Test-name' }),
             tab: <div>Tab Content</div>
         });
 

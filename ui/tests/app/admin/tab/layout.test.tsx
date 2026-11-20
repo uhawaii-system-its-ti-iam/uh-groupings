@@ -9,7 +9,7 @@ vi.mock('next/navigation', () => ({
 
 describe('AdminTabsLayout', () => {
     beforeEach(() => {
-        (usePathname as jest.Mock).mockReturnValue('/admin/manage-person');
+        vi.mocked(usePathname).mockReturnValue('/admin/manage-person');
     });
 
     it('renders the correct active tab', () => {

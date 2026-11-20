@@ -6,16 +6,16 @@ const sessionCookieNames = [
 ];
 
 /**
- * Next.js middleware function that is called upon visiting a route that matches the config.
+ * Next.js proxy function that is called upon visiting a route that matches the config.
  *
  * @param req - The request object
  */
-export const middleware = (req: NextRequest) => {
+export const proxy = (req: NextRequest) => {
     const hasSessionCookie = sessionCookieNames.some((name) => req.cookies.has(name));
 
     if (!hasSessionCookie) {
         const loginURL = new URL('/uhgroupings/', req.url);
-        // Next removes basePath before middleware matching, so restore it for
+        // Next removes basePath before proxy matching, so restore it for
         // the browser-visible callback URL.
         const pathname = req.nextUrl.pathname.startsWith('/uhgroupings/')
             ? req.nextUrl.pathname

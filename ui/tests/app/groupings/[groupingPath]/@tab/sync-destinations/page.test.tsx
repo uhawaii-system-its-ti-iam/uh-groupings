@@ -20,6 +20,7 @@ vi.mock('@/app/groupings/[groupingPath]/@tab/_components/sync-destinations', () 
 describe('SyncDestinationsTab (Server Component)', () => {
     it('calls groupingSyncDest and renders SyncDestinations with processed props', async () => {
         const mockData = {
+            resultCode: 'SUCCESS',
             syncDestinations: [
                 {
                     name: 'dest1',
@@ -37,7 +38,7 @@ describe('SyncDestinationsTab (Server Component)', () => {
                 },
             ],
         };
-        (groupingSyncDest as unknown as vi.Mock).mockResolvedValue(mockData);
+        vi.mocked(groupingSyncDest).mockResolvedValue(mockData);
         const result = await SyncDestinationsTab({
             params: Promise.resolve({ groupingPath: 'test:group' })
         });

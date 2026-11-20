@@ -18,7 +18,7 @@ beforeEach(() => {
 });
 
 describe('GroupingsTab', () => {
-    it("gets all groupings instead of only the current user's groupings", async () => {
+    it('gets all groupings instead of only the current user\'s groupings', async () => {
         const { getAuthorizedUser } = await import('@/lib/access/user.server');
         const { setRoles } = await import('@/lib/access/authorization');
         const user = { uid: 'test-user', uhUuid: '12345678', roles: [] };

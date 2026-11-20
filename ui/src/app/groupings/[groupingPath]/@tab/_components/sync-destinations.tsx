@@ -14,17 +14,21 @@ import {
 } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
 import { updateSyncDest } from '@/lib/actions';
+import type { GroupingSyncDestination } from '@/lib/types';
 
-const SyncDestinations = ({ syncDestArray, groupingPath }) => {
+const SyncDestinations = ({ syncDestArray, groupingPath }: {
+    syncDestArray: GroupingSyncDestination[];
+    groupingPath: string;
+}) => {
     const router = useRouter();
     const [modalContent, setModalContent] = useState('');
     const [isDynamicModalOpen, setIsDynamicModalOpen] = useState(false);
     const [isSyncDestModalOpen, setIsSyncDestModalOpen] = useState(false);
     const [modalSyncDestContent, setModalSyncDestContent] = useState('');
-    const [pendingSyncDest, setPendingSyncDest] = useState(null);
+    const [pendingSyncDest, setPendingSyncDest] = useState<GroupingSyncDestination | null>(null);
     const [syncDestList, setSyncDestList] = useState(syncDestArray);
 
-    const openDynamicModal = (syncDestDescription) => {
+    const openDynamicModal = (syncDestDescription: string) => {
         const syncDest = syncDestArray.find(dest => dest.description === syncDestDescription);
         setModalContent(syncDest?.tooltip || '');
         setIsDynamicModalOpen(true);
@@ -32,13 +36,14 @@ const SyncDestinations = ({ syncDestArray, groupingPath }) => {
 
     const closeDynamicModal = () => setIsDynamicModalOpen(false);
 
-    const openSyncDestConfirmModal = (syncDest) => {
+    const openSyncDestConfirmModal = (syncDest: GroupingSyncDestination) => {
         setPendingSyncDest(syncDest);
         setModalSyncDestContent(syncDest.description);
         setIsSyncDestModalOpen(true);
     };
 
     const confirmSyncDestChange = async () => {
+        if (!pendingSyncDest) return;
         const { name, synced } = pendingSyncDest;
         const status = !synced;
         const decodedGroupingPath = decodeURIComponent(groupingPath);
@@ -116,7 +121,7 @@ const SyncDestinations = ({ syncDestArray, groupingPath }) => {
                     </div>
                 </div>
 
-                {isSyncDestModalOpen && (
+                {isSyncDestModalOpen && pendingSyncDest && (
                     <DynamicModal
                         open={isSyncDestModalOpen}
                         title={message.SyncDestinations.MODAL_TITLE}

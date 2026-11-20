@@ -1,11 +1,11 @@
 type QuestionData = {
     question: string;
-    answer: string;
+    answer: React.ReactNode;
 };
 
 type QuestionItemProps = {
     data: QuestionData[];
-    col: number;
+    col?: number;
 };
 
 const QuestionItem = ({ data, col }: QuestionItemProps) => {

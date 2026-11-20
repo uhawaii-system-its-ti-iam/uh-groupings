@@ -1,3 +1,4 @@
+import 'server-only';
 import User, { AnonymousUser } from './user';
 import { auth } from '@/auth';
 import { headers } from 'next/headers';

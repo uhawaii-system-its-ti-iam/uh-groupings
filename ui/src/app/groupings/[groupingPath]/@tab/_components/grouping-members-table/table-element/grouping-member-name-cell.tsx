@@ -1,3 +1,4 @@
+import { isDepartmental } from '@/lib/access/account-utils';
 import { faSchool } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
@@ -6,7 +7,7 @@ const GroupingMemberNameCell = ({ name, uid, uhUuid }: { name: string; uid: stri
     return (
         <>
             {name}{' '}
-            {uhUuid && uid === uhUuid && (
+            {uhUuid && isDepartmental(uid, uhUuid) && (
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger>

@@ -18,9 +18,9 @@ vi.mock('@/lib/actions', () => ({
 }));
 
 describe('RemoveMembersModal', () => {
-    let mockOnProcessing: ReturnType<typeof vi.fn>;
-    let mockOnSuccess: ReturnType<typeof vi.fn>;
-    let mockOnClose: ReturnType<typeof vi.fn>;
+    let mockOnProcessing: ReturnType<typeof vi.fn<() => void>>;
+    let mockOnSuccess: ReturnType<typeof vi.fn<() => void>>;
+    let mockOnClose: ReturnType<typeof vi.fn<() => void>>;
 
     const testGroupingPath = 'test-grouping-path';
     const testMembers = [

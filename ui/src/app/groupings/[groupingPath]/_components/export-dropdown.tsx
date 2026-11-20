@@ -19,8 +19,9 @@ import {
 import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
 import { getGroupingMembers } from '@/lib/actions';
-import { GroupingGroupMembers } from '@/lib/types';
+import { GroupingGroupMember } from '@/lib/types';
 import { Spinner } from '@/components/ui/spinner';
+import SortBy from '@/app/groupings/[groupingPath]/@tab/_components/grouping-members-table/table-element/sort-by';
 
 const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {
     const groups = [
@@ -35,11 +36,15 @@ const ExportDropdown = ({ groupingPath }: { groupingPath: string }) => {
     const exportCsv = async (group: string) => {
         startTransition(async () => {
             const groupPath = group === '' ? groupingPath : `${groupingPath}:${group}`;
-            const sortString = 'name';
+            const sortBy = SortBy.NAME;
             const isAscending = true;
-            const data: GroupingGroupMembers = await getGroupingMembers(groupPath, { sortString, isAscending });
-
-            const members = data.members;
+            const size = 1000;
+            const members: GroupingGroupMember[] = [];
+            for (let page = 1; ; page++) {
+                const data = await getGroupingMembers(groupPath, { page, size, sortBy, isAscending });
+                members.push(...data.members);
+                if (data.members.length < size) break;
+            }
             const groupName = groupingPath.split(':').pop();
             const headers = ['Last', 'First', 'Username', 'UH Number', 'Email'];
 

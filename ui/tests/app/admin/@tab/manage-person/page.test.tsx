@@ -15,7 +15,7 @@ describe('PersonTab', () => {
     });
 
     it('does not call member endpoints before an identifier is entered', async () => {
-        await PersonTab({ searchParams: {} });
+        await PersonTab({ searchParams: Promise.resolve({}) });
 
         expect(Fetchers.managePersonResults).not.toHaveBeenCalled();
         expect(Actions.memberAttributeResults).not.toHaveBeenCalled();

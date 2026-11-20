@@ -22,6 +22,6 @@ describe('GroupingHeader Component', () => {
     it('should render DescriptionForm', () => {
         render(<GroupingHeader groupName={GroupName} groupDescription={GroupDescription} groupPath={GroupPath} />);
 
-        expect(DescriptionForm).toHaveBeenCalledWith({ groupDescription: GroupDescription, groupPath: GroupPath }, {});
+        expect(DescriptionForm).toHaveBeenCalledWith({ groupDescription: GroupDescription, groupPath: GroupPath }, undefined);
     });
 });

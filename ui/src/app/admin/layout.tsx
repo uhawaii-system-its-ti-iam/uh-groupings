@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: 'Admin'
 };
 
-const AdminLayout = async ({ tab, modals }: { tab: React.ReactNode; modals: React.ReactNode }) => {
+const AdminLayout = async ({ tab }: { tab: React.ReactNode }) => {
     const user = await getAuthorizedUser();
     if (!user.roles.includes(Role.ADMIN)) redirect('/');
 
@@ -20,7 +20,6 @@ const AdminLayout = async ({ tab, modals }: { tab: React.ReactNode; modals: Reac
                 <Heading {...sectionHeadings.admin} />
                 {tab}
             </main>
-            <div id="modals">{modals}</div>
         </>
     );
 };

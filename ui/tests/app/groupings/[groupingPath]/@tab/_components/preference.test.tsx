@@ -39,13 +39,13 @@ describe('Preferences Component', () => {
     });
 
     it('renders Preferences title and description', () => {
-        render(<Preferences groupingPath={groupingPath} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         expect(screen.getByText('Preferences')).toBeInTheDocument();
         expect(screen.getByText(/Changes made may not take effect immediately/i)).toBeInTheDocument();
     });
 
     it('toggles opt-in and updates state via API', async () => {
-        render(<Preferences groupingPath={groupingPath} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
         const optInSwitch = screen.getByLabelText(/allow people to add themselves/i);
         expect(optInSwitch).toHaveAttribute('aria-checked', 'false');
@@ -58,7 +58,7 @@ describe('Preferences Component', () => {
     });
 
     it('toggles opt-out and updates state via API', async () => {
-        render(<Preferences groupingPath={groupingPath} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
         const optOutSwitch = screen.getByLabelText(/allow people to remove themselves/i);
         expect(optOutSwitch).toHaveAttribute('aria-checked', 'false');
@@ -71,7 +71,7 @@ describe('Preferences Component', () => {
     });
 
     it('shows modal with opt-in tooltip when question icon clicked', async () => {
-        render(<Preferences groupingPath={groupingPath} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
 
         const iconDiv = screen.getByText(/allow people to add themselves/i).parentElement?.querySelector('div.cursor-pointer');
@@ -89,7 +89,7 @@ describe('Preferences Component', () => {
     });
 
     it('shows modal with opt-out tooltip when question icon clicked', async () => {
-        render(<Preferences groupingPath={groupingPath} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
 
         const iconDivs = screen.getAllByText(/allow people/i).map(label =>
@@ -109,7 +109,7 @@ describe('Preferences Component', () => {
     });
 
     it('opens modal manually via openModal call with content', async () => {
-        render(<Preferences groupingPath={groupingPath} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
         const iconDiv = screen.getByText(/allow people to add themselves/i).parentElement?.querySelector('div.cursor-pointer');
         await user.click(iconDiv!);
@@ -117,7 +117,7 @@ describe('Preferences Component', () => {
     });
 
     it('triggers form onSubmit and prevents default behavior', () => {
-        render(<Preferences groupingPath="group%3Atest%3Apath" />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath="group%3Atest%3Apath" />);
 
         const form = screen.getByTestId('preferences-form');
 
@@ -131,7 +131,7 @@ describe('Preferences Component', () => {
 
     it('calls router.refresh and updates state when updateOptIn succeeds', async () => {
         (updateOptIn as any).mockResolvedValue({ resultCode: 'SUCCESS', updatedStatus: true });
-        render(<Preferences groupingPath={groupingPath} allowOptIn={false} allowOptOut={false} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
         const optInSwitch = screen.getByLabelText(/allow people to add themselves/i);
         expect(optInSwitch).toHaveAttribute('aria-checked', 'false');
@@ -144,7 +144,7 @@ describe('Preferences Component', () => {
 
     it('does not change state or call refresh when updateOptOut fails', async () => {
         (updateOptOut as any).mockResolvedValue({ resultCode: 'FAILURE', updatedStatus: false });
-        render(<Preferences groupingPath={groupingPath} allowOptIn={false} allowOptOut={false} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
         const optOutSwitch = screen.getByLabelText(/allow people to remove themselves/i);
         expect(optOutSwitch).toHaveAttribute('aria-checked', 'false');
@@ -157,7 +157,7 @@ describe('Preferences Component', () => {
     it('does not change state or call refresh when updateOptIn fails', async () => {
         (updateOptIn as any).mockResolvedValue({ resultCode: 'FAILURE', updatedStatus: false });
         refreshMock.mockClear();
-        render(<Preferences groupingPath={groupingPath} allowOptIn={false} allowOptOut={false} />);
+        render(<Preferences allowOptIn={false} allowOptOut={false} groupingPath={groupingPath} />);
         const user = userEvent.setup();
         const optInSwitch = screen.getByLabelText(/allow people to add themselves/i);
         expect(optInSwitch).toHaveAttribute('aria-checked', 'false');

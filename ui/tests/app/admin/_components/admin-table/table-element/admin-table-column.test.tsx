@@ -20,7 +20,7 @@ vi.mock('@/components/ui/tooltip', () => ({
 
 vi.mock('@/lib/messages', () => ({
     message: {
-        Actions: {
+        Tooltip: {
             Trashcan_Admin: 'Remove this admin',
         },
         RemoveMemberModals: {

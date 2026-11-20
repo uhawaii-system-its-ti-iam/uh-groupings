@@ -1,3 +1,4 @@
+import 'server-only';
 import { sign } from 'jsonwebtoken';
 import { getAuthorizedUser } from './access/user.server';
 import type User from './access/user';

@@ -1,3 +1,4 @@
+import 'server-only';
 import { redirect } from 'next/navigation';
 import { generateJWT } from './jwt-service';
 import type User from './access/user';
@@ -241,7 +242,7 @@ export const deleteRequestAsync = async <T>(
 
 /**
  * Helper function for the .then clause of a fetch promise.
- * Sends an email stack trace if an error is thrown.
+ * Redirects failed backend requests to the error page.
  *
  * @param res - the response
  *
